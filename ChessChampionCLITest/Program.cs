@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ChessChampionCLITest
@@ -13,7 +15,17 @@ namespace ChessChampionCLITest
             startInfo.RedirectStandardInput = true;
             startInfo.RedirectStandardOutput = true;
             startInfo.UseShellExecute = false;
-
+            string[][] startingSquare = new string[][]
+            {
+                new[] { "♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜" },
+                new[] {"♟︎", "♟︎", "♟︎", "♟︎", "♟︎", "♟︎", "♟︎", "♟︎" },
+                new[] {"", "", "", "", "", "", "", "" },
+                new[] {"", "", "", "", "", "", "", "" },
+                new[] {"", "", "", "", "", "", "", "" },
+                new[] {"", "", "", "", "", "", "", "" },
+                new[] {"♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙" },
+                new[] {"♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖" }
+            };
             Process process = new()
             {
                 StartInfo = startInfo
@@ -23,18 +35,27 @@ namespace ChessChampionCLITest
             StreamWriter streamWriter = process.StandardInput;
             StreamReader streamReader = process.StandardOutput;
 
-            string moves = "position startpos moves e2e4";
-            await WriteMessage(streamWriter, moves);
+            StringBuilder moveBuilder = new("position startpos moves");
 
-            await WriteMessage(streamWriter, "go");
+            while (true)
+            {
+                Console.WriteLine("Give next move:");
+                string move = Console.ReadLine();
+                moveBuilder.Append(' ').Append(move);
 
-            await Task.Delay(2000);
+                await WriteMessage(streamWriter, moveBuilder.ToString());
+                await WriteMessage(streamWriter, "go");
 
-            await WriteMessage(streamWriter, "stop");
+                await Task.Delay(5000);
 
-            await ReadResponse(streamReader);
+                await WriteMessage(streamWriter, "stop");
 
-            Console.ReadLine();
+                string response = await ReadResponse(streamReader);
+
+                string compMove = ReadMove(response);
+
+                moveBuilder.Append(' ').Append(compMove);
+            }
         }
 
         private static async Task WriteMessage(StreamWriter streamReader, string message)
@@ -44,13 +65,25 @@ namespace ChessChampionCLITest
             Console.WriteLine(message);
         }
 
-        private static async Task ReadResponse(StreamReader streamReader)
+        private static string ReadMove(string response)
+        {
+            Match m = Regex.Match(response, @"bestmove (?<move>[a-g]\d[a-g]\d) ", RegexOptions.RightToLeft);
+            if (m.Success)
+            {
+                Console.WriteLine("Next move is " + m.Groups["move"].Value);
+                return m.Groups["move"].Value;
+            }
+            throw new ArgumentException("Could not find move in the given response");
+        }
+
+        private static async Task<string> ReadResponse(StreamReader streamReader)
         {
             Console.ForegroundColor = ConsoleColor.White;
             char[] buffer = new char[4096];
             int x = await streamReader.ReadAsync(buffer);
-            string response = new string(buffer);
+            string response = new(buffer);
             Console.WriteLine(response);
+            return response;
         }
     }
 }
