@@ -1,0 +1,9 @@
+﻿<div id="chess-board">
+    @for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            <ChessSquareComponent Square="Game.GameState.State[i][j]" HandleClickCallback="HandleClick"/>
+        }
+    }
+</div>

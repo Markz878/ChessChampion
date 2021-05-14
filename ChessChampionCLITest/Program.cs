@@ -11,10 +11,12 @@ namespace ChessChampionCLITest
     {
         private static async Task Main(string[] args)
         {
-            var startInfo = new ProcessStartInfo(@"C:\Users\Mark\Downloads\stockfish_13_win_x64\stockfish_13_win_x64\stockfish_13_win_x64.exe");
-            startInfo.RedirectStandardInput = true;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.UseShellExecute = false;
+            ProcessStartInfo startInfo = new(@"C:\Users\Mark\Downloads\stockfish_13_win_x64\stockfish_13_win_x64\stockfish_13_win_x64.exe")
+            {
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            };
             string[][] startingSquare = new string[][]
             {
                 new[] { "♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜" },

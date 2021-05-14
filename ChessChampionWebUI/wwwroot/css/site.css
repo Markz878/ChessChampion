@@ -1,0 +1,99 @@
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+a, .btn-link {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.page {
+    
+}
+
+.top-row {
+    background-color: burlywood;
+    border-bottom: 1px solid #d6d5d5;
+    justify-content: space-around;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.content {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+}
+
+#chess-board {
+    display: grid;
+    grid-template-columns: repeat(8, min(4rem, 10vw));
+    grid-template-rows: repeat(8, min(4rem, 10vw));
+    font-size: min(3rem, 7vw);
+    cursor: pointer;
+}
+
+.square {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+}
+
+.selected {
+    background-color: rgb(227, 220, 74);
+}
+
+.movable {
+    background-color: rgb(238, 233, 141);
+}
+
+.light {
+    background-color: wheat;
+}
+
+.dark {
+    background-color: peru;
+}
