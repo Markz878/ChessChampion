@@ -65,19 +65,19 @@ namespace ChessChampionWebUI.Data
 
         private static string ReadMove(string response)
         {
-            Match m = Regex.Match(response, @"bestmove (?<move>[a-g]\d[a-g]\d) ", RegexOptions.RightToLeft);
+            Match m = Regex.Match(response, @"bestmove (?<move>[a-h]\d[a-h]\d\w?) ", RegexOptions.RightToLeft);
             if (m.Success)
             {
                 Console.WriteLine("Next move is " + m.Groups["move"].Value);
                 return m.Groups["move"].Value;
             }
-            throw new ArgumentException("Could not find move in the given response");
+            throw new ArgumentException("Could not find move in the given response: " + response);
         }
 
         private static async Task<string> ReadResponse(StreamReader streamReader)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            char[] buffer = new char[4096*10];
+            char[] buffer = new char[4096];
             int x = await streamReader.ReadAsync(buffer);
             string response = new(buffer);
             Console.WriteLine(response);

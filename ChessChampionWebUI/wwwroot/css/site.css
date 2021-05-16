@@ -158,12 +158,13 @@ a, .btn-link {
     display: grid;
     align-items: center;
     justify-items: center;
+    margin: 5vw;
 }
 
 #chess-board {
     display: grid;
-    grid-template-columns: repeat(8, min(4rem, 10vw));
-    grid-template-rows: repeat(8, min(4rem, 10vw));
+    grid-template-columns: repeat(9, min(4rem, 10vw));
+    grid-template-rows: repeat(9, min(4rem, 10vw));
     font-size: min(3rem, 7vw);
     cursor: pointer;
 }
