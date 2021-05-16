@@ -34,60 +34,75 @@ namespace ChessChampionWebUI.Models
                 return;
             }
             GameSquare selectedSquare = GetSelectedSquare();
-            string move;
-            if (selectedSquare == null)
+            /// Different paths:
+            /// 1) Nothing is selected, and user selects own piece
+            /// 2) Own piece is selected, and user selects the same piece
+            /// 3) Own piece is selected, and user selects another own piece
+            /// 4) Own piece is selected, and user selects a movable square
+            if (selectedSquare == null && square.Piece!= null && RulesService.IsPlayerPiece(square.Piece.Marker, IsPlayerWhite))
             {
-                if (square.IsEmpty)
-                {
-                    ResetBoardStates();
-                }
-                else
-                {
-                    square.State = SquareState.Selected;
-                    foreach (var availableSquare in RulesService.GetAvailableSquares(GameState, square))
-                    {
-                        availableSquare.State = SquareState.Movable;
-                    }
-                }
+                HandlePieceSelect(square);
             }
             else if (selectedSquare == square)
             {
-                selectedSquare.State = SquareState.Normal;
-                foreach (var availableSquare in RulesService.GetAvailableSquares(GameState, square))
-                {
-                    availableSquare.State = SquareState.Normal;
-                }
+                HandleSameSquareSelect(selectedSquare);
+            }
+            else if (!square.IsEmpty && RulesService.IsPlayerPiece(square.Piece.Marker, IsPlayerWhite))
+            {
+                HandleOtherPieceSelect(square, selectedSquare);
             }
             else if (square.State == SquareState.Movable)
             {
-                move = selectedSquare.ChessCoordinate + square.ChessCoordinate;
-                square.Piece = selectedSquare.Piece;
-                selectedSquare.Piece = "";
-                ResetBoardStates();
-                IsWhitePlayerTurn = !IsWhitePlayerTurn;
-                if (Opponent is AIPlayerModel ai)
-                {
-                    string aiMove = await ai.Move(move);
-                    GameSquare startSquare = GameState.GetSquareFromCoordinates(aiMove[..2]);
-                    GameSquare endSquare = GameState.GetSquareFromCoordinates(aiMove[2..4]);
-                    endSquare.Piece = startSquare.Piece;
-                    startSquare.Piece = "";
-                    IsWhitePlayerTurn = !IsWhitePlayerTurn;
-                }
+                await HandleMove(square, selectedSquare);
             }
-            else if ((RulesService.IsWhitePiece(selectedSquare.Piece) && RulesService.IsWhitePiece(square.Piece)) ||
-                (RulesService.IsBlackPiece(selectedSquare.Piece) && RulesService.IsBlackPiece(square.Piece)))
+        }
+
+        private void HandlePieceSelect(GameSquare square)
+        {
+            square.State = SquareState.Selected;
+            foreach (var availableSquare in square.Piece.GetAvailableSquares(GameState, square))
             {
-                selectedSquare.State = SquareState.Normal;
-                foreach (var availableSquare in RulesService.GetAvailableSquares(GameState, selectedSquare))
-                {
-                    availableSquare.State = SquareState.Normal;
-                }
-                square.State = SquareState.Selected;
-                foreach (var availableSquare in RulesService.GetAvailableSquares(GameState, square))
-                {
-                    availableSquare.State = SquareState.Movable;
-                }
+                availableSquare.State = SquareState.Movable;
+            }
+        }
+
+        private void HandleSameSquareSelect(GameSquare selectedSquare)
+        {
+            selectedSquare.State = SquareState.Normal;
+            foreach (var availableSquare in selectedSquare.Piece.GetAvailableSquares(GameState, selectedSquare))
+            {
+                availableSquare.State = SquareState.Normal;
+            }
+        }
+
+        private void HandleOtherPieceSelect(GameSquare square, GameSquare selectedSquare)
+        {
+            selectedSquare.State = SquareState.Normal;
+            foreach (var availableSquare in selectedSquare.Piece.GetAvailableSquares(GameState, selectedSquare))
+            {
+                availableSquare.State = SquareState.Normal;
+            }
+            square.State = SquareState.Selected;
+            foreach (var availableSquare in square.Piece.GetAvailableSquares(GameState, square))
+            {
+                availableSquare.State = SquareState.Movable;
+            }
+        }
+
+        private async Task HandleMove(GameSquare square, GameSquare selectedSquare)
+        {
+            string move = selectedSquare.ChessCoordinate + square.ChessCoordinate;
+            square.Piece = selectedSquare.Piece;
+            selectedSquare.Piece.HandleMove(GameState, selectedSquare, square);
+            ResetBoardStates();
+            IsWhitePlayerTurn = !IsWhitePlayerTurn;
+            if (Opponent is AIPlayerModel ai)
+            {
+                string aiMove = await ai.Move(move);
+                GameSquare startSquare = GameState[aiMove[..2]];
+                GameSquare endSquare = GameState[aiMove[2..4]];
+                startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
+                IsWhitePlayerTurn = !IsWhitePlayerTurn;
             }
         }
 

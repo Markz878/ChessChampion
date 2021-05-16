@@ -1,1 +1,2 @@
-﻿<div class="@GetColorClass() square" @onclick="HandleClick">@Square.Piece</div>
+﻿<div class="@GetColorClass() square" @onclick="HandleClick">@(Square.Piece == null ? "" : Square.Piece.Marker)</div>
+

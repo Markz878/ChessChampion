@@ -77,7 +77,7 @@ namespace ChessChampionWebUI.Data
         private static async Task<string> ReadResponse(StreamReader streamReader)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            char[] buffer = new char[4096];
+            char[] buffer = new char[4096 * 10];
             int x = await streamReader.ReadAsync(buffer);
             string response = new(buffer);
             Console.WriteLine(response);

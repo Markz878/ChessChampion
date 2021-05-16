@@ -1,51 +1,56 @@
-﻿using System.Collections.Generic;
+﻿using ChessChampionWebUI.Models.Pieces;
+using System.Collections.Generic;
 
 namespace ChessChampionWebUI.Models
 {
     public class GameStateModel
     {
         internal GameSquare[][] State { get; } = new GameSquare[8][];
+        public bool CanWhiteKingCastleRight { get; set; } = true;
+        public bool CanWhiteKingCastleLeft { get; set; } = true;
+        public bool CanBlackKingCastleRight { get; set; } = true;
+        public bool CanBlackKingCastleLeft { get; set; } = true;
         public GameStateModel()
         {
             State[0] = new GameSquare[]
             {
-                new GameSquare(){ Row=0, Column=0, Piece = "♜" },
-                new GameSquare(){ Row=0, Column=1, Piece = "♞" },
-                new GameSquare(){ Row=0, Column=2, Piece = "♝" },
-                new GameSquare(){ Row=0, Column=3, Piece = "♛" },
-                new GameSquare(){ Row=0, Column=4, Piece = "♚" },
-                new GameSquare(){ Row=0, Column=5, Piece = "♝" },
-                new GameSquare(){ Row=0, Column=6, Piece = "♞" },
-                new GameSquare(){ Row=0, Column=7, Piece = "♜" },
+                new GameSquare(){ Y=0, X=0, Piece = new BlackTower() },
+                new GameSquare(){ Y=0, X=1, Piece = new BlackKnight() },
+                new GameSquare(){ Y=0, X=2, Piece = new BlackBishop() },
+                new GameSquare(){ Y=0, X=3, Piece = new BlackQueen() },
+                new GameSquare(){ Y=0, X=4, Piece = new BlackKing() },
+                new GameSquare(){ Y=0, X=5, Piece = new BlackBishop() },
+                new GameSquare(){ Y=0, X=6, Piece = new BlackKnight() },
+                new GameSquare(){ Y=0, X=7, Piece = new BlackTower() },
             };
             State[1] = new GameSquare[8];
             for (int i = 0; i < State[1].Length; i++)
             {
-                State[1][i] = new GameSquare() { Row = 1, Column = i, Piece = "♟︎" };
+                State[1][i] = new GameSquare() { Y = 1, X = i, Piece = new BlackPawn() };
             }
             for (int j = 2; j < 6; j++)
             {
                 State[j] = new GameSquare[8];
                 for (int i = 0; i < State[j].Length; i++)
                 {
-                    State[j][i] = new GameSquare() { Row = j, Column = i, Piece = "" };
+                    State[j][i] = new GameSquare() { Y = j, X = i };
                 }
             }
             State[6] = new GameSquare[8];
             for (int i = 0; i < State[6].Length; i++)
             {
-                State[6][i] = new GameSquare() { Row = 6, Column = i, Piece = "♙" };
+                State[6][i] = new GameSquare() { Y = 6, X = i, Piece = new WhitePawn() };
             }
             State[7] = new GameSquare[]
             {
-                new GameSquare(){ Row=7, Column=0, Piece = "♖" },
-                new GameSquare(){ Row=7, Column=1, Piece = "♘" },
-                new GameSquare(){ Row=7, Column=2, Piece = "♗" },
-                new GameSquare(){ Row=7, Column=3, Piece = "♕" },
-                new GameSquare(){ Row=7, Column=4, Piece = "♔" },
-                new GameSquare(){ Row=7, Column=5, Piece = "♗" },
-                new GameSquare(){ Row=7, Column=6, Piece = "♘" },
-                new GameSquare(){ Row=7, Column=7, Piece = "♖" },
+                new GameSquare(){ Y=7, X=0, Piece = new WhiteTower() },
+                new GameSquare(){ Y=7, X=1, Piece = new WhiteKnight() },
+                new GameSquare(){ Y=7, X=2, Piece = new WhiteBishop() },
+                new GameSquare(){ Y=7, X=3, Piece = new WhiteQueen() },
+                new GameSquare(){ Y=7, X=4, Piece = new WhiteKing() },
+                new GameSquare(){ Y=7, X=5, Piece = new WhiteBishop() },
+                new GameSquare(){ Y=7, X=6, Piece = new WhiteKnight() },
+                new GameSquare(){ Y=7, X=7, Piece = new WhiteTower() },
             };
         }
 
@@ -63,6 +68,11 @@ namespace ChessChampionWebUI.Models
         public GameSquare[] this[int row]
         {
             get => State[row];
+        }
+
+        public GameSquare this[string coordinate]
+        {
+            get => GetSquareFromCoordinates(coordinate);
         }
 
         public GameSquare GetSquareFromCoordinates(string coordinate)

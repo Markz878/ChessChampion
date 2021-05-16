@@ -19,8 +19,8 @@ namespace ChessChampionWebUI.Components
             {
                 return "movable";
             }
-            int rowRemainder = Square.Row % 2;
-            int columnRemainder = (Square.Column + rowRemainder) % 2;
+            int rowRemainder = Square.Y % 2;
+            int columnRemainder = (Square.X + rowRemainder) % 2;
             return columnRemainder == 0 ? "light" : "dark";
         }
 

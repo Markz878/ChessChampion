@@ -1,16 +1,16 @@
-﻿namespace ChessChampionWebUI.Models
+﻿using ChessChampionWebUI.Models.Pieces;
+
+namespace ChessChampionWebUI.Models
 {
     public class GameSquare
     {
-        public int Row { get; set; }
-        public int Column { get; set; }
-        public string Piece { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public ChessPiece Piece { get; set; }
         public SquareState State { get; set; }
-        public bool IsEmpty => string.IsNullOrEmpty(Piece);
-        public string ChessCoordinate => char.ConvertFromUtf32(97 + Column) + (8 - Row).ToString();
+        public bool IsEmpty => Piece == null;
+        public string ChessCoordinate => char.ConvertFromUtf32(97 + X) + (8 - Y).ToString();
     }
-
-
 
     public enum SquareState
     {

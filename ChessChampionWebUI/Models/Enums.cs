@@ -11,4 +11,12 @@
         CreateGame,
         JoinGame
     }
+
+    public enum SquareBlockState
+    {
+        Available,
+        OutOfBounds,
+        OwnPiece,
+        OpponentPiece
+    }
 }
