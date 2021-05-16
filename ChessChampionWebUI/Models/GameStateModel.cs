@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ChessChampionWebUI.Models
 {
@@ -64,6 +63,13 @@ namespace ChessChampionWebUI.Models
         public GameSquare[] this[int row]
         {
             get => State[row];
+        }
+
+        public GameSquare GetSquareFromCoordinates(string coordinate)
+        {
+            int column = char.ConvertToUtf32(coordinate, 0) - 97;
+            int row = 8 - int.Parse(coordinate[1].ToString());
+            return State[row][column];
         }
     }
 }

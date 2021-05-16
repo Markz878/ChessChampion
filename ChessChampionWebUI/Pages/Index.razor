@@ -4,7 +4,48 @@
 
 Welcome to your new app.
 
-@if (SelectedGame!=null)
+@if (Game == null)
 {
-    <ChessBoardComponent Game="SelectedGame"/>
+    <ChooseOptionComponent Title="Play Vs Human Or Computer" LeftText="Human" RightText="Computer" LeftSelected="ChoosePlayVsHuman" />
+    @if (PlayVsMode == PlayVsMode.PlayVsHuman)
+    {
+        <ChooseOptionComponent Title="Choose How To Connect To A Game" LeftText="Create a game" RightText="Join a game" LeftSelected="CreateGameSelectionHandler" />
+        @if (JoinGameMode == JoinGameMode.CreateGame)
+        {
+            <ChooseOptionComponent Title="Choose White Or Black Pieces" LeftText="White" RightText="Black" LeftSelected="SelectWhitePieces" />
+            <EditForm Model="User" class="form-group" OnValidSubmit="CreateGame">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <label for="user-name-1">User name:</label>
+                <InputText DisplayName="User name" id="user-name-1" class="form-control" @bind-Value="@User.Name" />
+                <button type="submit" class="btn btn-primary">Create a game</button>
+            </EditForm>
+            @if (!string.IsNullOrEmpty(User.GameCode))
+            {
+                <label for="game-code-1">You game code is:</label>
+                <h3 id="game-code-1">@User.GameCode</h3>
+            }
+        }
+        else
+        {
+            <EditForm Model="User" OnValidSubmit="JoinGame">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <label for="user-name-2">User name:</label>
+                <InputText DisplayName="User name" id="user-name-2" class="form-control" @bind-Value="@User.Name" />
+                <label for="game-code-2">Game code from your friend:</label>
+                <InputText DisplayName="Game code" class="form-control" @bind-Value="@User.GameCode" />
+                <button type="submit" class="btn btn-primary">Join game</button>
+            </EditForm>
+        }
+    }
+    else
+    {
+        <ChooseOptionComponent IsDisabled="false" Title="Choose white or black pieces" LeftText="White" RightText="Black" LeftSelected="SelectWhitePieces" />
+        <button class="btn btn-primary" @onclick="StartGameVsComputer">Start game</button>
+    }
+}
+else
+{
+    <ChessBoardComponent Game="Game" />
 }

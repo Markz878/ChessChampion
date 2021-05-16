@@ -18,6 +18,9 @@ namespace ChessChampionWebUI.Data
             OpponentPiece
         }
 
+        public static bool IsWhitePiece(string piece) => WhitePieces.Contains(piece);
+        public static bool IsBlackPiece(string piece) => BlackPieces.Contains(piece);
+
         public static IEnumerable<GameSquare> GetAvailableSquares(GameStateModel gameState, GameSquare square) => square.Piece switch
         {
             "♜" => GetTowerSquares(gameState, square, WhitePieces),
@@ -82,19 +85,19 @@ namespace ChessChampionWebUI.Data
         {
             int x = square.Column;
             int y = square.Row;
-            if (gameState[y + 1][x].IsEmpty)
+            if (GetSquareBlockState(gameState, x, y + 1, WhitePieces) == SquareBlockState.Available)
             {
                 yield return gameState[y + 1][x];
             }
-            if (WhitePieces.Contains(gameState[y + 1][x - 1].Piece))
+            if (GetSquareBlockState(gameState, x - 1, y + 1, WhitePieces) == SquareBlockState.OpponentPiece)
             {
                 yield return gameState[y + 1][x - 1];
             }
-            if (WhitePieces.Contains(gameState[y + 1][x + 1].Piece))
+            if (GetSquareBlockState(gameState, x + 1, y + 1, WhitePieces) == SquareBlockState.OpponentPiece)
             {
                 yield return gameState[y + 1][x + 1];
             }
-            if (y == 1 && gameState[y + 2][x].IsEmpty)
+            if (y == 1 && GetSquareBlockState(gameState, x, y + 1, WhitePieces) == SquareBlockState.Available && GetSquareBlockState(gameState, x, y + 2, WhitePieces) == SquareBlockState.Available)
             {
                 yield return gameState[y + 2][x];
             }
@@ -116,7 +119,7 @@ namespace ChessChampionWebUI.Data
             {
                 yield return gameState[y - 1][x + 1];
             }
-            if (y == 6 && GetSquareBlockState(gameState, x + 1, y - 1, BlackPieces) == SquareBlockState.Available)
+            if (y == 6 && GetSquareBlockState(gameState, x, y - 1, BlackPieces) == SquareBlockState.Available && GetSquareBlockState(gameState, x, y - 2, BlackPieces) == SquareBlockState.Available)
             {
                 yield return gameState[y - 2][x];
             }

@@ -1,7 +1,6 @@
-﻿using ChessChampionWebUI.Data;
-using ChessChampionWebUI.Models;
+﻿using ChessChampionWebUI.Models;
 using Microsoft.AspNetCore.Components;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace ChessChampionWebUI.Components
 {
@@ -9,10 +8,9 @@ namespace ChessChampionWebUI.Components
     {
         [Parameter] public GameModel Game { get; set; }
 
-        public void HandleClick(GameSquare square)
+        public async Task HandleClick(GameSquare square)
         {
-            Game.HandleSquareSelect(square);
-
+            await Game.HandleSquareSelect(square);
         }
     }
 }
