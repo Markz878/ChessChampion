@@ -18,14 +18,16 @@ namespace ChessChampionWebUI.Models.Pieces
 
         public override void HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
         {
-            if (gameState.CanWhiteKingCastleRight && endSquare.ChessCoordinate == "g1")
+            if (startSquare.ChessCoordinate == "e1" && endSquare.ChessCoordinate == "g1")
             {
-                gameState[7][7].Piece.HandleMove(gameState, gameState[7][7], gameState[7][5]);
+                gameState["h1"].Piece.HandleMove(gameState, gameState["h1"], gameState["f1"]);
             }
-            else if (gameState.CanWhiteKingCastleLeft && endSquare.ChessCoordinate == "c1")
+            else if (startSquare.ChessCoordinate == "e1" && endSquare.ChessCoordinate == "c1")
             {
-                gameState[7][0].Piece.HandleMove(gameState, gameState[7][0], gameState[7][3]);
+                gameState["a1"].Piece.HandleMove(gameState, gameState["a1"], gameState["d1"]);
             }
+            gameState.CanWhiteKingCastleRight = false;
+            gameState.CanWhiteKingCastleLeft = false;
             base.HandleMove(gameState, startSquare, endSquare);
         }
     }

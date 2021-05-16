@@ -15,5 +15,18 @@ namespace ChessChampionWebUI.Models.Pieces
         {
             return GetTowerSquares(gameState, square);
         }
+
+        public override void HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
+        {
+            if (startSquare.ChessCoordinate == "a8")
+            {
+                gameState.CanBlackKingCastleLeft = false;
+            }
+            else if (startSquare.ChessCoordinate == "h8")
+            {
+                gameState.CanBlackKingCastleRight = false;
+            }
+            base.HandleMove(gameState, startSquare, endSquare);
+        }
     }
 }

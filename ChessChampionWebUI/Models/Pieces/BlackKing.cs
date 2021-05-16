@@ -18,7 +18,7 @@ namespace ChessChampionWebUI.Models.Pieces
 
         public override void HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
         {
-            if (startSquare.ChessCoordinate == "e8" && endSquare.ChessCoordinate == "g1")
+            if (startSquare.ChessCoordinate == "e8" && endSquare.ChessCoordinate == "g8")
             {
                 gameState["h8"].Piece.HandleMove(gameState, gameState["h8"], gameState["f8"]);
             }
@@ -26,6 +26,8 @@ namespace ChessChampionWebUI.Models.Pieces
             {
                 gameState["a8"].Piece.HandleMove(gameState, gameState["a8"], gameState["d8"]);
             }
+            gameState.CanBlackKingCastleRight = false;
+            gameState.CanBlackKingCastleLeft = false;
             base.HandleMove(gameState, startSquare, endSquare);
         }
     }

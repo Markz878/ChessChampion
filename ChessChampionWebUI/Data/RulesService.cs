@@ -74,6 +74,28 @@ namespace ChessChampionWebUI.Data
             {
                 yield return gameState[y + 1][x];
             }
+            if (square.Piece.IsWhite)
+            {
+                if (gameState.CanWhiteKingCastleLeft && gameState["d1"].IsEmpty && gameState["c1"].IsEmpty && gameState["b1"].IsEmpty)
+                {
+                    yield return gameState[y][x-2];
+                }
+                else if (gameState.CanWhiteKingCastleRight && gameState["f1"].IsEmpty && gameState["g1"].IsEmpty)
+                {
+                    yield return gameState[y][x + 2];
+                }
+            }
+            if (!square.Piece.IsWhite)
+            {
+                if (gameState.CanBlackKingCastleLeft && gameState["d8"].IsEmpty && gameState["c8"].IsEmpty && gameState["b8"].IsEmpty)
+                {
+                    yield return gameState[y][x - 2];
+                }
+                else if (gameState.CanBlackKingCastleRight && gameState["f8"].IsEmpty && gameState["g8"].IsEmpty)
+                {
+                    yield return gameState[y][x + 2];
+                }
+            }
         }
 
         private static bool IsInOpponentThreatSquare(GameStateModel gameState, GameSquare square, string[] opponentPieces)
