@@ -11,16 +11,16 @@ namespace ChessChampionWebUI.Components
 
         private string GetColorClass()
         {
+            int rowRemainder = Square.Y % 2;
+            int columnRemainder = (Square.X + rowRemainder) % 2; 
             if (Square.State == SquareState.Selected)
             {
                 return "selected";
             }
             else if (Square.State == SquareState.Movable)
             {
-                return "movable";
+                return columnRemainder == 0 ? "movable-light" : "movable-dark";
             }
-            int rowRemainder = Square.Y % 2;
-            int columnRemainder = (Square.X + rowRemainder) % 2;
             return columnRemainder == 0 ? "light" : "dark";
         }
 

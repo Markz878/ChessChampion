@@ -67,7 +67,8 @@ namespace ChessChampionWebUI.Pages
             Game = GamesService.CreateGameVsComputer(ChooseWhitePieces, User);
             if (!ChooseWhitePieces)
             {
-                await (Game.Opponent as AIPlayerModel).Move("");
+                await (Game.Opponent as AIPlayerModel).Move(Game.GameState, "");
+                Game.IsWhitePlayerTurn = !Game.IsWhitePlayerTurn;
             }
         }
     }

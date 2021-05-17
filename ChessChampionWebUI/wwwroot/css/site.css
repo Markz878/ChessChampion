@@ -180,7 +180,12 @@ a, .btn-link {
     background-color: rgb(227, 220, 74);
 }
 
-.movable {
+.movable-dark {
+    background-color: lightgreen;
+    filter: brightness(80%);
+}
+
+.movable-light {
     background-color: lightgreen;
 }
 

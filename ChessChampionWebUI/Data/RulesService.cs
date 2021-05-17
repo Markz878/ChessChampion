@@ -1,4 +1,5 @@
 ﻿using ChessChampionWebUI.Models;
+using ChessChampionWebUI.Models.Pieces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,8 @@ namespace ChessChampionWebUI.Data
 {
     public static class RulesService
     {
-        public static string[] BlackPieces { get; } = new[] { "♜", "♞", "♝", "♛", "♚", "♟︎" };
-        public static string[] WhitePieces { get; } = new[] { "♖", "♘", "♗", "♕", "♔", "♙" };
-
-
+        private static readonly string[] BlackPieces = new[] { "♜", "♞", "♝", "♛", "♚", "♟︎" };
+        private static readonly string[] WhitePieces = new[] { "♖", "♘", "♗", "♕", "♔", "♙" };
 
         public static bool IsWhitePiece(string piece) => WhitePieces.Contains(piece);
         public static bool IsBlackPiece(string piece) => BlackPieces.Contains(piece);
@@ -41,44 +40,43 @@ namespace ChessChampionWebUI.Data
         {
             int x = square.X;
             int y = square.Y;
-            string[] opponentPieces = square.Piece.IsWhite ? BlackPieces : WhitePieces;
-            if (GetSquareBlockState(gameState, x + 1, y, opponentPieces).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y][x + 1], opponentPieces))
+            if (GetSquareBlockState(gameState, x + 1, y, square.Piece.IsWhite).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y][x + 1], square.Piece.IsWhite))
             {
                 yield return gameState[y][x + 1];
             }
-            if (GetSquareBlockState(gameState, x + 1, y + 1, opponentPieces).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y + 1][x + 1], opponentPieces))
+            if (GetSquareBlockState(gameState, x + 1, y + 1, square.Piece.IsWhite).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y + 1][x + 1], square.Piece.IsWhite))
             {
                 yield return gameState[y + 1][x + 1];
             }
-            if (GetSquareBlockState(gameState, x, y + 1, opponentPieces).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y + 1][x], opponentPieces))
+            if (GetSquareBlockState(gameState, x, y + 1, square.Piece.IsWhite).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y + 1][x], square.Piece.IsWhite))
             {
                 yield return gameState[y + 1][x];
             }
-            if (GetSquareBlockState(gameState, x - 1, y + 1, opponentPieces).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y + 1][x - 1], opponentPieces))
+            if (GetSquareBlockState(gameState, x - 1, y + 1, square.Piece.IsWhite).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y + 1][x - 1], square.Piece.IsWhite))
             {
                 yield return gameState[y + 1][x - 1];
             }
-            if (GetSquareBlockState(gameState, x - 1, y, opponentPieces).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y + 0][x - 1], opponentPieces))
+            if (GetSquareBlockState(gameState, x - 1, y, square.Piece.IsWhite).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y + 0][x - 1], square.Piece.IsWhite))
             {
                 yield return gameState[y + 0][x - 1];
             }
-            if (GetSquareBlockState(gameState, x - 1, y - 1, opponentPieces).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y - 1][x - 1], opponentPieces))
+            if (GetSquareBlockState(gameState, x - 1, y - 1, square.Piece.IsWhite).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y - 1][x - 1], square.Piece.IsWhite))
             {
                 yield return gameState[y - 1][x - 1];
             }
-            if (GetSquareBlockState(gameState, x, y - 1, opponentPieces).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y - 1][x], opponentPieces))
+            if (GetSquareBlockState(gameState, x, y - 1, square.Piece.IsWhite).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y - 1][x], square.Piece.IsWhite))
             {
                 yield return gameState[y - 1][x + 0];
             }
-            if (GetSquareBlockState(gameState, x + 0, y + 1, opponentPieces).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y + 1][x], opponentPieces))
+            if (GetSquareBlockState(gameState, x + 1, y - 1, square.Piece.IsWhite).CanMoveTo() && !IsInOpponentThreatSquare(gameState, gameState[y - 1][x + 1], square.Piece.IsWhite))
             {
-                yield return gameState[y + 1][x];
+                yield return gameState[y - 1][x + 1];
             }
             if (square.Piece.IsWhite)
             {
                 if (gameState.CanWhiteKingCastleLeft && gameState["d1"].IsEmpty && gameState["c1"].IsEmpty && gameState["b1"].IsEmpty)
                 {
-                    yield return gameState[y][x-2];
+                    yield return gameState[y][x - 2];
                 }
                 else if (gameState.CanWhiteKingCastleRight && gameState["f1"].IsEmpty && gameState["g1"].IsEmpty)
                 {
@@ -98,28 +96,46 @@ namespace ChessChampionWebUI.Data
             }
         }
 
-        private static bool IsInOpponentThreatSquare(GameStateModel gameState, GameSquare square, string[] opponentPieces)
+        private static bool IsInOpponentThreatSquare(GameStateModel gameState, GameSquare square, bool isWhite)
         {
+            foreach (var opponentSquare in GetAllOpponentPieces(gameState, isWhite))
+            {
+                if (opponentSquare.Piece.GetAvailableSquares(gameState, opponentSquare).Contains(square))
+                {
+                    return true;
+                }
+            }
             return false;
+        }
+
+        private static IEnumerable<GameSquare> GetAllOpponentPieces(GameStateModel gameState, bool isWhite)
+        {
+            foreach (var square in gameState.GetSquares())
+            {
+                if (square.Piece!= null && square.Piece.IsWhite != isWhite && square.Piece.GetType()!=typeof(BlackKing) && square.Piece.GetType()!=typeof(WhiteKing))
+                {
+                    yield return square;
+                }
+            }
         }
 
         public static IEnumerable<GameSquare> GetBlackPawnSquares(GameStateModel gameState, GameSquare square)
         {
             int x = square.X;
             int y = square.Y;
-            if (GetSquareBlockState(gameState, x, y + 1, WhitePieces) == SquareBlockState.Available)
+            if (GetSquareBlockState(gameState, x, y + 1, false) == SquareBlockState.Available)
             {
                 yield return gameState[y + 1][x];
             }
-            if (GetSquareBlockState(gameState, x - 1, y + 1, WhitePieces) == SquareBlockState.OpponentPiece)
+            if (GetSquareBlockState(gameState, x - 1, y + 1, false) == SquareBlockState.OpponentPiece)
             {
                 yield return gameState[y + 1][x - 1];
             }
-            if (GetSquareBlockState(gameState, x + 1, y + 1, WhitePieces) == SquareBlockState.OpponentPiece)
+            if (GetSquareBlockState(gameState, x + 1, y + 1, false) == SquareBlockState.OpponentPiece)
             {
                 yield return gameState[y + 1][x + 1];
             }
-            if (y == 1 && GetSquareBlockState(gameState, x, y + 1, WhitePieces) == SquareBlockState.Available && GetSquareBlockState(gameState, x, y + 2, WhitePieces) == SquareBlockState.Available)
+            if (y == 1 && GetSquareBlockState(gameState, x, y + 1, false) == SquareBlockState.Available && GetSquareBlockState(gameState, x, y + 2, false) == SquareBlockState.Available)
             {
                 yield return gameState[y + 2][x];
             }
@@ -129,20 +145,19 @@ namespace ChessChampionWebUI.Data
         {
             int x = square.X;
             int y = square.Y;
-            string[] opponentPieces = square.Piece.IsWhite ? BlackPieces : WhitePieces;
-            if (GetSquareBlockState(gameState, x, y - 1, BlackPieces) == SquareBlockState.Available)
+            if (GetSquareBlockState(gameState, x, y - 1, true) == SquareBlockState.Available)
             {
                 yield return gameState[y - 1][x];
             }
-            if (GetSquareBlockState(gameState, x - 1, y - 1, BlackPieces) == SquareBlockState.OpponentPiece)
+            if (GetSquareBlockState(gameState, x - 1, y - 1, true) == SquareBlockState.OpponentPiece)
             {
                 yield return gameState[y - 1][x - 1];
             }
-            if (GetSquareBlockState(gameState, x + 1, y - 1, BlackPieces) == SquareBlockState.OpponentPiece)
+            if (GetSquareBlockState(gameState, x + 1, y - 1, true) == SquareBlockState.OpponentPiece)
             {
                 yield return gameState[y - 1][x + 1];
             }
-            if (y == 6 && GetSquareBlockState(gameState, x, y - 1, BlackPieces) == SquareBlockState.Available && GetSquareBlockState(gameState, x, y - 2, BlackPieces) == SquareBlockState.Available)
+            if (y == 6 && GetSquareBlockState(gameState, x, y - 1, true) == SquareBlockState.Available && GetSquareBlockState(gameState, x, y - 2, true) == SquareBlockState.Available)
             {
                 yield return gameState[y - 2][x];
             }
@@ -157,11 +172,10 @@ namespace ChessChampionWebUI.Data
         {
             int x = square.X;
             int y = square.Y;
-            string[] opponentPieces = square.Piece.IsWhite ? BlackPieces : WhitePieces;
             // right
             for (int i = x + 1; i < 8; i++)
             {
-                SquareBlockState state = GetSquareBlockState(gameState, i, y, opponentPieces);
+                SquareBlockState state = GetSquareBlockState(gameState, i, y, square.Piece.IsWhite);
                 if (state.CanMoveTo())
                 {
                     yield return gameState[y][i];
@@ -174,7 +188,7 @@ namespace ChessChampionWebUI.Data
             // left
             for (int i = x - 1; i >= 0; i--)
             {
-                SquareBlockState state = GetSquareBlockState(gameState, i, y, opponentPieces);
+                SquareBlockState state = GetSquareBlockState(gameState, i, y, square.Piece.IsWhite);
                 if (state.CanMoveTo())
                 {
                     yield return gameState[y][i];
@@ -187,7 +201,7 @@ namespace ChessChampionWebUI.Data
             // up
             for (int j = y - 1; j >= 0; j--)
             {
-                SquareBlockState state = GetSquareBlockState(gameState, x, j, opponentPieces);
+                SquareBlockState state = GetSquareBlockState(gameState, x, j, square.Piece.IsWhite);
                 if (state.CanMoveTo())
                 {
                     yield return gameState[j][x];
@@ -200,7 +214,7 @@ namespace ChessChampionWebUI.Data
             // down
             for (int j = y + 1; j < 8; j++)
             {
-                SquareBlockState state = GetSquareBlockState(gameState, x, j, opponentPieces);
+                SquareBlockState state = GetSquareBlockState(gameState, x, j, square.Piece.IsWhite);
                 if (state.CanMoveTo())
                 {
                     yield return gameState[j][x];
@@ -216,11 +230,10 @@ namespace ChessChampionWebUI.Data
         {
             int x = square.X;
             int y = square.Y;
-            string[] opponentPieces = square.Piece.IsWhite ? BlackPieces : WhitePieces;
             // upper right
             for (int i = 1; i < 8; i++)
             {
-                SquareBlockState state = GetSquareBlockState(gameState, x + i, y - i, opponentPieces);
+                SquareBlockState state = GetSquareBlockState(gameState, x + i, y - i, square.Piece.IsWhite);
                 if (state.CanMoveTo())
                 {
                     yield return gameState[y - i][x + i];
@@ -233,7 +246,7 @@ namespace ChessChampionWebUI.Data
             // lower right
             for (int i = 1; i < 8; i++)
             {
-                SquareBlockState state = GetSquareBlockState(gameState, x + i, y + i, opponentPieces);
+                SquareBlockState state = GetSquareBlockState(gameState, x + i, y + i, square.Piece.IsWhite);
                 if (state.CanMoveTo())
                 {
                     yield return gameState[y + i][x + i];
@@ -246,7 +259,7 @@ namespace ChessChampionWebUI.Data
             // lower left
             for (int i = 1; i < 8; i++)
             {
-                SquareBlockState state = GetSquareBlockState(gameState, x - i, y + i, opponentPieces);
+                SquareBlockState state = GetSquareBlockState(gameState, x - i, y + i, square.Piece.IsWhite);
                 if (state.CanMoveTo())
                 {
                     yield return gameState[y + i][x - i];
@@ -259,7 +272,7 @@ namespace ChessChampionWebUI.Data
             // upper left
             for (int i = 1; i < 8; i++)
             {
-                SquareBlockState state = GetSquareBlockState(gameState, x - i, y - i, opponentPieces);
+                SquareBlockState state = GetSquareBlockState(gameState, x - i, y - i, square.Piece.IsWhite);
                 if (state.CanMoveTo())
                 {
                     yield return gameState[y - i][x - i];
@@ -275,42 +288,41 @@ namespace ChessChampionWebUI.Data
         {
             int x = square.X;
             int y = square.Y;
-            string[] opponentPieces = square.Piece.IsWhite ? BlackPieces : WhitePieces;
-            if (GetSquareBlockState(gameState, x + 1, y - 2, opponentPieces).CanMoveTo())
+            if (GetSquareBlockState(gameState, x + 1, y - 2, square.Piece.IsWhite).CanMoveTo())
             {
                 yield return gameState[y - 2][x + 1];
             }
-            if (GetSquareBlockState(gameState, x + 2, y - 1, opponentPieces).CanMoveTo())
+            if (GetSquareBlockState(gameState, x + 2, y - 1, square.Piece.IsWhite).CanMoveTo())
             {
                 yield return gameState[y - 1][x + 2];
             }
-            if (GetSquareBlockState(gameState, x + 2, y + 1, opponentPieces).CanMoveTo())
+            if (GetSquareBlockState(gameState, x + 2, y + 1, square.Piece.IsWhite).CanMoveTo())
             {
                 yield return gameState[y + 1][x + 2];
             }
-            if (GetSquareBlockState(gameState, x + 1, y + 2, opponentPieces).CanMoveTo())
+            if (GetSquareBlockState(gameState, x + 1, y + 2, square.Piece.IsWhite).CanMoveTo())
             {
                 yield return gameState[y + 2][x + 1];
             }
-            if (GetSquareBlockState(gameState, x - 1, y + 2, opponentPieces).CanMoveTo())
+            if (GetSquareBlockState(gameState, x - 1, y + 2, square.Piece.IsWhite).CanMoveTo())
             {
                 yield return gameState[y + 2][x - 1];
             }
-            if (GetSquareBlockState(gameState, x - 2, y + 1, opponentPieces).CanMoveTo())
+            if (GetSquareBlockState(gameState, x - 2, y + 1, square.Piece.IsWhite).CanMoveTo())
             {
                 yield return gameState[y + 1][x - 2];
             }
-            if (GetSquareBlockState(gameState, x - 2, y - 1, opponentPieces).CanMoveTo())
+            if (GetSquareBlockState(gameState, x - 2, y - 1, square.Piece.IsWhite).CanMoveTo())
             {
                 yield return gameState[y - 1][x - 2];
             }
-            if (GetSquareBlockState(gameState, x - 1, y - 2, opponentPieces).CanMoveTo())
+            if (GetSquareBlockState(gameState, x - 1, y - 2, square.Piece.IsWhite).CanMoveTo())
             {
                 yield return gameState[y - 2][x - 1];
             }
         }
 
-        public static SquareBlockState GetSquareBlockState(GameStateModel gameState, int x, int y, string[] opponentPieces)
+        public static SquareBlockState GetSquareBlockState(GameStateModel gameState, int x, int y, bool isWhite)
         {
             if (x < 0 || x > 7 || y < 0 || y > 7)
             {
@@ -320,7 +332,7 @@ namespace ChessChampionWebUI.Data
             {
                 return SquareBlockState.Available;
             }
-            else if (opponentPieces.Contains(gameState[y][x].Piece.Marker))
+            else if (gameState[y][x].Piece.IsWhite != isWhite)
             {
                 return SquareBlockState.OpponentPiece;
             }

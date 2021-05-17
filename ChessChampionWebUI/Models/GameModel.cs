@@ -98,10 +98,7 @@ namespace ChessChampionWebUI.Models
             IsWhitePlayerTurn = !IsWhitePlayerTurn;
             if (Opponent is AIPlayerModel ai)
             {
-                string aiMove = await ai.Move(move);
-                GameSquare startSquare = GameState[aiMove[..2]];
-                GameSquare endSquare = GameState[aiMove[2..4]];
-                startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
+                await ai.Move(GameState, move);
                 IsWhitePlayerTurn = !IsWhitePlayerTurn;
             }
         }

@@ -12,10 +12,12 @@ namespace ChessChampionWebUI.Models
             Name = "Computer";
         }
 
-        public async Task<string> Move(string playerMove)
+        public async Task Move(GameStateModel gameState, string playerMove)
         {
             string aiMove = await chessAI.GetNextMove(playerMove, 3000);
-            return aiMove;
+            GameSquare startSquare = gameState[aiMove[..2]];
+            GameSquare endSquare = gameState[aiMove[2..4]];
+            startSquare.Piece.HandleMove(gameState, startSquare, endSquare);
         }
     }
 }

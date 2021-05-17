@@ -59,8 +59,6 @@ namespace ChessChampionWebUI.Data
         private static async Task WriteMessage(StreamWriter streamReader, string message)
         {
             await streamReader.WriteLineAsync(message);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(message);
         }
 
         private static string ReadMove(string response)
@@ -68,7 +66,6 @@ namespace ChessChampionWebUI.Data
             Match m = Regex.Match(response, @"bestmove (?<move>[a-h]\d[a-h]\d\w?) ", RegexOptions.RightToLeft);
             if (m.Success)
             {
-                Console.WriteLine("Next move is " + m.Groups["move"].Value);
                 return m.Groups["move"].Value;
             }
             throw new ArgumentException("Could not find move in the given response: " + response);
@@ -76,11 +73,9 @@ namespace ChessChampionWebUI.Data
 
         private static async Task<string> ReadResponse(StreamReader streamReader)
         {
-            Console.ForegroundColor = ConsoleColor.White;
             char[] buffer = new char[4096 * 10];
             int x = await streamReader.ReadAsync(buffer);
             string response = new(buffer);
-            Console.WriteLine(response);
             return response;
         }
 
