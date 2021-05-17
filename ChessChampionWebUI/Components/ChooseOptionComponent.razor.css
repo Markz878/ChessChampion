@@ -1,6 +1,4 @@
 ﻿.share-cart-option {
-    /*margin: var(--left-margin);*/
-    /*width: max(100%, 650px);*/
     display: flex;
     align-items: center;
 }
@@ -11,12 +9,12 @@
 }
 
 .leftToggleButton {
-    margin: 5px 0 5px 5px;
+    margin: 1rem 0 1rem 1rem;
     border-radius: 10px 0 0 10px;
 }
 
 .rightToggleButton {
-    margin: 5px 5px 5px 0;
+    margin: 1rem 1rem 1rem 0;
     border-radius: 0 10px 10px 0;
 }
 
@@ -26,9 +24,9 @@
     background-color: lightgray;
     cursor: pointer;
     font-size: 16px;
-    display: inline-block;
+    display: block;
     padding: 10px;
-    width: 150px;
+    width: 130px;
 }
 
     .toggleButton:focus {

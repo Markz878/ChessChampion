@@ -72,24 +72,24 @@ namespace ChessChampionWebUI.Data
             {
                 yield return gameState[y - 1][x + 1];
             }
-            if (square.Piece.IsWhite)
+            if (square.Piece.IsWhite && !IsInOpponentThreatSquare(gameState, square, square.Piece.IsWhite))
             {
-                if (gameState.CanWhiteKingCastleLeft && gameState["d1"].IsEmpty && gameState["c1"].IsEmpty && gameState["b1"].IsEmpty)
+                if (gameState.CanWhiteKingCastleLeft && gameState["d1"].IsEmpty && gameState["c1"].IsEmpty && gameState["b1"].IsEmpty && !IsInOpponentThreatSquare(gameState, gameState["d1"], square.Piece.IsWhite) && !IsInOpponentThreatSquare(gameState, gameState["c1"], square.Piece.IsWhite) && !IsInOpponentThreatSquare(gameState, gameState["b1"], square.Piece.IsWhite))
                 {
                     yield return gameState[y][x - 2];
                 }
-                else if (gameState.CanWhiteKingCastleRight && gameState["f1"].IsEmpty && gameState["g1"].IsEmpty)
+                if (gameState.CanWhiteKingCastleRight && gameState["f1"].IsEmpty && gameState["g1"].IsEmpty && !IsInOpponentThreatSquare(gameState, gameState["f1"], square.Piece.IsWhite) && !IsInOpponentThreatSquare(gameState, gameState["g1"], square.Piece.IsWhite))
                 {
                     yield return gameState[y][x + 2];
                 }
             }
-            if (!square.Piece.IsWhite)
+            if (!square.Piece.IsWhite && !IsInOpponentThreatSquare(gameState, square, square.Piece.IsWhite))
             {
-                if (gameState.CanBlackKingCastleLeft && gameState["d8"].IsEmpty && gameState["c8"].IsEmpty && gameState["b8"].IsEmpty)
+                if (gameState.CanBlackKingCastleLeft && gameState["d8"].IsEmpty && gameState["c8"].IsEmpty && gameState["b8"].IsEmpty && !IsInOpponentThreatSquare(gameState, gameState["d8"], square.Piece.IsWhite) && !IsInOpponentThreatSquare(gameState, gameState["c8"], square.Piece.IsWhite) && !IsInOpponentThreatSquare(gameState, gameState["b8"], square.Piece.IsWhite))
                 {
                     yield return gameState[y][x - 2];
                 }
-                else if (gameState.CanBlackKingCastleRight && gameState["f8"].IsEmpty && gameState["g8"].IsEmpty)
+                if (gameState.CanBlackKingCastleRight && gameState["f8"].IsEmpty && gameState["g8"].IsEmpty && !IsInOpponentThreatSquare(gameState, gameState["f8"], square.Piece.IsWhite) && !IsInOpponentThreatSquare(gameState, gameState["g8"], square.Piece.IsWhite))
                 {
                     yield return gameState[y][x + 2];
                 }

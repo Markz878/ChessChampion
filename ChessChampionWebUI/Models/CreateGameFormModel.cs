@@ -2,10 +2,11 @@
 
 namespace ChessChampionWebUI.Models
 {
-    public class PlayerModel
+    public class CreateGameFormModel
     {
         [Required]
         [MinLength(3)]
-        public string Name { get; set; }
+        public string UserName { get; set; }
+        public string GameCode { get; set; }
     }
 }

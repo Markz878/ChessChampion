@@ -19,4 +19,12 @@
         OwnPiece,
         OpponentPiece
     }
+
+    public enum SquareState
+    {
+        Normal,
+        Selected,
+        Movable,
+        PreviousMove
+    }
 }

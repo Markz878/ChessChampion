@@ -89,15 +89,14 @@ namespace ChessChampionWebUI.Models
             }
         }
 
-        private async Task HandleMove(GameSquare square, GameSquare selectedSquare)
+        private async Task HandleMove(GameSquare endSquare, GameSquare startSquare)
         {
-            string move = selectedSquare.ChessCoordinate + square.ChessCoordinate;
-            square.Piece = selectedSquare.Piece;
-            selectedSquare.Piece.HandleMove(GameState, selectedSquare, square);
+            startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
             ResetBoardStates();
             IsWhitePlayerTurn = !IsWhitePlayerTurn;
             if (Opponent is AIPlayerModel ai)
             {
+                string move = startSquare.ChessCoordinate + endSquare.ChessCoordinate;
                 await ai.Move(GameState, move);
                 IsWhitePlayerTurn = !IsWhitePlayerTurn;
             }

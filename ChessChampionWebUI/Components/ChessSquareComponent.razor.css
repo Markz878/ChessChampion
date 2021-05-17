@@ -1,0 +1,37 @@
+﻿.square {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    user-select: none;
+    border: 1px solid black;
+}
+
+.selected {
+    background-color: rgb(227, 220, 74);
+}
+
+.movable-dark {
+    background-color: lightgreen;
+    filter: brightness(80%);
+}
+
+.movable-light {
+    background-color: lightgreen;
+}
+
+.previous-dark {
+    background-color: lightgreen;
+    filter: brightness(80%);
+}
+
+.previous-light {
+    background-color: lightgreen;
+}
+
+.light {
+    background-color: wheat;
+}
+
+.dark {
+    background-color: peru;
+}

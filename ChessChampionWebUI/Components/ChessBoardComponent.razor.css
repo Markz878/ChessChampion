@@ -1,0 +1,15 @@
+﻿#chess-board {
+    display: grid;
+    grid-template-columns: repeat(9, min(4rem, 10vw));
+    grid-template-rows: repeat(9, min(4rem, 10vw));
+    font-size: min(3rem, 7vw);
+    cursor: pointer;
+}
+
+.text-square {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    user-select: none;
+    font-size: min(2rem, 5vw);
+}

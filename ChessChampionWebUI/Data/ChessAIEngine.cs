@@ -37,6 +37,11 @@ namespace ChessChampionWebUI.Data
             process.Start();
         }
 
+        public async Task SetDifficulty(int level)
+        {
+            await WriteMessage(process.StandardInput, $"setoption name Skill Level value {level}");
+        }
+
         public async Task<string> GetNextMove(string playerMove, ushort calculationTimeMS)
         {
             if (!string.IsNullOrEmpty(playerMove))
@@ -73,7 +78,7 @@ namespace ChessChampionWebUI.Data
 
         private static async Task<string> ReadResponse(StreamReader streamReader)
         {
-            char[] buffer = new char[4096 * 10];
+            char[] buffer = new char[4096];
             int x = await streamReader.ReadAsync(buffer);
             string response = new(buffer);
             return response;

@@ -7,9 +7,10 @@ namespace ChessChampionWebUI.Models
     {
         private readonly ChessAIEngine chessAI = new();
 
-        public AIPlayerModel()
+        public AIPlayerModel(int level)
         {
             Name = "Computer";
+            chessAI.SetDifficulty(level);
         }
 
         public async Task Move(GameStateModel gameState, string playerMove)
