@@ -3,7 +3,14 @@
     align-items: center;
     justify-items: center;
     user-select: none;
+}
+
+.border {
     border: 1px solid black;
+}
+
+.strong-border {
+    border: 2px solid black;
 }
 
 .selected {
@@ -16,15 +23,6 @@
 }
 
 .movable-light {
-    background-color: lightgreen;
-}
-
-.previous-dark {
-    background-color: lightgreen;
-    filter: brightness(80%);
-}
-
-.previous-light {
     background-color: lightgreen;
 }
 

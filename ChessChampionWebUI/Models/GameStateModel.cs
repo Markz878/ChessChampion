@@ -5,11 +5,12 @@ namespace ChessChampionWebUI.Models
 {
     public class GameStateModel
     {
-        internal GameSquare[][] State { get; } = new GameSquare[8][];
+        public GameSquare[][] State { get; } = new GameSquare[8][];
         public bool CanWhiteKingCastleRight { get; set; } = true;
         public bool CanWhiteKingCastleLeft { get; set; } = true;
         public bool CanBlackKingCastleRight { get; set; } = true;
         public bool CanBlackKingCastleLeft { get; set; } = true;
+
         public GameStateModel()
         {
             State[0] = new GameSquare[]
@@ -54,7 +55,7 @@ namespace ChessChampionWebUI.Models
             };
         }
 
-        internal IEnumerable<GameSquare> GetSquares()
+        public IEnumerable<GameSquare> GetSquares()
         {
             for (int i = 0; i < 8; i++)
             {

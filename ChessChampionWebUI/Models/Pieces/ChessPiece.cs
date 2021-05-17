@@ -9,8 +9,14 @@ namespace ChessChampionWebUI.Models.Pieces
         public abstract IEnumerable<GameSquare> GetAvailableSquares(GameStateModel gameState, GameSquare square);
         public virtual void HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
         {
+            foreach (var square in gameState.GetSquares())
+            {
+                square.WasPreviousMove = false;
+            }
             endSquare.Piece = this;
             startSquare.Piece = null;
+            startSquare.WasPreviousMove = true;
+            endSquare.WasPreviousMove = true;
         }
     }
 }

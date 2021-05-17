@@ -78,10 +78,14 @@ namespace ChessChampionWebUI.Data
 
         private static async Task<string> ReadResponse(StreamReader streamReader)
         {
-            char[] buffer = new char[4096];
-            int x = await streamReader.ReadAsync(buffer);
-            string response = new(buffer);
-            return response;
+            char[] buffer = new char[4096 * 4];
+            int x = await streamReader.ReadAsync(buffer, 0, buffer.Length);
+            string result = new(buffer);
+            if (!result.Contains("bestmove"))
+            {
+                await streamReader.ReadAsync(buffer, 0, buffer.Length);
+            }
+            return result;
         }
 
         public void Dispose()

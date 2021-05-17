@@ -24,7 +24,6 @@
     {
         Normal,
         Selected,
-        Movable,
-        PreviousMove
+        Movable
     }
 }

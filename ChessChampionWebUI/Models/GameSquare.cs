@@ -8,6 +8,7 @@ namespace ChessChampionWebUI.Models
         public int Y { get; set; }
         public ChessPiece Piece { get; set; }
         public SquareState State { get; set; }
+        public bool WasPreviousMove { get; set; }
         public bool IsEmpty => Piece == null;
         public string ChessCoordinate => char.ConvertFromUtf32(97 + X) + (8 - Y).ToString();
     }

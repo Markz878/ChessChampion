@@ -29,6 +29,7 @@
                 <InputText DisplayName="Game code" class="form-control" @bind-Value="@JoinGameForm.GameCode" />
                 <button type="submit" class="btn btn-primary">Join game</button>
             </EditForm>
+            <div class="turn-text">@StatusMessage</div>
         }
     }
     else
@@ -47,11 +48,13 @@ else
             <div class="turn-text">You game code is:</div>
             <div class="turn-text">@CreateGameForm.GameCode</div>
         }
-        <div class="turn-text" @onclick="Test">@StatusMessage</div>
+        <div class="turn-text">@StatusMessage</div>
     }
     else
     {
-        <div class="turn-text">@(Game.IsPlayerTurn ? "It is your turn!" : "It is opponent's turn...")</div>
-        <ChessBoardComponent Game="Game" />
+        <div class="turn-text">@(Player.IsWhite == Game.IsWhitePlayerTurn ? "It is your turn!" : "It is opponent's turn...")</div>
+        <div class="player-name">@(Game.BlackPlayer.Name)</div>
+        <ChessBoardComponent Game="Game" Player="@Player" />
+        <div class="player-name">@(Game.WhitePlayer.Name)</div>
     }
 }

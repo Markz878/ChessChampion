@@ -1,17 +1,18 @@
 ﻿using ChessChampionWebUI.Data;
+using System;
 using System.Threading.Tasks;
 
 namespace ChessChampionWebUI.Models
 {
     public class GameModel
     {
-        public PlayerModel WhitePlayer { get; set; } = new PlayerModel();
-        public PlayerModel BlackPlayer { get; set; } = new PlayerModel();
+        public PlayerModel WhitePlayer { get; set; }
+        public PlayerModel BlackPlayer { get; set; }
         public GameStateModel GameState { get; set; } = new GameStateModel();
-        public bool IsPlayerWhite { get; set; }
         public bool IsWhitePlayerTurn { get; set; } = true;
-        public bool IsPlayerTurn => (IsPlayerWhite && IsWhitePlayerTurn) || (!IsPlayerWhite && !IsWhitePlayerTurn);
-        public PlayerModel Opponent => IsPlayerWhite ? BlackPlayer : WhitePlayer;
+        
+        public event EventHandler OnStateChanged;
+
         public GameSquare GetSelectedSquare()
         {
             for (int i = 0; i < 8; i++)
@@ -27,9 +28,9 @@ namespace ChessChampionWebUI.Models
             return null;
         }
 
-        public async Task HandleSquareSelect(GameSquare square)
+        public async Task HandleSquareSelect(GameSquare square, PlayerModel player)
         {
-            if (!IsPlayerTurn)
+            if (player.IsWhite != IsWhitePlayerTurn)
             {
                 return;
             }
@@ -39,7 +40,7 @@ namespace ChessChampionWebUI.Models
             /// 2) Own piece is selected, and user selects the same piece
             /// 3) Own piece is selected, and user selects another own piece
             /// 4) Own piece is selected, and user selects a movable square
-            if (selectedSquare == null && square.Piece!= null && RulesService.IsPlayerPiece(square.Piece.Marker, IsPlayerWhite))
+            if (selectedSquare == null && square.Piece != null && RulesService.IsPlayerPiece(square.Piece.Marker, player.IsWhite))
             {
                 HandlePieceSelect(square);
             }
@@ -47,13 +48,14 @@ namespace ChessChampionWebUI.Models
             {
                 HandleSameSquareSelect(selectedSquare);
             }
-            else if (!square.IsEmpty && RulesService.IsPlayerPiece(square.Piece.Marker, IsPlayerWhite))
+            else if (!square.IsEmpty && RulesService.IsPlayerPiece(square.Piece.Marker, player.IsWhite))
             {
                 HandleOtherPieceSelect(square, selectedSquare);
             }
             else if (square.State == SquareState.Movable)
             {
-                await HandleMove(square, selectedSquare);
+                await HandleMove(square, selectedSquare, player);
+                NotifyOfChange();
             }
         }
 
@@ -89,12 +91,14 @@ namespace ChessChampionWebUI.Models
             }
         }
 
-        private async Task HandleMove(GameSquare endSquare, GameSquare startSquare)
+        private async Task HandleMove(GameSquare endSquare, GameSquare startSquare, PlayerModel player)
         {
             startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
             ResetBoardStates();
             IsWhitePlayerTurn = !IsWhitePlayerTurn;
-            if (Opponent is AIPlayerModel ai)
+            NotifyOfChange();
+            PlayerModel opponent = player.IsWhite ? BlackPlayer : WhitePlayer;
+            if (opponent is AIPlayerModel ai)
             {
                 string move = startSquare.ChessCoordinate + endSquare.ChessCoordinate;
                 await ai.Move(GameState, move);
@@ -108,6 +112,11 @@ namespace ChessChampionWebUI.Models
             {
                 square.State = SquareState.Normal;
             }
+        }
+
+        public void NotifyOfChange()
+        {
+            OnStateChanged?.Invoke(this, null);
         }
     }
 }

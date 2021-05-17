@@ -17,9 +17,13 @@ namespace ChessChampionWebUI.Components
             {
                 SquareState.Selected => "selected",
                 SquareState.Movable => columnRemainder == 0 ? "movable-light" : "movable-dark",
-                SquareState.PreviousMove => columnRemainder == 0 ? "previous-light" : "previous-dark",
                 _ => columnRemainder == 0 ? "light" : "dark",
             };
+        }
+
+        private string GetBorderClass()
+        {
+            return Square.WasPreviousMove ? "strong-border" : "border";
         }
 
         private Task HandleClick()
