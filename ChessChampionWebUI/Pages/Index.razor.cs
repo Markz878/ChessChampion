@@ -23,6 +23,12 @@ namespace ChessChampionWebUI.Pages
 
         private readonly Random random = new();
 
+        private void ResetState()
+        {
+            Dispose();
+            Game = null;
+        }
+
         private void CreateGameSelectionHandler(bool chooseCreateGame)
         {
             JoinGameMode = chooseCreateGame ? JoinGameMode.CreateGame : JoinGameMode.JoinGame;
@@ -56,14 +62,30 @@ namespace ChessChampionWebUI.Pages
             StatusMessage = "Waiting for the other player..";
         }
 
-        private void Game_OnStateChanged(object sender, EventArgs e)
+        private async void Game_OnStateChanged(object sender, EventArgs e)
         {
-            InvokeAsync(() => StateHasChanged());
+            await InvokeAsync(() => StateHasChanged());
         }
 
         private void ChoosePlayVsHuman(bool playVsHuman)
         {
             PlayVsMode = playVsHuman ? PlayVsMode.PlayVsHuman : PlayVsMode.PlayVsComputer;
+        }
+
+        private string GetStatusText()
+        {
+            if (Game.Winner == Game.WhitePlayer)
+            {
+                return "Winner is white!";
+            }
+            else if (Game.Winner == Game.BlackPlayer)
+            {
+                return "Winner is black!";
+            }
+            else
+            {
+                return Player.IsWhite == Game.IsWhitePlayerTurn ? "It is your turn!" : "It is opponent's turn...";
+            }
         }
 
         private string CreateGameCode()

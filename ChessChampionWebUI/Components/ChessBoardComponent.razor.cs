@@ -11,7 +11,10 @@ namespace ChessChampionWebUI.Components
 
         public async Task HandleClick(GameSquare square)
         {
-            await Game.HandleSquareSelect(square, Player);
+            if (Game.Winner == null)
+            {
+                await Game.HandleSquareSelect(square, Player);
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿@page "/"
 
+<h1 id="main-logo" @onclick="ResetState">Chess Champion</h1>
+
 @if (Game == null)
 {
     <ChooseOptionComponent Title="Play Vs Human Or Computer" LeftText="Human" RightText="Computer" LeftSelected="ChoosePlayVsHuman" />
@@ -12,7 +14,7 @@
             <EditForm Model="CreateGameForm" class="form-group" OnValidSubmit="CreateGame">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-                <label for="user-name-1">User name:</label>
+                <label for="user-name-1">Your Game Name:</label>
                 <InputText DisplayName="User name" id="user-name-1" class="form-control" @bind-Value="@CreateGameForm.UserName" />
                 <button type="submit" class="btn btn-primary">Create a game</button>
             </EditForm>
@@ -23,8 +25,8 @@
             <EditForm Model="JoinGameForm" OnValidSubmit="JoinGame">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-                <label for="user-name-2">User name:</label>
-                <InputText DisplayName="User name" id="user-name-2" class="form-control" @bind-Value="@JoinGameForm.UserName" />
+                <label for="user-name-2">Your Game Name:</label>
+                <InputText DisplayName="Game name" id="user-name-2" class="form-control" @bind-Value="@JoinGameForm.UserName" />
                 <label for="game-code-2">Game code from your friend:</label>
                 <InputText DisplayName="Game code" class="form-control" @bind-Value="@JoinGameForm.GameCode" />
                 <button type="submit" class="btn btn-primary">Join game</button>
@@ -46,13 +48,13 @@ else
         @if (!string.IsNullOrEmpty(CreateGameForm.GameCode))
         {
             <div class="turn-text">You game code is:</div>
-            <div class="turn-text">@CreateGameForm.GameCode</div>
+            <div class="turn-text game-code">@CreateGameForm.GameCode</div>
         }
         <div class="turn-text">@StatusMessage</div>
     }
     else
     {
-        <div class="turn-text">@(Player.IsWhite == Game.IsWhitePlayerTurn ? "It is your turn!" : "It is opponent's turn...")</div>
+        <div class="turn-text">@GetStatusText()</div>
         <div class="player-name">@(Game.BlackPlayer.Name)</div>
         <ChessBoardComponent Game="Game" Player="@Player" />
         <div class="player-name">@(Game.WhitePlayer.Name)</div>

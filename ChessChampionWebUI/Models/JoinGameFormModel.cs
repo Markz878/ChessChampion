@@ -5,7 +5,7 @@ namespace ChessChampionWebUI.Models
     public class JoinGameFormModel
     {
         [Required]
-        [MinLength(3)] 
+        [MinLength(3)]
         public string UserName { get; set; }
         [Required]
         [MinLength(4)]

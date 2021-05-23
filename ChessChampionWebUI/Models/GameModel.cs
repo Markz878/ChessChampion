@@ -99,6 +99,10 @@ namespace ChessChampionWebUI.Models
             startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
             ResetBoardStates();
             CheckForWin(player.IsWhite);
+            if (Winner != null)
+            {
+                return;
+            }
             IsWhitePlayerTurn = !IsWhitePlayerTurn;
             NotifyOfChange();
             PlayerModel opponent = player.IsWhite ? BlackPlayer : WhitePlayer;
@@ -107,7 +111,12 @@ namespace ChessChampionWebUI.Models
                 string move = startSquare.ChessCoordinate + endSquare.ChessCoordinate;
                 await ai.Move(GameState, move);
                 CheckForWin(!player.IsWhite);
+                if (Winner != null)
+                {
+                    return;
+                }
                 IsWhitePlayerTurn = !IsWhitePlayerTurn;
+                NotifyOfChange();
             }
         }
 

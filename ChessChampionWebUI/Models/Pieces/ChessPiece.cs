@@ -9,10 +9,7 @@ namespace ChessChampionWebUI.Models.Pieces
 
         public abstract IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, GameSquare square);
 
-        public virtual IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, GameSquare square)
-        {
-            return GetThreatSquares(gameState, square);
-        }
+        public abstract IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, GameSquare square);
 
         public virtual void HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
         {

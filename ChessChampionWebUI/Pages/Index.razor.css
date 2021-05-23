@@ -1,12 +1,22 @@
-﻿.turn-text {
+﻿#main-logo {
+    cursor: pointer;
+    background-image: url("horizontal-board.jpg");
+    border: 8px solid rgb(100,50,20);
+    border-radius: 40px;
+    padding: 1rem;
+}
+
+.turn-text {
     font-size: clamp(16px, 4vw, 24px);
     font-weight: bold;
     margin: 1rem;
 }
 
 .game-code {
-    font-size: clamp(16px, 4vw, 24px);
-    font-weight: bold;
-    margin: 1rem;
     color: blue;
+}
+
+.player-name {
+    font-weight: bold;
+    font-size: clamp(12px, 3vw, 18px);
 }
