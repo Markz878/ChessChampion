@@ -13,7 +13,7 @@ namespace ChessChampionWebUI.Data
         private readonly Process process;
         public ChessAIEngine()
         {
-            ProcessStartInfo startInfo = new(@"C:\Users\Mark\Downloads\stockfish_13_win_x64\stockfish_13_win_x64\stockfish_13_win_x64.exe")
+            ProcessStartInfo startInfo = new("stockfish_13_win_x64.exe")
             {
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,

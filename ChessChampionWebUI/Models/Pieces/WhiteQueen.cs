@@ -11,7 +11,7 @@ namespace ChessChampionWebUI.Models.Pieces
             IsWhite = true;
         }
 
-        public override IEnumerable<GameSquare> GetAvailableSquares(GameStateModel gameState, GameSquare square)
+        public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, GameSquare square)
         {
             return GetQueenSquares(gameState, square);
         }

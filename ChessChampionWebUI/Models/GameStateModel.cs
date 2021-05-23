@@ -1,4 +1,5 @@
 ﻿using ChessChampionWebUI.Models.Pieces;
+using System;
 using System.Collections.Generic;
 
 namespace ChessChampionWebUI.Models
@@ -81,6 +82,18 @@ namespace ChessChampionWebUI.Models
             int column = char.ConvertToUtf32(coordinate, 0) - 97;
             int row = 8 - int.Parse(coordinate[1].ToString());
             return State[row][column];
+        }
+
+        internal GameSquare GetPieceSquare<T>()
+        {
+            foreach (var square in GetSquares())
+            {
+                if (square.Piece!= null && square.Piece is T)
+                {
+                    return square;
+                }
+            }
+            throw new InvalidOperationException("Piece not found");
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using ChessChampionWebUI.Data;
+using ChessChampionWebUI.Models.Pieces;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ChessChampionWebUI.Models
@@ -10,7 +12,8 @@ namespace ChessChampionWebUI.Models
         public PlayerModel BlackPlayer { get; set; }
         public GameStateModel GameState { get; set; } = new GameStateModel();
         public bool IsWhitePlayerTurn { get; set; } = true;
-        
+        public PlayerModel Winner { get; set; }
+
         public event EventHandler OnStateChanged;
 
         public GameSquare GetSelectedSquare()
@@ -62,7 +65,7 @@ namespace ChessChampionWebUI.Models
         private void HandlePieceSelect(GameSquare square)
         {
             square.State = SquareState.Selected;
-            foreach (var availableSquare in square.Piece.GetAvailableSquares(GameState, square))
+            foreach (var availableSquare in square.Piece.GetMovableSquares(GameState, square))
             {
                 availableSquare.State = SquareState.Movable;
             }
@@ -71,7 +74,7 @@ namespace ChessChampionWebUI.Models
         private void HandleSameSquareSelect(GameSquare selectedSquare)
         {
             selectedSquare.State = SquareState.Normal;
-            foreach (var availableSquare in selectedSquare.Piece.GetAvailableSquares(GameState, selectedSquare))
+            foreach (var availableSquare in selectedSquare.Piece.GetMovableSquares(GameState, selectedSquare))
             {
                 availableSquare.State = SquareState.Normal;
             }
@@ -80,12 +83,12 @@ namespace ChessChampionWebUI.Models
         private void HandleOtherPieceSelect(GameSquare square, GameSquare selectedSquare)
         {
             selectedSquare.State = SquareState.Normal;
-            foreach (var availableSquare in selectedSquare.Piece.GetAvailableSquares(GameState, selectedSquare))
+            foreach (var availableSquare in selectedSquare.Piece.GetMovableSquares(GameState, selectedSquare))
             {
                 availableSquare.State = SquareState.Normal;
             }
             square.State = SquareState.Selected;
-            foreach (var availableSquare in square.Piece.GetAvailableSquares(GameState, square))
+            foreach (var availableSquare in square.Piece.GetMovableSquares(GameState, square))
             {
                 availableSquare.State = SquareState.Movable;
             }
@@ -95,6 +98,7 @@ namespace ChessChampionWebUI.Models
         {
             startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
             ResetBoardStates();
+            CheckForWin(player.IsWhite);
             IsWhitePlayerTurn = !IsWhitePlayerTurn;
             NotifyOfChange();
             PlayerModel opponent = player.IsWhite ? BlackPlayer : WhitePlayer;
@@ -102,7 +106,28 @@ namespace ChessChampionWebUI.Models
             {
                 string move = startSquare.ChessCoordinate + endSquare.ChessCoordinate;
                 await ai.Move(GameState, move);
+                CheckForWin(!player.IsWhite);
                 IsWhitePlayerTurn = !IsWhitePlayerTurn;
+            }
+        }
+
+        private void CheckForWin(bool isWhite)
+        {
+            if (isWhite)
+            {
+                GameSquare blackKingSquare = GameState.GetPieceSquare<BlackKing>();
+                if (RulesService.IsInOpponentThreatSquare(GameState, blackKingSquare, false) && !blackKingSquare.Piece.GetMovableSquares(GameState, blackKingSquare).Any())
+                {
+                    Winner = WhitePlayer;
+                }
+            }
+            else
+            {
+                GameSquare whiteKingSquare = GameState.GetPieceSquare<WhiteKing>();
+                if (RulesService.IsInOpponentThreatSquare(GameState, whiteKingSquare, true) && !whiteKingSquare.Piece.GetMovableSquares(GameState, whiteKingSquare).Any())
+                {
+                    Winner = BlackPlayer;
+                }
             }
         }
 

@@ -11,9 +11,14 @@ namespace ChessChampionWebUI.Models.Pieces
             IsWhite = false;
         }
 
-        public override IEnumerable<GameSquare> GetAvailableSquares(GameStateModel gameState, GameSquare square)
+        public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, GameSquare square)
         {
-            return GetBlackPawnSquares(gameState, square);
+            return GetBlackPawnThreatSquares(gameState, square);
+        }
+
+        public override IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, GameSquare square)
+        {
+            return GetBlackPawnMovableSquares(gameState, square);
         }
 
         public override void HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)

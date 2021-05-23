@@ -6,7 +6,14 @@ namespace ChessChampionWebUI.Models.Pieces
     {
         public string Marker { get; set; }
         public bool IsWhite { get; set; }
-        public abstract IEnumerable<GameSquare> GetAvailableSquares(GameStateModel gameState, GameSquare square);
+
+        public abstract IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, GameSquare square);
+
+        public virtual IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, GameSquare square)
+        {
+            return GetThreatSquares(gameState, square);
+        }
+
         public virtual void HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
         {
             foreach (var square in gameState.GetSquares())
