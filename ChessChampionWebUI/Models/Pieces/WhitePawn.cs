@@ -23,7 +23,7 @@ namespace ChessChampionWebUI.Models.Pieces
 
         public override void HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
         {
-            if (endSquare.Y == 7)
+            if (endSquare.Y == 0)
             {
                 startSquare.Piece = null;
                 endSquare.Piece = new WhiteQueen();
