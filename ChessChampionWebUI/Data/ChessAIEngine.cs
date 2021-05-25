@@ -34,7 +34,10 @@ namespace ChessChampionWebUI.Data
             {
                 StartInfo = startInfo
             };
-            process.Start();
+            if (!process.Start())
+            {
+                throw new FileNotFoundException("Stockfish could not be started");
+            }
         }
 
         public async Task SetDifficulty(int level)
@@ -48,15 +51,22 @@ namespace ChessChampionWebUI.Data
             {
                 moves.Append(' ').Append(playerMove);
             }
-            await WriteMessage(process.StandardInput, moves.ToString());
-            await WriteMessage(process.StandardInput, "go");
-            await Task.Delay(calculationTimeMS);
-
-            await WriteMessage(process.StandardInput, "stop");
-            string response = await ReadResponse(process.StandardOutput);
-
-            string compMove = ReadMove(response);
-
+            string compMove = "";
+            int retries = 0;
+            while (string.IsNullOrEmpty(compMove))
+            {
+                await WriteMessage(process.StandardInput, moves.ToString());
+                await WriteMessage(process.StandardInput, "go");
+                await Task.Delay(calculationTimeMS);
+                await WriteMessage(process.StandardInput, "stop");
+                string response = await ReadResponse(process.StandardOutput);
+                compMove = ParseBestMove(response);
+                retries++;
+                if (retries > 5)
+                {
+                    throw new ArgumentException("Could not find move in the given response: " + response);
+                }
+            }
             moves.Append(' ').Append(compMove);
             return compMove;
         }
@@ -66,14 +76,14 @@ namespace ChessChampionWebUI.Data
             await streamReader.WriteLineAsync(message);
         }
 
-        private static string ReadMove(string response)
+        private static string ParseBestMove(string response)
         {
-            Match m = Regex.Match(response, @"bestmove (?<move>[a-h]\d[a-h]\d\w?) ", RegexOptions.RightToLeft);
+            Match m = Regex.Match(response, @"bestmove (?<move>[a-h]\d[a-h]\d\w?)", RegexOptions.RightToLeft);
             if (m.Success)
             {
                 return m.Groups["move"].Value;
             }
-            throw new ArgumentException("Could not find move in the given response: " + response);
+            return string.Empty;
         }
 
         private static async Task<string> ReadResponse(StreamReader streamReader)

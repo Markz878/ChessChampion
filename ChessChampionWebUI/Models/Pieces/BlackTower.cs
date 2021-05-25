@@ -13,12 +13,12 @@ namespace ChessChampionWebUI.Models.Pieces
 
         public override IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, GameSquare square)
         {
-            return GetTowerSquares(gameState, square, false);
+            return GetTowerMovableSquares(gameState, square);
         }
 
         public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, GameSquare square)
         {
-            return GetTowerSquares(gameState, square, true);
+            return GetTowerThreatSquares(gameState, square);
         }
 
         public override void HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)

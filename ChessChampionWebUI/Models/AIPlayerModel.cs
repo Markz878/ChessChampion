@@ -1,9 +1,10 @@
 ﻿using ChessChampionWebUI.Data;
+using System;
 using System.Threading.Tasks;
 
 namespace ChessChampionWebUI.Models
 {
-    public class AIPlayerModel : PlayerModel
+    public class AIPlayerModel : PlayerModel, IDisposable
     {
         private readonly ChessAIEngine chessAI = new();
 
@@ -11,6 +12,11 @@ namespace ChessChampionWebUI.Models
         {
             Name = "Computer";
             chessAI.SetDifficulty(level);
+        }
+
+        public void Dispose()
+        {
+            chessAI.Dispose();
         }
 
         public async Task Move(GameStateModel gameState, string playerMove)

@@ -2,6 +2,7 @@
 using ChessChampionWebUI.Models;
 using Microsoft.AspNetCore.Components;
 using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,6 +24,13 @@ namespace ChessChampionWebUI.Pages
 
         private readonly Random random = new();
 
+        protected override void OnInitialized()
+        {
+            if (!File.Exists("stockfish_13_win_x64.exe"))
+            {
+                throw new FileNotFoundException("Stockfish engine not found");
+            }
+        }
         private void ResetState()
         {
             Dispose();

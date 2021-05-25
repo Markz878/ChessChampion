@@ -37,28 +37,53 @@ namespace ChessChampionWebUI.Models
             {
                 return;
             }
-            GameSquare selectedSquare = GetSelectedSquare();
-            /// Different paths:
-            /// 1) Nothing is selected, and user selects own piece
-            /// 2) Own piece is selected, and user selects the same piece
-            /// 3) Own piece is selected, and user selects another own piece
-            /// 4) Own piece is selected, and user selects a movable square
-            if (selectedSquare == null && square.Piece != null && RulesService.IsPlayerPiece(square.Piece.Marker, player.IsWhite))
+            try
             {
-                HandlePieceSelect(square);
+                GameSquare selectedSquare = GetSelectedSquare();
+                /// Different paths:
+                /// 1) Nothing is selected, and user selects own piece
+                /// 2) Own piece is selected, and user selects the same piece
+                /// 3) Own piece is selected, and user selects another own piece
+                /// 4) Own piece is selected, and user selects a movable square
+                if (selectedSquare == null && square.Piece != null && RulesService.IsPlayerPiece(square.Piece.Marker, player.IsWhite))
+                {
+                    HandlePieceSelect(square);
+                }
+                else if (selectedSquare == square)
+                {
+                    HandleSameSquareSelect(selectedSquare);
+                }
+                else if (!square.IsEmpty && RulesService.IsPlayerPiece(square.Piece.Marker, player.IsWhite))
+                {
+                    HandleOtherPieceSelect(square, selectedSquare);
+                }
+                else if (square.State == SquareState.Movable)
+                {
+                    bool winnerFound = await HandleMove(square, selectedSquare, player);
+                    if (winnerFound)
+                    {
+                        DisposeAI();
+                    }
+                    NotifyOfChange();
+                }
             }
-            else if (selectedSquare == square)
+            catch (Exception)
             {
-                HandleSameSquareSelect(selectedSquare);
+                DisposeAI();
+                throw;
             }
-            else if (!square.IsEmpty && RulesService.IsPlayerPiece(square.Piece.Marker, player.IsWhite))
+
+        }
+
+        private void DisposeAI()
+        {
+            if (WhitePlayer is AIPlayerModel aiW)
             {
-                HandleOtherPieceSelect(square, selectedSquare);
+                aiW.Dispose();
             }
-            else if (square.State == SquareState.Movable)
+            if (BlackPlayer is AIPlayerModel aiB)
             {
-                await HandleMove(square, selectedSquare, player);
-                NotifyOfChange();
+                aiB.Dispose();
             }
         }
 
@@ -94,14 +119,14 @@ namespace ChessChampionWebUI.Models
             }
         }
 
-        private async Task HandleMove(GameSquare endSquare, GameSquare startSquare, PlayerModel player)
+        private async Task<bool> HandleMove(GameSquare endSquare, GameSquare startSquare, PlayerModel player)
         {
             startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
             ResetBoardStates();
             CheckForWin(player.IsWhite);
             if (Winner != null)
             {
-                return;
+                return true;
             }
             IsWhitePlayerTurn = !IsWhitePlayerTurn;
             NotifyOfChange();
@@ -113,11 +138,12 @@ namespace ChessChampionWebUI.Models
                 CheckForWin(!player.IsWhite);
                 if (Winner != null)
                 {
-                    return;
+                    return true;
                 }
                 IsWhitePlayerTurn = !IsWhitePlayerTurn;
                 NotifyOfChange();
             }
+            return false;
         }
 
         private void CheckForWin(bool isWhite)
