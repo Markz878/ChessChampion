@@ -1,9 +1,11 @@
 ﻿using ChessChampionWebUI.Data;
 using ChessChampionWebUI.Models.Pieces;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using static ChessChampionWebUI.Data.RulesService;
 
 namespace ChessChampionWebUI.Models
 {
@@ -48,7 +50,7 @@ namespace ChessChampionWebUI.Models
                 /// 2) Own piece is selected, and user selects the same piece
                 /// 3) Own piece is selected, and user selects another own piece
                 /// 4) Own piece is selected, and user selects a movable square
-                if (selectedSquare == null && square.Piece != null && RulesService.IsPlayerPiece(square.Piece.Marker, player.IsWhite))
+                if (selectedSquare == null && square.Piece != null && IsPlayerPiece(square.Piece.Marker, player.IsWhite))
                 {
                     HandlePieceSelect(square);
                 }
@@ -56,7 +58,7 @@ namespace ChessChampionWebUI.Models
                 {
                     HandleSameSquareSelect(selectedSquare);
                 }
-                else if (!square.IsEmpty && RulesService.IsPlayerPiece(square.Piece.Marker, player.IsWhite))
+                else if (!square.IsEmpty && IsPlayerPiece(square.Piece.Marker, player.IsWhite))
                 {
                     HandleOtherPieceSelect(square, selectedSquare);
                 }
@@ -75,7 +77,6 @@ namespace ChessChampionWebUI.Models
                 GameEnded?.Invoke(this, EventArgs.Empty);
                 throw;
             }
-
         }
 
         public void DisposeAI()
@@ -154,16 +155,30 @@ namespace ChessChampionWebUI.Models
             if (isWhite)
             {
                 GameSquare blackKingSquare = GameState.GetPieceSquare<BlackKing>();
-                if (RulesService.IsInOpponentThreatSquare(GameState, blackKingSquare, false) && !blackKingSquare.Piece.GetMovableSquares(GameState, blackKingSquare).Any())
+                if (IsInOpponentThreatSquare(GameState, blackKingSquare, false))
                 {
+                    foreach (var opponentSquare in GetAllOpponentPieces(GameState, isWhite).Where(x=>x.Piece is not BlackKing))
+                    {
+                        if (opponentSquare.Piece.GetMovableSquares(GameState, opponentSquare).Any())
+                        {
+                            return;
+                        }
+                    }
                     Winner = WhitePlayer;
                 }
             }
             else
             {
                 GameSquare whiteKingSquare = GameState.GetPieceSquare<WhiteKing>();
-                if (RulesService.IsInOpponentThreatSquare(GameState, whiteKingSquare, true) && !whiteKingSquare.Piece.GetMovableSquares(GameState, whiteKingSquare).Any())
+                if (IsInOpponentThreatSquare(GameState, whiteKingSquare, false))
                 {
+                    foreach (var opponentSquare in GetAllOpponentPieces(GameState, isWhite).Where(x=>x.Piece is not WhiteKing))
+                    {
+                        if (opponentSquare.Piece.GetMovableSquares(GameState, opponentSquare).Any())
+                        {
+                            return;
+                        }
+                    }
                     Winner = BlackPlayer;
                 }
             }

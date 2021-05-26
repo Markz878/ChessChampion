@@ -101,7 +101,7 @@ namespace ChessChampionWebUI.Data
             return false;
         }
 
-        private static IEnumerable<GameSquare> GetAllOpponentPieces(GameStateModel gameState, bool isWhite)
+        public static IEnumerable<GameSquare> GetAllOpponentPieces(GameStateModel gameState, bool isWhite)
         {
             foreach (var square in gameState.GetSquares())
             {
