@@ -1,6 +1,7 @@
 ﻿using ChessChampionWebUI.Data;
 using ChessChampionWebUI.Models.Pieces;
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +15,9 @@ namespace ChessChampionWebUI.Models
         public bool IsWhitePlayerTurn { get; set; } = true;
         public PlayerModel Winner { get; set; }
 
-        public event EventHandler OnStateChanged;
+        public event EventHandler StateChanged;
+
+        public event EventHandler GameEnded;
 
         public GameSquare GetSelectedSquare()
         {
@@ -62,20 +65,20 @@ namespace ChessChampionWebUI.Models
                     bool winnerFound = await HandleMove(square, selectedSquare, player);
                     if (winnerFound)
                     {
-                        DisposeAI();
+                        GameEnded?.Invoke(this, EventArgs.Empty);
                     }
-                    NotifyOfChange();
+                    OnStateChanged();
                 }
             }
             catch (Exception)
             {
-                DisposeAI();
+                GameEnded?.Invoke(this, EventArgs.Empty);
                 throw;
             }
 
         }
 
-        private void DisposeAI()
+        public void DisposeAI()
         {
             if (WhitePlayer is AIPlayerModel aiW)
             {
@@ -129,7 +132,7 @@ namespace ChessChampionWebUI.Models
                 return true;
             }
             IsWhitePlayerTurn = !IsWhitePlayerTurn;
-            NotifyOfChange();
+            OnStateChanged();
             PlayerModel opponent = player.IsWhite ? BlackPlayer : WhitePlayer;
             if (opponent is AIPlayerModel ai)
             {
@@ -141,7 +144,7 @@ namespace ChessChampionWebUI.Models
                     return true;
                 }
                 IsWhitePlayerTurn = !IsWhitePlayerTurn;
-                NotifyOfChange();
+                OnStateChanged();
             }
             return false;
         }
@@ -174,9 +177,14 @@ namespace ChessChampionWebUI.Models
             }
         }
 
-        public void NotifyOfChange()
+        public void OnGameEnded()
         {
-            OnStateChanged?.Invoke(this, null);
+            GameEnded?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void OnStateChanged()
+        {
+            StateChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

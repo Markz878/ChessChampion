@@ -20,9 +20,10 @@ namespace ChessChampionWebUI.Pages
         public bool ChooseWhitePieces { get; set; } = true;
         public int SkillLevel { get; set; } = 10;
         public string StatusMessage { get; set; }
-        public PlayerModel Opponent => Player.IsWhite ? Game.BlackPlayer : Game.WhitePlayer;
 
         private readonly Random random = new();
+
+        private string gameCode;
 
         protected override void OnInitialized()
         {
@@ -31,10 +32,18 @@ namespace ChessChampionWebUI.Pages
                 throw new FileNotFoundException("Stockfish engine not found");
             }
         }
+
         private void ResetState()
         {
-            Dispose();
-            Game = null;
+            if (Game!=null)
+            {
+                Game.Winner = Player.IsWhite ? Game.BlackPlayer : Game.WhitePlayer;
+                Game.OnGameEnded();
+                Game.OnStateChanged();
+                Dispose();
+                Game = null;
+            }
+
         }
 
         private void CreateGameSelectionHandler(bool chooseCreateGame)
@@ -49,9 +58,10 @@ namespace ChessChampionWebUI.Pages
 
         private void CreateGame()
         {
-            string gameCode = CreateGameCode();
+            gameCode = CreateGameCode();
             Game = new();
-            Game.OnStateChanged += Game_OnStateChanged;
+            Game.StateChanged += Game_OnStateChanged;
+            Game.GameEnded += Game_OnGameEnded;
             if (ChooseWhitePieces)
             {
                 Player = new PlayerModel() { Name = CreateGameForm.UserName, IsWhite = true };
@@ -62,7 +72,7 @@ namespace ChessChampionWebUI.Pages
                 Player = new PlayerModel() { Name = CreateGameForm.UserName, IsWhite = false };
                 Game.BlackPlayer = Player;
             }
-            while (!GamesService.Games.TryAdd(gameCode, Game))
+            while (!GamesService.CreateGame(gameCode.ToLower(), Game))
             {
                 gameCode = CreateGameCode();
             }
@@ -108,7 +118,8 @@ namespace ChessChampionWebUI.Pages
 
         private void JoinGame()
         {
-            if (GamesService.Games.TryGetValue(JoinGameForm.GameCode, out GameModel game))
+            gameCode = JoinGameForm.GameCode;
+            if (GamesService.TryGetGame(gameCode, out GameModel game))
             {
                 if (game.WhitePlayer == null)
                 {
@@ -121,8 +132,9 @@ namespace ChessChampionWebUI.Pages
                     game.BlackPlayer = Player;
                 }
                 Game = game;
-                Game.OnStateChanged += Game_OnStateChanged;
-                Game.NotifyOfChange();
+                Game.StateChanged += Game_OnStateChanged;
+                Game.GameEnded += Game_OnGameEnded;
+                Game.OnStateChanged();
             }
             else
             {
@@ -130,16 +142,28 @@ namespace ChessChampionWebUI.Pages
             }
         }
 
+        private void Game_OnGameEnded(object sender, EventArgs e)
+        {
+            Game.DisposeAI();
+            if (!string.IsNullOrEmpty(gameCode))
+            {
+                GamesService.DeleteGame(gameCode);
+            }
+        }
+
         private async Task StartGameVsComputer()
         {
+            gameCode = null;
             Player = new PlayerModel() { Name = "Player", IsWhite = ChooseWhitePieces };
-            AIPlayerModel ai = new(SkillLevel);
+            AIPlayerModel ai = new();
+            await ai.SetDifficultyLevel(SkillLevel);
             Game = new GameModel()
             {
                 BlackPlayer = ChooseWhitePieces ? ai : Player,
                 WhitePlayer = ChooseWhitePieces ? Player : ai
             };
-            Game.OnStateChanged += Game_OnStateChanged;
+            Game.StateChanged += Game_OnStateChanged;
+            Game.GameEnded += Game_OnGameEnded;
             if (!ChooseWhitePieces)
             {
                 await ai.Move(Game.GameState, "");
@@ -151,7 +175,8 @@ namespace ChessChampionWebUI.Pages
         {
             if (Game!=null)
             {
-                Game.OnStateChanged -= Game_OnStateChanged;
+                Game.StateChanged -= Game_OnStateChanged;
+                Game.GameEnded -= Game_OnGameEnded;
             }
         }
     }

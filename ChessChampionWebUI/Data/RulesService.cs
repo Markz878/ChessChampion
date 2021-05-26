@@ -14,23 +14,6 @@ namespace ChessChampionWebUI.Data
         public static bool IsWhitePiece(string piece) => WhitePieces.Contains(piece);
         public static bool IsBlackPiece(string piece) => BlackPieces.Contains(piece);
 
-        //public static IEnumerable<GameSquare> GetAvailableSquares(GameStateModel gameState, GameSquare square) => square.Piece switch
-        //{
-        //    "♜" => GetTowerSquares(gameState, square, WhitePieces),
-        //    "♞" => GetKnightSquares(gameState, square, WhitePieces),
-        //    "♝" => GetBishopSquares(gameState, square, WhitePieces),
-        //    "♛" => GetQueenSquares(gameState, square, WhitePieces),
-        //    "♚" => GetKingSquares(gameState, square, WhitePieces),
-        //    "♟︎" => GetBlackPawnSquares(gameState, square),
-        //    "♖" => GetTowerSquares(gameState, square, BlackPieces),
-        //    "♘" => GetKnightSquares(gameState, square, BlackPieces),
-        //    "♗" => GetBishopSquares(gameState, square, BlackPieces),
-        //    "♕" => GetQueenSquares(gameState, square, BlackPieces),
-        //    "♔" => GetKingSquares(gameState, square, BlackPieces),
-        //    "♙" => GetWhitePawnSquares(gameState, square),
-        //    _ => throw new ArgumentOutOfRangeException()
-        //};
-
         public static bool IsPlayerPiece(string piece, bool isPlayerWhite)
         {
             return (IsWhitePiece(piece) && isPlayerWhite) || (IsBlackPiece(piece) && !isPlayerWhite);
@@ -96,8 +79,7 @@ namespace ChessChampionWebUI.Data
             startSquare.Piece = null;
             foreach (var opponentSquare in GetAllOpponentPieces(gameState, kingPiece.IsWhite))
             {
-                List<GameSquare> threatSquares = opponentSquare.Piece.GetThreatSquares(gameState, opponentSquare).ToList();
-                if (threatSquares.Contains(targetSquare))
+                if (opponentSquare.Piece.GetThreatSquares(gameState, opponentSquare).Contains(targetSquare))
                 {
                     startSquare.Piece = kingPiece;
                     return true;
@@ -111,8 +93,7 @@ namespace ChessChampionWebUI.Data
         {
             foreach (var opponentSquare in GetAllOpponentPieces(gameState, isWhite))
             {
-                List<GameSquare> threatSquares = opponentSquare.Piece.GetThreatSquares(gameState, opponentSquare).ToList();
-                if (threatSquares.Contains(targetSquare))
+                if (opponentSquare.Piece.GetThreatSquares(gameState, opponentSquare).Contains(targetSquare))
                 {
                     return true;
                 }
