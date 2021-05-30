@@ -1,5 +1,4 @@
 ﻿using ChessChampionWebUI.Data;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -9,6 +8,7 @@ namespace ChessChampionWebUI.Models
     {
         private readonly ChessAIEngine chessAI = new();
         private ushort calculationTime = 3000;
+
         public AIPlayerModel()
         {
             Name = "Computer";
@@ -34,7 +34,7 @@ namespace ChessChampionWebUI.Models
             {
                 startSquare.Piece.HandleMove(gameState, startSquare, endSquare);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new InvalidOperationException($"AI move failed, was {aiMove}. Exception: {ex}");
             }

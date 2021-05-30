@@ -2,6 +2,7 @@
 using ChessChampionWebUI.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using System;
 using System.IO;
@@ -15,6 +16,7 @@ namespace ChessChampionWebUI.Pages
         [Inject] public GamesService GamesService { get; set; }
         [Inject] public IJSRuntime JS { get; set; }
         [Inject] public IConfiguration Configuration { get; set; }
+        [Inject] public ILogger<Index> Logger { get; set; } 
         public GameModel Game { get; set; }
         public CreateGameFormModel CreateGameForm { get; set; } = new();
         public JoinGameFormModel JoinGameForm { get; set; } = new();
@@ -34,6 +36,13 @@ namespace ChessChampionWebUI.Pages
             if (!File.Exists("stockfish_13_win_x64.exe"))
             {
                 throw new FileNotFoundException("Stockfish engine not found");
+            }
+            else
+            {
+                Logger.LogInformation("Logging info");
+                Logger.LogWarning("Logging warning");
+                Logger.LogError("Logging error");
+                Logger.LogCritical("Logging critical");
             }
         }
 
