@@ -1,6 +1,7 @@
 ﻿using ChessChampionWebUI.Data;
 using ChessChampionWebUI.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System;
 using System.IO;
 using System.Text;
@@ -11,6 +12,7 @@ namespace ChessChampionWebUI.Pages
     public partial class Index : IDisposable
     {
         [Inject] public GamesService GamesService { get; set; }
+        [Inject] public IJSRuntime JS { get; set; } 
         public GameModel Game { get; set; }
         public CreateGameFormModel CreateGameForm { get; set; } = new();
         public JoinGameFormModel JoinGameForm { get; set; } = new();
@@ -33,9 +35,9 @@ namespace ChessChampionWebUI.Pages
             }
         }
 
-        private void ResetState()
+        private async Task ResetState()
         {
-            if (Game!=null)
+            if (Game!=null && await JS.InvokeAsync<bool>("confirm", "Leave game?"))
             {
                 Game.Winner = Player.IsWhite ? Game.BlackPlayer : Game.WhitePlayer;
                 Game.OnGameEnded();
@@ -43,7 +45,6 @@ namespace ChessChampionWebUI.Pages
                 Dispose();
                 Game = null;
             }
-
         }
 
         private void CreateGameSelectionHandler(bool chooseCreateGame)

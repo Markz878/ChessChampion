@@ -19,17 +19,6 @@ namespace ChessChampionWebUI.Data
                 RedirectStandardOutput = true,
                 UseShellExecute = false
             };
-            string[][] startingSquare = new string[][]
-            {
-                new[] { "♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜" },
-                new[] {"♟︎", "♟︎", "♟︎", "♟︎", "♟︎", "♟︎", "♟︎", "♟︎" },
-                new[] {"", "", "", "", "", "", "", "" },
-                new[] {"", "", "", "", "", "", "", "" },
-                new[] {"", "", "", "", "", "", "", "" },
-                new[] {"", "", "", "", "", "", "", "" },
-                new[] {"♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙" },
-                new[] {"♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖" }
-            };
             process = new()
             {
                 StartInfo = startInfo
