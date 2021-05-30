@@ -1,6 +1,7 @@
 ﻿using ChessChampionWebUI.Data;
 using ChessChampionWebUI.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Configuration;
 using Microsoft.JSInterop;
 using System;
 using System.IO;
@@ -12,7 +13,8 @@ namespace ChessChampionWebUI.Pages
     public partial class Index : IDisposable
     {
         [Inject] public GamesService GamesService { get; set; }
-        [Inject] public IJSRuntime JS { get; set; } 
+        [Inject] public IJSRuntime JS { get; set; }
+        [Inject] public IConfiguration Configuration { get; set; } 
         public GameModel Game { get; set; }
         public CreateGameFormModel CreateGameForm { get; set; } = new();
         public JoinGameFormModel JoinGameForm { get; set; } = new();
@@ -157,7 +159,7 @@ namespace ChessChampionWebUI.Pages
             gameCode = null;
             Player = new PlayerModel() { Name = "Player", IsWhite = ChooseWhitePieces };
             AIPlayerModel ai = new();
-            await ai.SetDifficultyLevel(SkillLevel);
+            await ai.SetParameters(SkillLevel, ushort.Parse(Configuration["AICalculationTime"]));
             Game = new GameModel()
             {
                 BlackPlayer = ChooseWhitePieces ? ai : Player,

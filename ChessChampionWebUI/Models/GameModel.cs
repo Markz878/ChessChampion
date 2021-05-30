@@ -157,7 +157,7 @@ namespace ChessChampionWebUI.Models
                 GameSquare blackKingSquare = GameState.GetPieceSquare<BlackKing>();
                 if (IsInOpponentThreatSquare(GameState, blackKingSquare, false))
                 {
-                    foreach (var opponentSquare in GetAllOpponentPieces(GameState, isWhite).Where(x=>x.Piece is not BlackKing))
+                    foreach (var opponentSquare in GetAllOpponentPieces(GameState, isWhite))
                     {
                         if (opponentSquare.Piece.GetMovableSquares(GameState, opponentSquare).Any())
                         {
@@ -172,7 +172,7 @@ namespace ChessChampionWebUI.Models
                 GameSquare whiteKingSquare = GameState.GetPieceSquare<WhiteKing>();
                 if (IsInOpponentThreatSquare(GameState, whiteKingSquare, false))
                 {
-                    foreach (var opponentSquare in GetAllOpponentPieces(GameState, isWhite).Where(x=>x.Piece is not WhiteKing))
+                    foreach (var opponentSquare in GetAllOpponentPieces(GameState, isWhite))
                     {
                         if (opponentSquare.Piece.GetMovableSquares(GameState, opponentSquare).Any())
                         {

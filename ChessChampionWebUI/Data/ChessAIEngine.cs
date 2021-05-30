@@ -48,6 +48,7 @@ namespace ChessChampionWebUI.Data
                 await WriteMessage(process.StandardInput, "go");
                 await Task.Delay(calculationTimeMS);
                 await WriteMessage(process.StandardInput, "stop");
+                await Task.Delay(500);
                 string response = await ReadResponse(process.StandardOutput);
                 compMove = ParseBestMove(response);
                 retries++;
@@ -80,10 +81,6 @@ namespace ChessChampionWebUI.Data
             char[] buffer = new char[4096 * 4];
             int x = await streamReader.ReadAsync(buffer, 0, buffer.Length);
             string result = new(buffer);
-            if (!result.Contains("bestmove"))
-            {
-                await streamReader.ReadAsync(buffer, 0, buffer.Length);
-            }
             return result;
         }
 
