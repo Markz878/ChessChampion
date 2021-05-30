@@ -25,7 +25,7 @@ namespace ChessChampionWebUI.Models
 
         public async Task Move(GameStateModel gameState, string playerMove)
         {
-            string aiMove = await chessAI.GetNextMove(playerMove, 3000);
+            string aiMove = await chessAI.GetNextMove(playerMove, 5000);
             GameSquare startSquare = gameState[aiMove[..2]];
             GameSquare endSquare = gameState[aiMove[2..4]];
             System.Diagnostics.Trace.TraceError($"AI move is {aiMove}.");
