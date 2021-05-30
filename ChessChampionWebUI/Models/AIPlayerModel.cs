@@ -32,9 +32,9 @@ namespace ChessChampionWebUI.Models
             {
                 startSquare.Piece.HandleMove(gameState, startSquare, endSquare);
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"Exception {ex.Message}, startSquare was {startSquare.ChessCoordinate}, endSquare was {endSquare.ChessCoordinate} ");
+                System.Diagnostics.Trace.TraceError($"AI move failed, was {aiMove}");
                 throw;
             }
         }
