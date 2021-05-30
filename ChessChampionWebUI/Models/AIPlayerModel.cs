@@ -1,4 +1,5 @@
 ﻿using ChessChampionWebUI.Data;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -29,15 +30,13 @@ namespace ChessChampionWebUI.Models
             string aiMove = await chessAI.GetNextMove(playerMove, calculationTime);
             GameSquare startSquare = gameState[aiMove[..2]];
             GameSquare endSquare = gameState[aiMove[2..4]];
-            System.Diagnostics.Trace.TraceError($"AI move is {aiMove}.");
             try
             {
                 startSquare.Piece.HandleMove(gameState, startSquare, endSquare);
             }
-            catch
+            catch(Exception ex)
             {
-                System.Diagnostics.Trace.TraceError($"AI move failed, was {aiMove}");
-                throw;
+                throw new InvalidOperationException($"AI move failed, was {aiMove}. Exception: {ex}");
             }
         }
     }

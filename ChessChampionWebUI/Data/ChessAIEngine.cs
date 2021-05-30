@@ -78,7 +78,7 @@ namespace ChessChampionWebUI.Data
 
         private static async Task<string> ReadResponse(StreamReader streamReader)
         {
-            char[] buffer = new char[4096 * 4];
+            char[] buffer = new char[4096 * 2];
             int x = await streamReader.ReadAsync(buffer, 0, buffer.Length);
             string result = new(buffer);
             return result;

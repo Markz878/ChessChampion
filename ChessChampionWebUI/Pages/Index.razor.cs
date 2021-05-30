@@ -14,7 +14,7 @@ namespace ChessChampionWebUI.Pages
     {
         [Inject] public GamesService GamesService { get; set; }
         [Inject] public IJSRuntime JS { get; set; }
-        [Inject] public IConfiguration Configuration { get; set; } 
+        [Inject] public IConfiguration Configuration { get; set; }
         public GameModel Game { get; set; }
         public CreateGameFormModel CreateGameForm { get; set; } = new();
         public JoinGameFormModel JoinGameForm { get; set; } = new();

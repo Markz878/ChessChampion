@@ -72,7 +72,7 @@ namespace ChessChampionWebUI.Models
                     OnStateChanged();
                 }
             }
-            catch (Exception)
+            catch
             {
                 GameEnded?.Invoke(this, EventArgs.Empty);
                 throw;
