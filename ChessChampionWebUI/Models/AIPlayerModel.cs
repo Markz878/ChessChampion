@@ -28,6 +28,7 @@ namespace ChessChampionWebUI.Models
             string aiMove = await chessAI.GetNextMove(playerMove, 3000);
             GameSquare startSquare = gameState[aiMove[..2]];
             GameSquare endSquare = gameState[aiMove[2..4]];
+            System.Diagnostics.Trace.TraceError($"AI move is {aiMove}.");
             try
             {
                 startSquare.Piece.HandleMove(gameState, startSquare, endSquare);
