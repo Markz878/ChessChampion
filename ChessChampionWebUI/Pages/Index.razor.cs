@@ -37,13 +37,6 @@ namespace ChessChampionWebUI.Pages
             {
                 throw new FileNotFoundException("Stockfish engine not found");
             }
-            else
-            {
-                Logger.LogInformation("Logging info");
-                Logger.LogWarning("Logging warning");
-                Logger.LogError("Logging error");
-                Logger.LogCritical("Logging critical");
-            }
         }
 
         private async Task ResetState()

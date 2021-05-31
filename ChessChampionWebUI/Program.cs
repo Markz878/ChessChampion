@@ -22,6 +22,7 @@ namespace ChessChampionWebUI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseKestrel(k => k.AddServerHeader = false);
                 });
     }
 }
