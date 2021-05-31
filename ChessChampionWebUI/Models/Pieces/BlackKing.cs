@@ -22,7 +22,7 @@ namespace ChessChampionWebUI.Models.Pieces
             return GetKingMovableSquares(gameState, square);
         }
 
-        public override void HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
+        public override string HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
         {
             if (startSquare.ChessCoordinate == "e8" && endSquare.ChessCoordinate == "g8")
             {
@@ -34,7 +34,7 @@ namespace ChessChampionWebUI.Models.Pieces
             }
             gameState.CanBlackKingCastleRight = false;
             gameState.CanBlackKingCastleLeft = false;
-            base.HandleMove(gameState, startSquare, endSquare);
+            return base.HandleMove(gameState, startSquare, endSquare);
         }
     }
 }

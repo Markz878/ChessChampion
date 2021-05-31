@@ -21,7 +21,7 @@ namespace ChessChampionWebUI.Models.Pieces
             return GetTowerThreatSquares(gameState, square);
         }
 
-        public override void HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
+        public override string HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
         {
             if (startSquare.ChessCoordinate=="a1")
             {
@@ -31,7 +31,7 @@ namespace ChessChampionWebUI.Models.Pieces
             {
                 gameState.CanWhiteKingCastleRight = false;
             }
-            base.HandleMove(gameState, startSquare, endSquare);
+            return base.HandleMove(gameState, startSquare, endSquare);
         }
     }
 }

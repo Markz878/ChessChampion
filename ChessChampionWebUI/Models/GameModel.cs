@@ -125,7 +125,7 @@ namespace ChessChampionWebUI.Models
 
         private async Task<bool> HandleMove(GameSquare endSquare, GameSquare startSquare, PlayerModel player)
         {
-            startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
+            string move = startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
             ResetBoardStates();
             CheckForWin(player.IsWhite);
             if (Winner != null)
@@ -137,7 +137,6 @@ namespace ChessChampionWebUI.Models
             PlayerModel opponent = player.IsWhite ? BlackPlayer : WhitePlayer;
             if (opponent is AIPlayerModel ai)
             {
-                string move = startSquare.ChessCoordinate + endSquare.ChessCoordinate;
                 await ai.Move(GameState, move);
                 CheckForWin(!player.IsWhite);
                 if (Winner != null)
