@@ -1,12 +1,14 @@
 ﻿using ChessChampionWebUI.Models.Pieces;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ChessChampionWebUI.Models
 {
     public class GameStateModel
     {
         public GameSquare[][] State { get; } = new GameSquare[8][];
+        public StringBuilder Moves { get; } = new();
         public bool CanWhiteKingCastleRight { get; set; } = true;
         public bool CanWhiteKingCastleLeft { get; set; } = true;
         public bool CanBlackKingCastleRight { get; set; } = true;

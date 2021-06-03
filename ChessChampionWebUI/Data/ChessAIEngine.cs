@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessChampionWebUI.Models;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -9,8 +10,8 @@ namespace ChessChampionWebUI.Data
 {
     public class ChessAIEngine : IDisposable
     {
-        private readonly StringBuilder moves = new("position startpos moves");
         private readonly Process process;
+
         public ChessAIEngine()
         {
             ProcessStartInfo startInfo = new("stockfish_13_win_x64.exe")
@@ -34,17 +35,13 @@ namespace ChessChampionWebUI.Data
             await WriteMessage(process.StandardInput, $"setoption name Skill Level value {difficultyLevel}");
         }
 
-        public async Task<string> GetNextMove(string playerMove, ushort calculationTimeMS)
+        public async Task<string> GetNextMove(GameStateModel gameState, ushort calculationTimeMS)
         {
-            if (!string.IsNullOrEmpty(playerMove))
-            {
-                moves.Append(' ').Append(playerMove);
-            }
             string compMove = "";
             int retries = 0;
             while (string.IsNullOrEmpty(compMove))
             {
-                await WriteMessage(process.StandardInput, moves.ToString());
+                await WriteMessage(process.StandardInput, "position startpos moves" + gameState.Moves);
                 await WriteMessage(process.StandardInput, "go");
                 await Task.Delay(calculationTimeMS);
                 await WriteMessage(process.StandardInput, "stop");
@@ -57,7 +54,6 @@ namespace ChessChampionWebUI.Data
                     throw new ArgumentException("Could not find move in the given response: " + response);
                 }
             }
-            moves.Append(' ').Append(compMove);
             return compMove;
         }
 

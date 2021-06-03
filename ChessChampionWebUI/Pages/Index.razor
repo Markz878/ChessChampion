@@ -4,13 +4,13 @@
 
 @if (Game == null)
 {
-    <ChooseOptionComponent Title="Play Vs Human Or Computer" LeftText="Human" RightText="Computer" LeftSelected="ChoosePlayVsHuman" />
+    <ChooseOptionComponent Title="Play Vs Human Or Computer" TextWidth="280px" LeftText="Human" RightText="Computer" LeftSelected="ChoosePlayVsHuman" />
     @if (PlayVsMode == PlayVsMode.PlayVsHuman)
     {
-        <ChooseOptionComponent Title="Choose How To Connect To A Game" LeftText="Create a game" RightText="Join a game" LeftSelected="CreateGameSelectionHandler" />
+        <ChooseOptionComponent Title="Choose How To Connect To A Game" TextWidth="280px" LeftText="Create a game" RightText="Join a game" LeftSelected="CreateGameSelectionHandler" />
         @if (JoinGameMode == JoinGameMode.CreateGame)
         {
-            <ChooseOptionComponent Title="Choose White Or Black Pieces" LeftText="White" RightText="Black" LeftSelected="SelectWhitePieces" />
+            <ChooseOptionComponent Title="Choose White Or Black Pieces" TextWidth="280px" LeftText="White" RightText="Black" LeftSelected="SelectWhitePieces" />
             <EditForm Model="CreateGameForm" class="form-group" OnValidSubmit="CreateGame">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
@@ -36,7 +36,7 @@
     }
     else
     {
-        <ChooseOptionComponent IsDisabled="false" Title="Choose white or black pieces" LeftText="White" RightText="Black" LeftSelected="SelectWhitePieces" />
+        <ChooseOptionComponent IsDisabled="false" Title="Choose white or black pieces" TextWidth="280px" LeftText="White" RightText="Black" LeftSelected="SelectWhitePieces" />
         <SliderComponent Description="Select skill level:" Min="0" Max="20" Value="@SkillLevel" ValueChangedHandler="(x) => SkillLevel = x" />
         <button class="btn btn-primary" @onclick="StartGameVsComputer">Start game</button>
     }
@@ -54,9 +54,17 @@ else
     }
     else
     {
-        <div class="turn-text @GetStatusTextColor()">@GetStatusText()</div>
-        <div class="player-name">@(Game.BlackPlayer.Name)</div>
-        <ChessBoardComponent Game="Game" Player="@Player" />
-        <div class="player-name">@(Game.WhitePlayer.Name)</div>
+    <div class="game-content-wrapper">
+        <div class="board-wrapper">
+            <div class="turn-text @GetStatusTextColor()">@GetStatusText()</div>
+            <div class="player-name">@(Game.BlackPlayer.Name)</div>
+            <ChessBoardComponent Game="Game" Player="@Player" />
+            <div class="player-name">@(Game.WhitePlayer.Name)</div>
+        </div>
+        <div class="moves-wrapper">
+            <div class="player-name">Move list:</div>
+            <div class="moves">@Game.GameState.Moves</div>
+        </div>
+    </div>
     }
 }

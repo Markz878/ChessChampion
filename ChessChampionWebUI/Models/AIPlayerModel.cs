@@ -6,12 +6,13 @@ namespace ChessChampionWebUI.Models
 {
     public class AIPlayerModel : PlayerModel, IDisposable
     {
-        private readonly ChessAIEngine chessAI = new();
+        private readonly ChessAIEngine chessAI;
         private ushort calculationTime = 3000;
 
         public AIPlayerModel()
         {
             Name = "Computer";
+            chessAI = new();
         }
 
         public async Task SetParameters(int level, ushort calculationTime)
@@ -25,14 +26,14 @@ namespace ChessChampionWebUI.Models
             chessAI.Dispose();
         }
 
-        public async Task Move(GameStateModel gameState, string playerMove)
+        public async Task<string> Move(GameStateModel gameState)
         {
-            string aiMove = await chessAI.GetNextMove(playerMove, calculationTime);
+            string aiMove = await chessAI.GetNextMove(gameState, calculationTime);
             GameSquare startSquare = gameState[aiMove[..2]];
             GameSquare endSquare = gameState[aiMove[2..4]];
             try
             {
-                startSquare.Piece.HandleMove(gameState, startSquare, endSquare);
+                return startSquare.Piece.HandleMove(gameState, startSquare, endSquare);
             }
             catch (Exception ex)
             {

@@ -1,7 +1,7 @@
-﻿<div class="share-cart-option">
-    <b>@Title</b>
-    <button class="leftToggleButton toggleButton @leftButtonActive" disabled="@IsDisabled" @onclick="SelectLeft">@LeftText</button>
-    <button class="rightToggleButton toggleButton @rightButtonActive" disabled="@IsDisabled" @onclick="SelectRight">@RightText</button>
+﻿<div class="option-button">
+    <b style="width: @TextWidth" class="option-text">@Title</b>
+    <button class="left-toggleButton toggleButton @leftButtonActive" disabled="@IsDisabled" @onclick="SelectLeft">@LeftText</button>
+    <button class="right-toggleButton toggleButton @rightButtonActive" disabled="@IsDisabled" @onclick="SelectRight">@RightText</button>
 </div>
 
 @code {
@@ -9,6 +9,7 @@
     [Parameter] public string LeftText { get; set; }
     [Parameter] public string RightText { get; set; }
     [Parameter] public bool IsDisabled { get; set; }
+    [Parameter] public string TextWidth { get; set; }
     [Parameter] public EventCallback<bool> LeftSelected { get; set; }
     public bool IsLeftSelected { get; set; } = true;
 

@@ -1,6 +1,10 @@
-﻿.share-cart-option {
+﻿.option-button {
     display: flex;
     align-items: center;
+}
+
+.option-text {
+    text-align: right;
 }
 
 .select {
@@ -8,12 +12,12 @@
     width: 10rem;
 }
 
-.leftToggleButton {
+.left-toggleButton {
     margin: 1rem 0 1rem 1rem;
     border-radius: 10px 0 0 10px;
 }
 
-.rightToggleButton {
+.right-toggleButton {
     margin: 1rem 1rem 1rem 0;
     border-radius: 0 10px 10px 0;
 }
