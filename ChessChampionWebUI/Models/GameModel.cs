@@ -1,8 +1,5 @@
-﻿using ChessChampionWebUI.Data;
-using ChessChampionWebUI.Models.Pieces;
+﻿using ChessChampionWebUI.Models.Pieces;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using static ChessChampionWebUI.Data.RulesService;

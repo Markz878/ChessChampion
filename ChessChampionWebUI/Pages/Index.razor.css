@@ -13,6 +13,14 @@
     margin: 1rem;
 }
 
+.player-turn-color{
+    color: green;
+}
+
+.opponent-turn-color {
+    color: red;
+}
+
 .game-code {
     color: blue;
 }

@@ -111,6 +111,18 @@ namespace ChessChampionWebUI.Pages
             }
         }
 
+        private string GetStatusTextColor()
+        {
+            if (Game.Winner == null)
+            {
+                return Player.IsWhite == Game.IsWhitePlayerTurn ? "player-turn-color" : "opponent-turn-color";
+            }
+            else
+            {
+                return "";
+            }
+        }
+
         private string CreateGameCode()
         {
             StringBuilder builder = new();

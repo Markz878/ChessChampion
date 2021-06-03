@@ -54,7 +54,7 @@ else
     }
     else
     {
-        <div class="turn-text">@GetStatusText()</div>
+        <div class="turn-text @GetStatusTextColor()">@GetStatusText()</div>
         <div class="player-name">@(Game.BlackPlayer.Name)</div>
         <ChessBoardComponent Game="Game" Player="@Player" />
         <div class="player-name">@(Game.WhitePlayer.Name)</div>

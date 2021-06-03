@@ -29,9 +29,9 @@ namespace ChessChampionWebUI.Data
             }
         }
 
-        public async Task SetDifficulty(int level)
+        public async Task SetParameters(int difficultyLevel)
         {
-            await WriteMessage(process.StandardInput, $"setoption name Skill Level value {level}");
+            await WriteMessage(process.StandardInput, $"setoption name Skill Level value {difficultyLevel}");
         }
 
         public async Task<string> GetNextMove(string playerMove, ushort calculationTimeMS)

@@ -16,7 +16,7 @@ namespace ChessChampionWebUI.Models
 
         public async Task SetParameters(int level, ushort calculationTime)
         {
-            await chessAI.SetDifficulty(level);
+            await chessAI.SetParameters(level);
             this.calculationTime = calculationTime;
         }
 
