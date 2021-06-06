@@ -42,6 +42,7 @@ namespace ChessChampionWebUI.Data
             int retries = 0;
             while (string.IsNullOrEmpty(compMove))
             {
+                logger.LogInformation("Given state to AI is {0}", gameState.Moves);
                 await WriteMessage(process.StandardInput, "position startpos moves" + gameState.Moves);
                 await WriteMessage(process.StandardInput, "go");
                 await Task.Delay(calculationTimeMS);
@@ -49,7 +50,8 @@ namespace ChessChampionWebUI.Data
                 await Task.Delay(500);
                 string response = await ReadResponse(process.StandardOutput);
                 compMove = ParseBestMove(response);
-                if (gameState[compMove[..2]].IsEmpty)
+                logger.LogInformation("AI returned move {0} when state was {1}", compMove, gameState.Moves);
+                if (!string.IsNullOrEmpty(compMove) && gameState[compMove[..2]].IsEmpty)
                 {
                     logger.LogError("AI tried to move empty square {0}, moves were {1}", compMove, gameState.Moves);
                     compMove = null;
