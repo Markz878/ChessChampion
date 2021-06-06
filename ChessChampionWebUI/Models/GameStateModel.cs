@@ -1,7 +1,6 @@
 ﻿using ChessChampionWebUI.Models.Pieces;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ChessChampionWebUI.Models
 {
@@ -90,7 +89,7 @@ namespace ChessChampionWebUI.Models
         {
             foreach (var square in GetSquares())
             {
-                if (square.Piece!= null && square.Piece is T)
+                if (square.Piece != null && square.Piece is T)
                 {
                     return square;
                 }

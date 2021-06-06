@@ -29,17 +29,46 @@ namespace ChessChampionWebUI.Models
 
         public async Task<string> Move(GameStateModel gameState, ILogger logger)
         {
-            string aiMove = await chessAI.GetNextMove(gameState, calculationTime, logger);
-            GameSquare startSquare = gameState[aiMove[..2]];
-            GameSquare endSquare = gameState[aiMove[2..4]];
-            try
+            string aiMove = "";
+            int retries = 0;
+            while (string.IsNullOrEmpty(aiMove))
             {
-                return startSquare.Piece.HandleMove(gameState, startSquare, endSquare);
+                logger.LogInformation("Given moves to AI is {0}", gameState.Moves);
+                aiMove = await chessAI.GetNextMove(gameState.Moves, calculationTime);
+                logger.LogInformation("AI returned move {0}", aiMove);
+
+                if (string.IsNullOrEmpty(aiMove))
+                {
+                    logger.LogError("Could not find best move");
+                    retries++;
+                    continue;
+                }
+                GameSquare startSquare = gameState[aiMove[..2]];
+                GameSquare endSquare = gameState[aiMove[2..4]];
+                if (startSquare.IsEmpty)
+                {
+                    logger.LogError("AI tried to move empty square {0}", startSquare.ChessCoordinate);
+                    aiMove = null;
+                    retries++;
+                    continue;
+                }
+                else if (!RulesService.IsPlayerPiece(startSquare.Piece.Marker, IsWhite))
+                {
+                    logger.LogError("AI tried to move opponent square {0}", startSquare.ChessCoordinate);
+                    aiMove = null;
+                    retries++;
+                    continue;
+                }
+                else if (retries > 5)
+                {
+                    throw new ArgumentException("Could not find move in the given response:");
+                }
+                else
+                {
+                    return startSquare.Piece.HandleMove(gameState, startSquare, endSquare);
+                }
             }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"AI move failed, was {aiMove}. Exception: {ex}");
-            }
+            return null;
         }
     }
 }

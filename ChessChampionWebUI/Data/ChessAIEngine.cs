@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -36,34 +35,15 @@ namespace ChessChampionWebUI.Data
             WriteMessage(process.StandardInput, $"setoption name Skill Level value {difficultyLevel}");
         }
 
-        public async Task<string> GetNextMove(GameStateModel gameState, ushort calculationTimeMS, ILogger logger)
+        public async Task<string> GetNextMove(string moves, ushort calculationTimeMS)
         {
-            string compMove = "";
-            int retries = 0;
-            while (string.IsNullOrEmpty(compMove))
-            {
-                await Task.Delay(500);
-                string moveCommand = "position startpos moves" + gameState.Moves;
-                logger.LogInformation("Given move command to AI is {0}", moveCommand);
-                WriteMessage(process.StandardInput, moveCommand);
-                WriteMessage(process.StandardInput, "go");
-                await Task.Delay(calculationTimeMS);
-                WriteMessage(process.StandardInput, "stop");
-                await Task.Delay(500);
-                string response = await ReadResponse(process.StandardOutput);
-                compMove = ParseBestMove(response);
-                logger.LogInformation("AI returned move {0} when state was {1}", compMove, gameState.Moves);
-                if (!string.IsNullOrEmpty(compMove) && gameState[compMove[..2]].IsEmpty)
-                {
-                    logger.LogError("AI tried to move empty square {0}, moves were {1}", compMove, gameState.Moves);
-                    compMove = null;
-                }
-                retries++;
-                if (retries > 5)
-                {
-                    throw new ArgumentException("Could not find move in the given response: " + response);
-                }
-            }
+            string moveCommand = "position startpos moves" + moves;
+            WriteMessage(process.StandardInput, moveCommand);
+            WriteMessage(process.StandardInput, "go");
+            await Task.Delay(calculationTimeMS);
+            WriteMessage(process.StandardInput, "stop");
+            string response = await ReadResponse(process.StandardOutput);
+            string compMove = ParseBestMove(response);
             return compMove;
         }
 
