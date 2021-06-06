@@ -8,7 +8,7 @@ namespace ChessChampionWebUI.Models
     public class GameStateModel
     {
         public GameSquare[][] State { get; } = new GameSquare[8][];
-        public StringBuilder Moves { get; } = new();
+        public string Moves { get; set; }
         public bool CanWhiteKingCastleRight { get; set; } = true;
         public bool CanWhiteKingCastleLeft { get; set; } = true;
         public bool CanBlackKingCastleRight { get; set; } = true;

@@ -125,7 +125,7 @@ namespace ChessChampionWebUI.Models
         private async Task<bool> HandleMove(GameSquare endSquare, GameSquare startSquare, PlayerModel player, ILogger logger)
         {
             string move = startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
-            GameState.Moves.Append(' ').Append(move);
+            GameState.Moves += $" {move}";
             ResetBoardStates();
             CheckForWin(player.IsWhite);
             if (Winner != null)
@@ -138,7 +138,7 @@ namespace ChessChampionWebUI.Models
             if (opponent is AIPlayerModel ai)
             {
                 string aimove = await ai.Move(GameState, logger);
-                GameState.Moves.Append(' ').Append(aimove);
+                GameState.Moves += $" {aimove}";
                 CheckForWin(!player.IsWhite);
                 if (Winner != null)
                 {
