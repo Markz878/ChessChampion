@@ -42,8 +42,9 @@ namespace ChessChampionWebUI.Data
             int retries = 0;
             while (string.IsNullOrEmpty(compMove))
             {
-                logger.LogInformation("Given state to AI is {0}", gameState.Moves);
-                await WriteMessage(process.StandardInput, "position startpos moves" + gameState.Moves);
+                string moveCommand = "position startpos moves" + gameState.Moves;
+                logger.LogInformation("Given move command to AI is {0}", moveCommand);
+                await WriteMessage(process.StandardInput, moveCommand);
                 await WriteMessage(process.StandardInput, "go");
                 await Task.Delay(calculationTimeMS);
                 await WriteMessage(process.StandardInput, "stop");
@@ -68,6 +69,7 @@ namespace ChessChampionWebUI.Data
         private static async Task WriteMessage(StreamWriter streamReader, string message)
         {
             await streamReader.WriteLineAsync(message);
+            await streamReader.FlushAsync();
         }
 
         private static string ParseBestMove(string response)
