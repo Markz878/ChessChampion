@@ -1,4 +1,5 @@
 ﻿using ChessChampionWebUI.Models;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -35,7 +36,7 @@ namespace ChessChampionWebUI.Data
             await WriteMessage(process.StandardInput, $"setoption name Skill Level value {difficultyLevel}");
         }
 
-        public async Task<string> GetNextMove(GameStateModel gameState, ushort calculationTimeMS)
+        public async Task<string> GetNextMove(GameStateModel gameState, ushort calculationTimeMS, ILogger logger)
         {
             string compMove = "";
             int retries = 0;
@@ -48,6 +49,11 @@ namespace ChessChampionWebUI.Data
                 await Task.Delay(500);
                 string response = await ReadResponse(process.StandardOutput);
                 compMove = ParseBestMove(response);
+                if (gameState[compMove[..2]].IsEmpty)
+                {
+                    logger.LogError("AI tried to move empty square {0}, moves were {1}", compMove, gameState.Moves);
+                    compMove = null;
+                }
                 retries++;
                 if (retries > 5)
                 {

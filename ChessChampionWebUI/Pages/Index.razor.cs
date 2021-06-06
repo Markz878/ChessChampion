@@ -183,7 +183,7 @@ namespace ChessChampionWebUI.Pages
             Game.GameEnded += Game_OnGameEnded;
             if (!ChooseWhitePieces)
             {
-                string aimove = await ai.Move(Game.GameState);
+                string aimove = await ai.Move(Game.GameState, Logger);
                 Game.GameState.Moves.Append(' ').Append(aimove);
                 Game.IsWhitePlayerTurn = !Game.IsWhitePlayerTurn;
             }

@@ -1,4 +1,6 @@
-﻿using ChessChampionWebUI.Models.Pieces;
+﻿using ChessChampionWebUI.Components;
+using ChessChampionWebUI.Models.Pieces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,7 +35,7 @@ namespace ChessChampionWebUI.Models
             return null;
         }
 
-        public async Task HandleSquareSelect(GameSquare square, PlayerModel player)
+        public async Task HandleSquareSelect(GameSquare square, PlayerModel player, ILogger<ChessBoardComponent> logger)
         {
             if (player.IsWhite != IsWhitePlayerTurn)
             {
@@ -61,7 +63,7 @@ namespace ChessChampionWebUI.Models
                 }
                 else if (square.State == SquareState.Movable)
                 {
-                    bool winnerFound = await HandleMove(square, selectedSquare, player);
+                    bool winnerFound = await HandleMove(square, selectedSquare, player, logger);
                     if (winnerFound)
                     {
                         GameEnded?.Invoke(this, EventArgs.Empty);
@@ -120,7 +122,7 @@ namespace ChessChampionWebUI.Models
             }
         }
 
-        private async Task<bool> HandleMove(GameSquare endSquare, GameSquare startSquare, PlayerModel player)
+        private async Task<bool> HandleMove(GameSquare endSquare, GameSquare startSquare, PlayerModel player, ILogger logger)
         {
             string move = startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
             GameState.Moves.Append(' ').Append(move);
@@ -135,7 +137,7 @@ namespace ChessChampionWebUI.Models
             PlayerModel opponent = player.IsWhite ? BlackPlayer : WhitePlayer;
             if (opponent is AIPlayerModel ai)
             {
-                string aimove = await ai.Move(GameState);
+                string aimove = await ai.Move(GameState, logger);
                 GameState.Moves.Append(' ').Append(aimove);
                 CheckForWin(!player.IsWhite);
                 if (Winner != null)

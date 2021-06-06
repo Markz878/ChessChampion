@@ -1,4 +1,5 @@
 ﻿using ChessChampionWebUI.Data;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -26,9 +27,9 @@ namespace ChessChampionWebUI.Models
             chessAI.Dispose();
         }
 
-        public async Task<string> Move(GameStateModel gameState)
+        public async Task<string> Move(GameStateModel gameState, ILogger logger)
         {
-            string aiMove = await chessAI.GetNextMove(gameState, calculationTime);
+            string aiMove = await chessAI.GetNextMove(gameState, calculationTime, logger);
             GameSquare startSquare = gameState[aiMove[..2]];
             GameSquare endSquare = gameState[aiMove[2..4]];
             try
