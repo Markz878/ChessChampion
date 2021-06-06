@@ -31,9 +31,9 @@ namespace ChessChampionWebUI.Data
             }
         }
 
-        public async Task SetParameters(int difficultyLevel)
+        public void SetParameters(int difficultyLevel)
         {
-            await WriteMessage(process.StandardInput, $"setoption name Skill Level value {difficultyLevel}");
+            WriteMessage(process.StandardInput, $"setoption name Skill Level value {difficultyLevel}");
         }
 
         public async Task<string> GetNextMove(GameStateModel gameState, ushort calculationTimeMS, ILogger logger)
@@ -42,12 +42,13 @@ namespace ChessChampionWebUI.Data
             int retries = 0;
             while (string.IsNullOrEmpty(compMove))
             {
+                await Task.Delay(500);
                 string moveCommand = "position startpos moves" + gameState.Moves;
                 logger.LogInformation("Given move command to AI is {0}", moveCommand);
-                await WriteMessage(process.StandardInput, moveCommand);
-                await WriteMessage(process.StandardInput, "go");
+                WriteMessage(process.StandardInput, moveCommand);
+                WriteMessage(process.StandardInput, "go");
                 await Task.Delay(calculationTimeMS);
-                await WriteMessage(process.StandardInput, "stop");
+                WriteMessage(process.StandardInput, "stop");
                 await Task.Delay(500);
                 string response = await ReadResponse(process.StandardOutput);
                 compMove = ParseBestMove(response);
@@ -66,10 +67,10 @@ namespace ChessChampionWebUI.Data
             return compMove;
         }
 
-        private static async Task WriteMessage(StreamWriter streamReader, string message)
+        private static void WriteMessage(StreamWriter streamReader, string message)
         {
-            await streamReader.WriteLineAsync(message);
-            await streamReader.FlushAsync();
+            streamReader.WriteLine(message);
+            streamReader.Flush();
         }
 
         private static string ParseBestMove(string response)

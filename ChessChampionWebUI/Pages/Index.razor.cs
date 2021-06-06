@@ -173,7 +173,7 @@ namespace ChessChampionWebUI.Pages
             gameCode = null;
             Player = new PlayerModel() { Name = "Player", IsWhite = ChooseWhitePieces };
             AIPlayerModel ai = new();
-            await ai.SetParameters(SkillLevel, ushort.Parse(Configuration["AICalculationTime"]));
+            ai.SetParameters(SkillLevel, ushort.Parse(Configuration["AICalculationTime"]));
             Game = new GameModel()
             {
                 BlackPlayer = ChooseWhitePieces ? ai : Player,
