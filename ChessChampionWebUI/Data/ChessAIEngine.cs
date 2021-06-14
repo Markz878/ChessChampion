@@ -40,6 +40,7 @@ namespace ChessChampionWebUI.Data
                 WriteMessage(process.StandardInput, "stop");
                 string response = await ReadResponse(process.StandardOutput);
                 string compMove = ParseBestMove(response);
+                process.Kill();
                 return compMove;
             }
         }
