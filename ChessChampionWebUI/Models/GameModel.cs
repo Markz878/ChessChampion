@@ -35,7 +35,7 @@ namespace ChessChampionWebUI.Models
             return null;
         }
 
-        public async Task HandleSquareSelect(GameSquare square, PlayerModel player, ILogger<ChessBoardComponent> logger)
+        public async Task HandleSquareSelect(GameSquare square, PlayerModel player, ILogger<ChessBoardComponent> logger, int difficultyLevel)
         {
             if (player.IsWhite != IsWhitePlayerTurn)
             {
@@ -63,7 +63,7 @@ namespace ChessChampionWebUI.Models
                 }
                 else if (square.State == SquareState.Movable)
                 {
-                    bool winnerFound = await HandleMove(square, selectedSquare, player, logger);
+                    bool winnerFound = await HandleMove(square, selectedSquare, player, difficultyLevel, logger);
                     if (winnerFound)
                     {
                         GameEnded?.Invoke(this, EventArgs.Empty);
@@ -75,18 +75,6 @@ namespace ChessChampionWebUI.Models
             {
                 GameEnded?.Invoke(this, EventArgs.Empty);
                 throw;
-            }
-        }
-
-        public void DisposeAI()
-        {
-            if (WhitePlayer is AIPlayerModel aiW)
-            {
-                aiW.Dispose();
-            }
-            if (BlackPlayer is AIPlayerModel aiB)
-            {
-                aiB.Dispose();
             }
         }
 
@@ -122,7 +110,7 @@ namespace ChessChampionWebUI.Models
             }
         }
 
-        private async Task<bool> HandleMove(GameSquare endSquare, GameSquare startSquare, PlayerModel player, ILogger logger)
+        private async Task<bool> HandleMove(GameSquare endSquare, GameSquare startSquare, PlayerModel player, int difficultyLevel, ILogger logger)
         {
             string move = startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
             GameState.Moves += $" {move}";

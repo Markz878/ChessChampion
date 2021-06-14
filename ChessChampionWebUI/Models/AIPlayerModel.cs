@@ -5,26 +5,20 @@ using System.Threading.Tasks;
 
 namespace ChessChampionWebUI.Models
 {
-    public class AIPlayerModel : PlayerModel, IDisposable
+    public class AIPlayerModel : PlayerModel
     {
         private readonly ChessAIEngine chessAI;
         private ushort calculationTime = 3000;
 
-        public AIPlayerModel()
+        public AIPlayerModel(int skillLevel)
         {
             Name = "Computer";
-            chessAI = new();
+            chessAI = new(skillLevel);
         }
 
-        public void SetParameters(int level, ushort calculationTime)
+        public void SetParameters(ushort calculationTime)
         {
-            chessAI.SetParameters(level);
             this.calculationTime = calculationTime;
-        }
-
-        public void Dispose()
-        {
-            chessAI.Dispose();
         }
 
         public async Task<string> Move(GameStateModel gameState, ILogger logger)

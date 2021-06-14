@@ -161,7 +161,6 @@ namespace ChessChampionWebUI.Pages
 
         private void Game_OnGameEnded(object sender, EventArgs e)
         {
-            Game.DisposeAI();
             if (!string.IsNullOrEmpty(gameCode))
             {
                 GamesService.DeleteGame(gameCode);
@@ -172,8 +171,8 @@ namespace ChessChampionWebUI.Pages
         {
             gameCode = null;
             Player = new PlayerModel() { Name = "Player", IsWhite = ChooseWhitePieces };
-            AIPlayerModel ai = new();
-            ai.SetParameters(SkillLevel, ushort.Parse(Configuration["AICalculationTime"]));
+            AIPlayerModel ai = new(SkillLevel);
+            ai.SetParameters(ushort.Parse(Configuration["AICalculationTime"]));
             Game = new GameModel()
             {
                 BlackPlayer = ChooseWhitePieces ? ai : Player,

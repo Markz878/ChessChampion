@@ -1,18 +1,20 @@
-﻿using ChessChampionWebUI.Models;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ChessChampionWebUI.Data
 {
-    public class ChessAIEngine : IDisposable
+    public class ChessAIEngine
     {
-        private readonly Process process;
+        private readonly int difficultyLevel;
 
-        public ChessAIEngine()
+        public ChessAIEngine(int difficultyLevel)
+        {
+            this.difficultyLevel = difficultyLevel;
+        }
+        
+        public async Task<string> GetNextMove(string moves, ushort calculationTimeMS)
         {
             ProcessStartInfo startInfo = new("stockfish_13_win_x64.exe")
             {
@@ -20,7 +22,7 @@ namespace ChessChampionWebUI.Data
                 RedirectStandardOutput = true,
                 UseShellExecute = false
             };
-            process = new()
+            using Process process = new()
             {
                 StartInfo = startInfo
             };
@@ -28,23 +30,18 @@ namespace ChessChampionWebUI.Data
             {
                 throw new FileNotFoundException("Stockfish could not be started");
             }
-        }
-
-        public void SetParameters(int difficultyLevel)
-        {
-            WriteMessage(process.StandardInput, $"setoption name Skill Level value {difficultyLevel}");
-        }
-
-        public async Task<string> GetNextMove(string moves, ushort calculationTimeMS)
-        {
-            string moveCommand = "position startpos moves" + moves;
-            WriteMessage(process.StandardInput, moveCommand);
-            WriteMessage(process.StandardInput, "go");
-            await Task.Delay(calculationTimeMS);
-            WriteMessage(process.StandardInput, "stop");
-            string response = await ReadResponse(process.StandardOutput);
-            string compMove = ParseBestMove(response);
-            return compMove;
+            else
+            {
+                WriteMessage(process.StandardInput, $"setoption name Skill Level value {difficultyLevel}");
+                string moveCommand = "position startpos moves" + moves;
+                WriteMessage(process.StandardInput, moveCommand);
+                WriteMessage(process.StandardInput, "go");
+                await Task.Delay(calculationTimeMS);
+                WriteMessage(process.StandardInput, "stop");
+                string response = await ReadResponse(process.StandardOutput);
+                string compMove = ParseBestMove(response);
+                return compMove;
+            }
         }
 
         private static void WriteMessage(StreamWriter streamReader, string message)
@@ -69,11 +66,6 @@ namespace ChessChampionWebUI.Data
             int x = await streamReader.ReadAsync(buffer, 0, buffer.Length);
             string result = new(buffer);
             return result;
-        }
-
-        public void Dispose()
-        {
-            process.Dispose();
         }
     }
 }

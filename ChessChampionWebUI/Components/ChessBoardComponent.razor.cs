@@ -17,7 +17,7 @@ namespace ChessChampionWebUI.Components
             {
                 try
                 {
-                    await Game.HandleSquareSelect(square, Player, Logger);
+                    await Game.HandleSquareSelect(square, Player, Logger, 10);
                 }
                 catch (Exception ex)
                 {
