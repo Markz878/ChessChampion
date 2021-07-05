@@ -4,13 +4,13 @@
 
 @if (Game == null)
 {
-    <ChooseOptionComponent Title="Play Vs Human Or Computer" TextWidth="280px" LeftText="Human" RightText="Computer" LeftSelected="ChoosePlayVsHuman" />
+    <ChooseOptionComponent Title="Play Vs Human Or Computer" TextWidth="280px" LeftText="Human" RightText="Computer" IsLeftSelected="PlayVsMode==PlayVsMode.PlayVsHuman" LeftSelected="ChoosePlayVsHuman" />
     @if (PlayVsMode == PlayVsMode.PlayVsHuman)
     {
-        <ChooseOptionComponent Title="Choose How To Connect To A Game" TextWidth="280px" LeftText="Create a game" RightText="Join a game" LeftSelected="CreateGameSelectionHandler" />
+        <ChooseOptionComponent Title="Choose How To Connect To A Game" TextWidth="280px" LeftText="Create a game" RightText="Join a game" IsLeftSelected="JoinGameMode==JoinGameMode.CreateGame" LeftSelected="CreateGameSelectionHandler" />
         @if (JoinGameMode == JoinGameMode.CreateGame)
         {
-            <ChooseOptionComponent Title="Choose White Or Black Pieces" TextWidth="280px" LeftText="White" RightText="Black" LeftSelected="SelectWhitePieces" />
+            <ChooseOptionComponent Title="Choose White Or Black Pieces" TextWidth="280px" LeftText="White" RightText="Black" IsLeftSelected="ChooseWhitePieces" LeftSelected="SelectWhitePieces" />
             <EditForm Model="CreateGameForm" class="form-group" OnValidSubmit="CreateGame">
                 <DataAnnotationsValidator />
                 <ValidationSummary />

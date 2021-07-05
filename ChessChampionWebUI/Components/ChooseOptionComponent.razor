@@ -11,7 +11,7 @@
     [Parameter] public bool IsDisabled { get; set; }
     [Parameter] public string TextWidth { get; set; }
     [Parameter] public EventCallback<bool> LeftSelected { get; set; }
-    public bool IsLeftSelected { get; set; } = true;
+    [Parameter] public bool IsLeftSelected { get; set; } = true;
 
     string leftButtonActive => IsLeftSelected ? "activeButton" : "";
     string rightButtonActive => !IsLeftSelected ? "activeButton" : "";
