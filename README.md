@@ -4,5 +4,5 @@ Chess site, where players can play vs Stockfish 13 engine or against other playe
 
 Project hosted at https://chesschampion.azurewebsites.net
 
-Due to poor hosting the chess engine won't be able to calculate a move on time,
-but locally and using a better hosting works fine.
+Due to free(poor) hosting the chess engine might not be able to calculate a move on time,
+but locally and using a better hosting the AI works fine.
