@@ -45,10 +45,10 @@ namespace ChessChampionWebUI.Data
             }
         }
 
-        private static void WriteMessage(StreamWriter streamReader, string message)
+        private static void WriteMessage(StreamWriter streamWriter, string message)
         {
-            streamReader.WriteLine(message);
-            streamReader.Flush();
+            streamWriter.WriteLine(message);
+            streamWriter.Flush();
         }
 
         private static string ParseBestMove(string response)
