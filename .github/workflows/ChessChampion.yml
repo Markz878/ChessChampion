@@ -8,7 +8,7 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: ChessChampionWebUI/publish
   AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.ChessChampion_bb21 }}
   CONFIGURATION: Release
-  DOTNET_CORE_VERSION: 5.0.x
+  DOTNET_CORE_VERSION: 7.0.x
   WORKING_DIRECTORY: ChessChampionWebUI
 jobs:
   build-and-deploy:
