@@ -10,10 +10,10 @@ namespace ChessChampionWebUI.Models
         private readonly ChessAIEngine chessAI;
         private ushort calculationTime = 3000;
 
-        public AIPlayerModel(int skillLevel)
+        public AIPlayerModel(int skillLevel, string engineFileName)
         {
             Name = "Computer";
-            chessAI = new(skillLevel);
+            chessAI = new(skillLevel, engineFileName);
         }
 
         public void SetParameters(ushort calculationTime)
@@ -27,7 +27,7 @@ namespace ChessChampionWebUI.Models
             int retries = 0;
             while (string.IsNullOrEmpty(aiMove))
             {
-                logger.LogInformation("Given moves to AI is {0}", gameState.Moves);
+                logger.LogInformation("Given moves to AI are {0}", gameState.Moves);
                 aiMove = await chessAI.GetNextMove(gameState.Moves, calculationTime);
                 logger.LogInformation("AI returned move {0}", aiMove);
 
@@ -49,6 +49,13 @@ namespace ChessChampionWebUI.Models
                 else if (!RulesService.IsPlayerPiece(startSquare.Piece.Marker, IsWhite))
                 {
                     logger.LogError("AI tried to move opponent square {0}", startSquare.ChessCoordinate);
+                    aiMove = null;
+                    retries++;
+                    continue;
+                }
+                else if (endSquare.Piece != null && RulesService.IsPlayerPiece(endSquare.Piece.Marker, IsWhite))
+                {
+                    logger.LogError("AI tried to eat it's own piece at {0}", endSquare.ChessCoordinate);
                     aiMove = null;
                     retries++;
                     continue;

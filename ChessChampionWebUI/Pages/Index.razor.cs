@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace ChessChampionWebUI.Pages
 {
-    public partial class Index : IDisposable
+    public sealed partial class Index : IDisposable
     {
         [Inject] public GamesService GamesService { get; set; }
         [Inject] public IJSRuntime JS { get; set; }
         [Inject] public IConfiguration Configuration { get; set; }
-        [Inject] public ILogger<Index> Logger { get; set; } 
+        [Inject] public ILogger<Index> Logger { get; set; }
         public GameModel Game { get; set; }
         public CreateGameFormModel CreateGameForm { get; set; } = new();
         public JoinGameFormModel JoinGameForm { get; set; } = new();
@@ -33,7 +33,7 @@ namespace ChessChampionWebUI.Pages
 
         protected override void OnInitialized()
         {
-            if (!File.Exists("stockfish_13_win_x64.exe"))
+            if (!File.Exists(Configuration["EngineFileName"]))
             {
                 throw new FileNotFoundException("Stockfish engine not found");
             }
@@ -41,7 +41,7 @@ namespace ChessChampionWebUI.Pages
 
         private async Task ResetState()
         {
-            if (Game!=null && await JS.InvokeAsync<bool>("confirm", "Leave game?"))
+            if (Game != null && await JS.InvokeAsync<bool>("confirm", "Leave game?"))
             {
                 Game.Winner = Player.IsWhite ? Game.BlackPlayer : Game.WhitePlayer;
                 Game.OnGameEnded();
@@ -87,7 +87,7 @@ namespace ChessChampionWebUI.Pages
 
         private async void Game_OnStateChanged(object sender, EventArgs e)
         {
-            await InvokeAsync(() => StateHasChanged());
+            await InvokeAsync(StateHasChanged);
         }
 
         private void ChoosePlayVsHuman(bool playVsHuman)
@@ -171,7 +171,7 @@ namespace ChessChampionWebUI.Pages
         {
             gameCode = null;
             Player = new PlayerModel() { Name = "Player", IsWhite = ChooseWhitePieces };
-            AIPlayerModel ai = new(SkillLevel);
+            AIPlayerModel ai = new(SkillLevel, Configuration["EngineFileName"]);
             ai.SetParameters(ushort.Parse(Configuration["AICalculationTime"]));
             Game = new GameModel()
             {
@@ -190,7 +190,7 @@ namespace ChessChampionWebUI.Pages
 
         public void Dispose()
         {
-            if (Game!=null)
+            if (Game != null)
             {
                 Game.StateChanged -= Game_OnStateChanged;
                 Game.GameEnded -= Game_OnGameEnded;
