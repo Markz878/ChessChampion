@@ -1,0 +1,70 @@
+﻿@page "/"
+
+<h1 id="main-logo" @onclick="ResetState">Chess Champion</h1>
+
+@if (Game == null)
+{
+    <ChooseOptionComponent Title="Play Vs Human Or Computer" TextWidth="280px" LeftText="Human" RightText="Computer" IsLeftSelected="PlayVsMode==PlayVsMode.PlayVsHuman" LeftSelected="ChoosePlayVsHuman" />
+    @if (PlayVsMode == PlayVsMode.PlayVsHuman)
+    {
+        <ChooseOptionComponent Title="Choose How To Connect To A Game" TextWidth="280px" LeftText="Create a game" RightText="Join a game" IsLeftSelected="JoinGameMode==JoinGameMode.CreateGame" LeftSelected="CreateGameSelectionHandler" />
+        @if (JoinGameMode == JoinGameMode.CreateGame)
+        {
+            <ChooseOptionComponent Title="Choose White Or Black Pieces" TextWidth="280px" LeftText="White" RightText="Black" IsLeftSelected="ChooseWhitePieces" LeftSelected="SelectWhitePieces" />
+            <EditForm Model="CreateGameForm" class="form-group" OnValidSubmit="CreateGame">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <label for="user-name-1">Your Game Name:</label>
+                <InputText DisplayName="User name" id="user-name-1" class="form-control" @bind-Value="@CreateGameForm.UserName" />
+                <button type="submit" class="btn btn-primary">Create a game</button>
+            </EditForm>
+
+        }
+        else
+        {
+            <EditForm Model="JoinGameForm" OnValidSubmit="JoinGame">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <label for="user-name-2">Your Game Name:</label>
+                <InputText DisplayName="Game name" id="user-name-2" class="form-control" @bind-Value="@JoinGameForm.UserName" />
+                <label for="game-code-2">Game code from your friend:</label>
+                <InputText DisplayName="Game code" class="form-control" @bind-Value="@JoinGameForm.GameCode" />
+                <button type="submit" class="btn btn-primary">Join game</button>
+            </EditForm>
+            <div class="turn-text">@StatusMessage</div>
+        }
+    }
+    else
+    {
+        <ChooseOptionComponent IsDisabled="false" Title="Choose white or black pieces" TextWidth="280px" LeftText="White" RightText="Black" LeftSelected="SelectWhitePieces" />
+        <SliderComponent Description="Select skill level:" Min="0" Max="20" Value="@SkillLevel" ValueChangedHandler="(x) => SkillLevel = x" />
+        <button class="btn btn-primary" @onclick="StartGameVsComputer">Start game</button>
+    }
+}
+else
+{
+    if (Game.BlackPlayer == null || Game.WhitePlayer == null)
+    {
+        @if (!string.IsNullOrEmpty(CreateGameForm.GameCode))
+        {
+            <div class="turn-text">You game code is:</div>
+            <div class="turn-text game-code">@CreateGameForm.GameCode</div>
+        }
+        <div class="turn-text">@StatusMessage</div>
+    }
+    else
+    {
+    <div class="game-content-wrapper">
+        <div class="board-wrapper">
+            <div class="turn-text @GetStatusTextColor()">@GetStatusText()</div>
+            <div class="player-name">@(Game.BlackPlayer.Name)</div>
+            <ChessBoardComponent Game="Game" Player="@Player" />
+            <div class="player-name">@(Game.WhitePlayer.Name)</div>
+        </div>
+        <div class="moves-wrapper">
+            <div class="player-name">Move list:</div>
+            <div class="moves">@Game.GameState.Moves</div>
+        </div>
+    </div>
+    }
+}

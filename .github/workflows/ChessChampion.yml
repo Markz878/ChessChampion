@@ -1,0 +1,27 @@
+name: Build and deploy .NET Core app to Windows WebApp ChessChampion
+on:
+  push:
+    branches:
+    - master
+env:
+  AZURE_WEBAPP_NAME: ChessChampion
+  AZURE_WEBAPP_PACKAGE_PATH: ChessChampionWebUI/publish
+  DOTNET_CORE_VERSION: 7.0.x
+  WORKING_DIRECTORY: ChessChampionWebUI
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+    - name: Publish
+      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" -c Release -o "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        publish-profile: ${{ secrets.ChessChampion_bb21 }}

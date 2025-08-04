@@ -1,0 +1,56 @@
+﻿#main-logo {
+    cursor: pointer;
+    background-image: url("horizontal-board.jpg");
+    border: 8px solid rgb(100,50,20);
+    border-radius: 40px;
+    padding: 1rem;
+    font-family: "Lucida Handwriting";
+}
+
+.game-content-wrapper{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.board-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+}
+
+.turn-text {
+    font-size: clamp(16px, 4vw, 24px);
+    font-weight: bold;
+    margin: 1rem;
+}
+
+.player-turn-color{
+    color: green;
+}
+
+.opponent-turn-color {
+    color: darkslategray;
+}
+
+.game-code {
+    color: blue;
+}
+
+.player-name {
+    font-weight: bold;
+    font-size: clamp(12px, 3vw, 18px);
+}
+
+.moves-wrapper {
+    margin: 1rem;
+    padding: 1rem;
+    width: max(30vw, 400px);
+    margin-inline: auto;
+}
+
+.moves {
+    margin-top: 1.7rem;
+    background-color: whitesmoke;
+    padding: 1rem;
+}

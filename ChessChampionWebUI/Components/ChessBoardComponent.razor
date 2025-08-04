@@ -1,0 +1,20 @@
+﻿<div id="chess-board">
+    @for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            if (i == 8 && j < 8)
+            {
+                <span class="text-square">@char.ConvertFromUtf32(97 + j)</span>
+            }
+            else if (j == 8 && i < 8)
+            {
+                <span class="text-square">@(8-i)</span>
+            }
+            else if(j<8 && i<8)
+            {
+                <ChessSquareComponent Square="Game.GameState.State[i][j]" HandleClickCallback="HandleClick" />
+            }
+        }
+    }
+</div>

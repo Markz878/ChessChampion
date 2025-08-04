@@ -1,0 +1,18 @@
+﻿.container {
+    margin: 1rem;
+    display: flex;
+    flex-direction: row;
+}
+
+.description {
+    font-weight: bold;
+}
+
+.slider {
+    margin: 0 10px 10px 10px;
+}
+
+.value {
+    font-weight: bold;
+    width: 4rem;
+}
