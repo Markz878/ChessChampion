@@ -1,21 +1,5 @@
 ﻿<div class="container">
     <span class="description">@Description</span>
-    <input class="slider" type="range" min="@Min" max="@Max" value="@Value" @oninput="@((e)=>ValueChanged(e.Value.ToString()))" />
+    <input class="slider" type="range" min="@Min" max="@Max" value="@Value" @oninput="@((e)=>ValueChanged(e.Value?.ToString()))" />
     <span class="value">@Value</span>
 </div>
-
-
-@code {
-    [Parameter] public string Description { get; set; }
-    [Parameter] public int Min { get; set; }
-    [Parameter] public int Max { get; set; }
-    [Parameter] public int Value { get; set; }
-    [Parameter] public EventCallback<int> ValueChangedHandler { get; set; }
-
-    private async Task ValueChanged(string value)
-    {
-        int num = int.Parse(value);
-        Value = num;
-        await ValueChangedHandler.InvokeAsync(num);
-    }
-}

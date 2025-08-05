@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ChessChampionWebUI.Models
+namespace ChessChampionWebUI.Models;
+
+public class CreateGameFormModel
 {
-    public class CreateGameFormModel
-    {
-        [Required]
-        [MinLength(3)]
-        public string UserName { get; set; }
-        public string GameCode { get; set; }
-    }
+    [Required]
+    [MinLength(3)]
+    public string? UserName { get; set; }
+    public string? GameCode { get; set; }
 }

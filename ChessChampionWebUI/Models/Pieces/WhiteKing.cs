@@ -1,39 +1,31 @@
-﻿using System.Collections.Generic;
-using static ChessChampionWebUI.Data.RulesService;
+﻿using static ChessChampionWebUI.Data.RulesService;
 
-namespace ChessChampionWebUI.Models.Pieces
+namespace ChessChampionWebUI.Models.Pieces;
+
+public class WhiteKing() : ChessPiece("♔", true)
 {
-    public class WhiteKing : ChessPiece
+    public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, int x, int y)
     {
-        public WhiteKing()
-        {
-            Marker = "♔";
-            IsWhite = true;
-        }
+        return GetKingThreatSquares(gameState, x, y, this);
+    }
 
-        public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, GameSquare square)
-        {
-            return GetKingThreatSquares(gameState, square);
-        }
+    public override IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, int x, int y)
+    {
+        return GetKingMovableSquares(gameState, x, y, this);
+    }
 
-        public override IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, GameSquare square)
+    public override string HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
+    {
+        if (startSquare.ChessCoordinate == "e1" && endSquare.ChessCoordinate == "g1")
         {
-            return GetKingMovableSquares(gameState, square);
+            gameState["h1"].Piece?.HandleMove(gameState, gameState["h1"], gameState["f1"]);
         }
-
-        public override string HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
+        else if (startSquare.ChessCoordinate == "e1" && endSquare.ChessCoordinate == "c1")
         {
-            if (startSquare.ChessCoordinate == "e1" && endSquare.ChessCoordinate == "g1")
-            {
-                gameState["h1"].Piece.HandleMove(gameState, gameState["h1"], gameState["f1"]);
-            }
-            else if (startSquare.ChessCoordinate == "e1" && endSquare.ChessCoordinate == "c1")
-            {
-                gameState["a1"].Piece.HandleMove(gameState, gameState["a1"], gameState["d1"]);
-            }
-            gameState.CanWhiteKingCastleRight = false;
-            gameState.CanWhiteKingCastleLeft = false;
-            return base.HandleMove(gameState, startSquare, endSquare);
+            gameState["a1"].Piece?.HandleMove(gameState, gameState["a1"], gameState["d1"]);
         }
+        gameState.CanWhiteKingCastleRight = false;
+        gameState.CanWhiteKingCastleLeft = false;
+        return base.HandleMove(gameState, startSquare, endSquare);
     }
 }

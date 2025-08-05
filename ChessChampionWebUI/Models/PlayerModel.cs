@@ -1,8 +1,7 @@
-﻿namespace ChessChampionWebUI.Models
+﻿namespace ChessChampionWebUI.Models;
+
+public class PlayerModel(string name, bool isWhite)
 {
-    public class PlayerModel
-    {
-        public string Name { get; set; }
-        public bool IsWhite { get; set; }
-    }
+    public string Name { get; set; } = name;
+    public bool IsWhite { get; set; } = isWhite;
 }

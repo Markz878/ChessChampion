@@ -1,37 +1,29 @@
-﻿using System.Collections.Generic;
-using static ChessChampionWebUI.Data.RulesService;
+﻿using static ChessChampionWebUI.Data.RulesService;
 
-namespace ChessChampionWebUI.Models.Pieces
+namespace ChessChampionWebUI.Models.Pieces;
+
+public class BlackTower() : ChessPiece("♜", false)
 {
-    public class BlackTower : ChessPiece
+    public override IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, int x, int y)
     {
-        public BlackTower()
-        {
-            Marker = "♜";
-            IsWhite = false;
-        }
+        return GetTowerMovableSquares(gameState, x, y, this);
+    }
 
-        public override IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, GameSquare square)
-        {
-            return GetTowerMovableSquares(gameState, square);
-        }
+    public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, int x, int y)
+    {
+        return GetTowerThreatSquares(gameState, x, y, this);
+    }
 
-        public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, GameSquare square)
+    public override string HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
+    {
+        if (startSquare.ChessCoordinate == "a8")
         {
-            return GetTowerThreatSquares(gameState, square);
+            gameState.CanBlackKingCastleLeft = false;
         }
-
-        public override string HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
+        else if (startSquare.ChessCoordinate == "h8")
         {
-            if (startSquare.ChessCoordinate == "a8")
-            {
-                gameState.CanBlackKingCastleLeft = false;
-            }
-            else if (startSquare.ChessCoordinate == "h8")
-            {
-                gameState.CanBlackKingCastleRight = false;
-            }
-            return base.HandleMove(gameState, startSquare, endSquare);
+            gameState.CanBlackKingCastleRight = false;
         }
+        return base.HandleMove(gameState, startSquare, endSquare);
     }
 }

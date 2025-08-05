@@ -1,44 +1,36 @@
-﻿using System.Collections.Generic;
-using static ChessChampionWebUI.Data.RulesService;
+﻿using static ChessChampionWebUI.Data.RulesService;
 
-namespace ChessChampionWebUI.Models.Pieces
+namespace ChessChampionWebUI.Models.Pieces;
+
+public class BlackPawn() : ChessPiece("♟︎", false)
 {
-    public class BlackPawn : ChessPiece
+    public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, int x, int y)
     {
-        public BlackPawn()
-        {
-            Marker = "♟︎";
-            IsWhite = false;
-        }
+        return GetBlackPawnThreatSquares(gameState, x, y);
+    }
 
-        public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, GameSquare square)
-        {
-            return GetBlackPawnThreatSquares(gameState, square);
-        }
+    public override IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, int x, int y)
+    {
+        return GetBlackPawnMovableSquares(gameState, x, y, this);
+    }
 
-        public override IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, GameSquare square)
+    public override string HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
+    {
+        if (endSquare.Y == 7)
         {
-            return GetBlackPawnMovableSquares(gameState, square);
-        }
-
-        public override string HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
-        {
-            if (endSquare.Y == 7)
+            foreach (GameSquare square in gameState.GetSquares())
             {
-                foreach (var square in gameState.GetSquares())
-                {
-                    square.WasPreviousMove = false;
-                }
-                startSquare.Piece = null;
-                endSquare.Piece = new BlackQueen();
-                startSquare.WasPreviousMove = true;
-                endSquare.WasPreviousMove = true;
-                return startSquare.ChessCoordinate + endSquare.ChessCoordinate + "q";
+                square.WasPreviousMove = false;
             }
-            else
-            {
-                return base.HandleMove(gameState, startSquare, endSquare);
-            }
+            startSquare.Piece = null;
+            endSquare.Piece = new BlackQueen();
+            startSquare.WasPreviousMove = true;
+            endSquare.WasPreviousMove = true;
+            return startSquare.ChessCoordinate + endSquare.ChessCoordinate + "q";
+        }
+        else
+        {
+            return base.HandleMove(gameState, startSquare, endSquare);
         }
     }
 }

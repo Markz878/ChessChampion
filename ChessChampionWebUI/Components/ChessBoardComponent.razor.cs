@@ -1,29 +1,25 @@
 ﻿using ChessChampionWebUI.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
 
-namespace ChessChampionWebUI.Components
+namespace ChessChampionWebUI.Components;
+
+public partial class ChessBoardComponent
 {
-    public partial class ChessBoardComponent
+    [Parameter][EditorRequired] public required GameModel Game { get; set; }
+    [Parameter][EditorRequired] public required PlayerModel Player { get; set; }
+    [Inject] public required ILogger<ChessBoardComponent> Logger { get; set; }
+    public async Task HandleClick(GameSquare square)
     {
-        [Parameter] public GameModel Game { get; set; }
-        [Parameter] public PlayerModel Player { get; set; }
-        [Inject] public ILogger<ChessBoardComponent> Logger { get; set; }
-        public async Task HandleClick(GameSquare square)
+        if (Game.Winner == null)
         {
-            if (Game.Winner == null)
+            try
             {
-                try
-                {
-                    await Game.HandleSquareSelect(square, Player, Logger, 10);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex.Message);
-                    throw;
-                }
+                await Game.HandleSquareSelect(square, Player, Logger);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                throw;
             }
         }
     }

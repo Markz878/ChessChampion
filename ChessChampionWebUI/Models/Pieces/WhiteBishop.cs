@@ -1,24 +1,16 @@
-﻿using System.Collections.Generic;
-using static ChessChampionWebUI.Data.RulesService;
+﻿using static ChessChampionWebUI.Data.RulesService;
 
-namespace ChessChampionWebUI.Models.Pieces
+namespace ChessChampionWebUI.Models.Pieces;
+
+public class WhiteBishop() : ChessPiece("♗", true)
 {
-    public class WhiteBishop : ChessPiece
+    public override IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, int x, int y)
     {
-        public WhiteBishop()
-        {
-            Marker = "♗";
-            IsWhite = true;
-        }
+        return GetBishopMovableSquares(gameState, x, y, this);
+    }
 
-        public override IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, GameSquare square)
-        {
-            return GetBishopMovableSquares(gameState, square);
-        }
-
-        public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, GameSquare square)
-        {
-            return GetBishopThreatSquares(gameState, square);
-        }
+    public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, int x, int y)
+    {
+        return GetBishopThreatSquares(gameState, x, y, this);
     }
 }

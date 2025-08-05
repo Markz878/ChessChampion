@@ -1,29 +1,28 @@
-﻿namespace ChessChampionWebUI.Models
+﻿namespace ChessChampionWebUI.Models;
+
+public enum PlayVsMode
 {
-    public enum PlayVsMode
-    {
-        PlayVsComputer,
-        PlayVsHuman
-    }
-    
-    public enum JoinGameMode
-    {
-        CreateGame,
-        JoinGame
-    }
+    PlayVsComputer,
+    PlayVsHuman
+}
 
-    public enum SquareBlockState
-    {
-        Available,
-        OutOfBounds,
-        OwnPiece,
-        OpponentPiece
-    }
+public enum JoinGameMode
+{
+    CreateGame,
+    JoinGame
+}
 
-    public enum SquareState
-    {
-        Normal,
-        Selected,
-        Movable
-    }
+public enum SquareBlockState
+{
+    Available,
+    OutOfBounds,
+    OwnPiece,
+    OpponentPiece
+}
+
+public enum SquareState
+{
+    Normal,
+    Selected,
+    Movable
 }
