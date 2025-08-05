@@ -1,27 +1,43 @@
 name: Build and deploy .NET Core app to Windows WebApp ChessChampion
+
+permissions:
+  id-token: write
+  contents: read
+
 on:
   push:
     branches:
     - master
-env:
-  AZURE_WEBAPP_NAME: ChessChampion
-  AZURE_WEBAPP_PACKAGE_PATH: ChessChampionWebUI/publish
-  DOTNET_CORE_VERSION: 7.0.x
-  WORKING_DIRECTORY: ChessChampionWebUI
+  workflow_dispatch:
+
 jobs:
   build-and-deploy:
     runs-on: windows-latest
+    env:
+      AZURE_WEBAPP_NAME: ChessChampion
+      AZURE_WEBAPP_PACKAGE_PATH: ChessChampionWebUI/publish
+      DOTNET_CORE_VERSION: 9.0.x
+      WORKING_DIRECTORY: ChessChampionWebUI
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-    - name: Publish
-      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" -c Release -o "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
-    - name: Deploy to Azure WebApp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        publish-profile: ${{ secrets.ChessChampion_bb21 }}
+      - name: Checkout master
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+
+      - name: Deploy Azure Infra
+        run: >
+          az deployment group create --resource-group ${{ secrets.AZURE_RG }} 
+          --template-file Infrastructure/main.bicep 
+          --parameters webSiteName=${{ env.AZURE_WEBAPP_NAME }}
+
+      - name: Publish
+        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" -c Release -o "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+
+      - name: Deploy to Azure WebApp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
