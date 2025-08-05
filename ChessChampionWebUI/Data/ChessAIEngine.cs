@@ -55,7 +55,7 @@ public sealed partial class ChessAIEngine : IDisposable
     private static string ParseBestMove(string response)
     {
         const string marker = "bestmove ";
-        int indexOfBestMove = response.IndexOf(marker, 1000);
+        int indexOfBestMove = response.LastIndexOf(marker);
         if (indexOfBestMove < 0)
         {
             return string.Empty;
