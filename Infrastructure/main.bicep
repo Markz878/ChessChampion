@@ -3,11 +3,6 @@ param location string = resourceGroup().location
 param webSiteName string
 param sku string = 'F1'
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
-  name: 'mid-${webSiteName}'
-  location: 'northeurope'
-}
-
 resource appServicePlan 'Microsoft.Web/serverfarms@2024-11-01' = {
   name: '${webSiteName}Plan'
   location: location
