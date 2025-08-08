@@ -18,7 +18,7 @@ public class AIPlayerModel(int skillLevel, string engineFileName) : PlayerModel(
         int retries = 0;
         while (string.IsNullOrEmpty(aiMove))
         {
-            logger.LogInformation("Given moves to AI are {Moves}", gameState.Moves);
+            logger.LogInformation("Given moves to AI are{Moves}", gameState.Moves);
             aiMove = await chessAI.GetNextMove(gameState.Moves, calculationTime);
             logger.LogInformation("AI returned move {AiMove}", aiMove);
 

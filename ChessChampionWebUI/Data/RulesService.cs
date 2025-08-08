@@ -25,9 +25,9 @@ public static class RulesService
 
     public static IEnumerable<GameSquare> GetKingThreatSquares(GameStateModel gameState, int x, int y, ChessPiece piece)
     {
-        for (int i = -1; i < 2; i++)
+        for (int i = -1; i <= 1; i++)
         {
-            for (int j = -1; j < 2; j++)
+            for (int j = -1; j <= 1; j++)
             {
                 if (!(i == 0 && j == 0) && GetSquareBlockState(gameState, x + i, y + j, piece.IsWhite).CanThreaten())
                 {
@@ -39,9 +39,9 @@ public static class RulesService
 
     public static IEnumerable<GameSquare> GetKingMovableSquares(GameStateModel gameState, int x, int y, ChessPiece piece)
     {
-        for (int i = -1; i < 2; i++)
+        for (int i = -1; i <= 1; i++)
         {
-            for (int j = -1; j < 2; j++)
+            for (int j = -1; j <= 1; j++)
             {
                 if (!(i == 0 && j == 0) && GetSquareBlockState(gameState, x + i, y + j, piece.IsWhite).CanMoveTo() && !IsKingMovingToOpponentThreatSquare(gameState, gameState[y][x], gameState[y + j][x + i]))
                 {
@@ -51,22 +51,22 @@ public static class RulesService
         }
         if (piece.IsWhite && !IsInOpponentThreatSquare(gameState, x, y, piece.IsWhite))
         {
-            if (gameState.CanWhiteKingCastleLeft && gameState["d1"].IsEmpty && gameState["c1"].IsEmpty && gameState["b1"].IsEmpty && !IsInOpponentThreatSquare(gameState, 7, 3, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 7, 2, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 7, 1, piece.IsWhite))
+            if (gameState.CanWhiteKingCastleLeft && gameState["d1"].IsEmpty && gameState["c1"].IsEmpty && gameState["b1"].IsEmpty && !IsInOpponentThreatSquare(gameState, 3, 0, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 2, 0, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 1, 0, piece.IsWhite))
             {
                 yield return gameState[y][x - 2];
             }
-            if (gameState.CanWhiteKingCastleRight && gameState["f1"].IsEmpty && gameState["g1"].IsEmpty && !IsInOpponentThreatSquare(gameState, 7, 5, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 7, 6, piece.IsWhite))
+            if (gameState.CanWhiteKingCastleRight && gameState["f1"].IsEmpty && gameState["g1"].IsEmpty && !IsInOpponentThreatSquare(gameState, 5, 0, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 6, 0, piece.IsWhite))
             {
                 yield return gameState[y][x + 2];
             }
         }
         if (!piece.IsWhite && !IsInOpponentThreatSquare(gameState, x, y, piece.IsWhite))
         {
-            if (gameState.CanBlackKingCastleLeft && gameState["d8"].IsEmpty && gameState["c8"].IsEmpty && gameState["b8"].IsEmpty && !IsInOpponentThreatSquare(gameState, 0, 3, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 0, 2, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 0, 1, piece.IsWhite))
+            if (gameState.CanBlackKingCastleLeft && gameState["d8"].IsEmpty && gameState["c8"].IsEmpty && gameState["b8"].IsEmpty && !IsInOpponentThreatSquare(gameState, 3, 7, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 2, 7, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 1, 7, piece.IsWhite))
             {
                 yield return gameState[y][x - 2];
             }
-            if (gameState.CanBlackKingCastleRight && gameState["f8"].IsEmpty && gameState["g8"].IsEmpty && !IsInOpponentThreatSquare(gameState, 0, 5, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 0, 6, piece.IsWhite))
+            if (gameState.CanBlackKingCastleRight && gameState["f8"].IsEmpty && gameState["g8"].IsEmpty && !IsInOpponentThreatSquare(gameState, 5, 7, piece.IsWhite) && !IsInOpponentThreatSquare(gameState, 6, 7, piece.IsWhite))
             {
                 yield return gameState[y][x + 2];
             }
@@ -118,67 +118,67 @@ public static class RulesService
 
     public static IEnumerable<GameSquare> GetBlackPawnThreatSquares(GameStateModel gameState, int x, int y)
     {
-        if (GetSquareBlockState(gameState, x - 1, y + 1, false).CanThreaten())
+        if (GetSquareBlockState(gameState, x - 1, y - 1, false).CanThreaten())
         {
-            yield return gameState[y + 1][x - 1];
+            yield return gameState[y - 1][x - 1];
 
         }
-        if (GetSquareBlockState(gameState, x + 1, y + 1, false).CanThreaten())
+        if (GetSquareBlockState(gameState, x + 1, y - 1, false).CanThreaten())
         {
-            yield return gameState[y + 1][x + 1];
+            yield return gameState[y - 1][x + 1];
         }
     }
 
     public static IEnumerable<GameSquare> GetBlackPawnMovableSquares(GameStateModel gameState, int x, int y, ChessPiece piece)
     {
-        if (GetSquareBlockState(gameState, x, y + 1, false) == SquareBlockState.Available && !IsKingThreatened(gameState, x, y, piece, x, y + 1))
+        if (GetSquareBlockState(gameState, x, y - 1, false) == SquareBlockState.Available && !IsKingThreatened(gameState, x, y, piece, x, y - 1))
         {
-            yield return gameState[y + 1][x];
+            yield return gameState[y - 1][x];
         }
-        if (GetSquareBlockState(gameState, x - 1, y + 1, false) == SquareBlockState.OpponentPiece && !IsKingThreatened(gameState, x, y, piece, x - 1, y + 1))
+        if (GetSquareBlockState(gameState, x - 1, y - 1, false) == SquareBlockState.OpponentPiece && !IsKingThreatened(gameState, x, y, piece, x - 1, y - 1))
         {
-            yield return gameState[y + 1][x - 1];
+            yield return gameState[y - 1][x - 1];
         }
-        if (GetSquareBlockState(gameState, x + 1, y + 1, false) == SquareBlockState.OpponentPiece && !IsKingThreatened(gameState, x, y, piece, x + 1, y + 1))
+        if (GetSquareBlockState(gameState, x + 1, y - 1, false) == SquareBlockState.OpponentPiece && !IsKingThreatened(gameState, x, y, piece, x + 1, y - 1))
         {
-            yield return gameState[y + 1][x + 1];
+            yield return gameState[y - 1][x + 1];
         }
-        if (y == 1 && GetSquareBlockState(gameState, x, y + 1, false) == SquareBlockState.Available && GetSquareBlockState(gameState, x, y + 2, false) == SquareBlockState.Available && !IsKingThreatened(gameState, x, y, piece, x, y + 2))
+        if (y == 6 && GetSquareBlockState(gameState, x, y - 1, false) == SquareBlockState.Available && GetSquareBlockState(gameState, x, y - 2, false) == SquareBlockState.Available && !IsKingThreatened(gameState, x, y, piece, x, y - 2))
         {
-            yield return gameState[y + 2][x];
+            yield return gameState[y - 2][x];
         }
     }
 
     public static IEnumerable<GameSquare> GetWhitePawnThreatSquares(GameStateModel gameState, int x, int y)
     {
-        if (GetSquareBlockState(gameState, x - 1, y - 1, true).CanThreaten())
+        if (GetSquareBlockState(gameState, x - 1, y + 1, true).CanThreaten())
         {
-            yield return gameState[y - 1][x - 1];
+            yield return gameState[y + 1][x - 1];
 
         }
-        if (GetSquareBlockState(gameState, x + 1, y - 1, true).CanThreaten())
+        if (GetSquareBlockState(gameState, x + 1, y + 1, true).CanThreaten())
         {
-            yield return gameState[y - 1][x + 1];
+            yield return gameState[y + 1][x + 1];
         }
     }
 
     public static IEnumerable<GameSquare> GetWhitePawnMovableSquares(GameStateModel gameState, int x, int y, ChessPiece piece)
     {
-        if (GetSquareBlockState(gameState, x, y - 1, true) == SquareBlockState.Available && !IsKingThreatened(gameState, x, y, piece, y - 1, x))
+        if (GetSquareBlockState(gameState, x, y + 1, true) == SquareBlockState.Available && !IsKingThreatened(gameState, x, y, piece, x, y + 1))
         {
-            yield return gameState[y - 1][x];
+            yield return gameState[y + 1][x];
         }
-        if (GetSquareBlockState(gameState, x - 1, y - 1, true) == SquareBlockState.OpponentPiece && !IsKingThreatened(gameState, x, y, piece, x - 1, y - 1))
+        if (GetSquareBlockState(gameState, x - 1, y + 1, true) == SquareBlockState.OpponentPiece && !IsKingThreatened(gameState, x, y, piece, x - 1, y + 1))
         {
-            yield return gameState[y - 1][x - 1];
+            yield return gameState[y + 1][x - 1];
         }
-        if (GetSquareBlockState(gameState, x + 1, y - 1, true) == SquareBlockState.OpponentPiece && !IsKingThreatened(gameState, x, y, piece, x + 1, y - 1))
+        if (GetSquareBlockState(gameState, x + 1, y + 1, true) == SquareBlockState.OpponentPiece && !IsKingThreatened(gameState, x, y, piece, x + 1, y + 1))
         {
-            yield return gameState[y - 1][x + 1];
+            yield return gameState[y + 1][x + 1];
         }
-        if (y == 6 && GetSquareBlockState(gameState, x, y - 1, true) == SquareBlockState.Available && GetSquareBlockState(gameState, x, y - 2, true) == SquareBlockState.Available && !IsKingThreatened(gameState, x, y, piece, x, y - 2))
+        if (y == 1 && GetSquareBlockState(gameState, x, y + 1, true) == SquareBlockState.Available && GetSquareBlockState(gameState, x, y + 2, true) == SquareBlockState.Available && !IsKingThreatened(gameState, x, y, piece, x, y + 2))
         {
-            yield return gameState[y - 2][x];
+            yield return gameState[y + 2][x];
         }
     }
 
@@ -318,20 +318,6 @@ public static class RulesService
 
     public static IEnumerable<GameSquare> GetBishopMovableSquares(GameStateModel gameState, int x, int y, ChessPiece piece)
     {
-        // upper right
-        for (int i = 1; i < 8; i++)
-        {
-            SquareBlockState state = GetSquareBlockState(gameState, x + i, y - i, piece.IsWhite);
-            if (state.CanMoveTo() && !IsKingThreatened(gameState, x, y, piece, x + i, y - i))
-            {
-                yield return gameState[y - i][x + i];
-            }
-            if (state != SquareBlockState.Available)
-            {
-                break;
-            }
-        }
-        // lower right
         for (int i = 1; i < 8; i++)
         {
             SquareBlockState state = GetSquareBlockState(gameState, x + i, y + i, piece.IsWhite);
@@ -344,7 +330,18 @@ public static class RulesService
                 break;
             }
         }
-        // lower left
+        for (int i = 1; i < 8; i++)
+        {
+            SquareBlockState state = GetSquareBlockState(gameState, x + i, y - i, piece.IsWhite);
+            if (state.CanMoveTo() && !IsKingThreatened(gameState, x, y, piece, x + i, y - i))
+            {
+                yield return gameState[y - i][x + i];
+            }
+            if (state != SquareBlockState.Available)
+            {
+                break;
+            }
+        }
         for (int i = 1; i < 8; i++)
         {
             SquareBlockState state = GetSquareBlockState(gameState, x - i, y + i, piece.IsWhite);
@@ -357,7 +354,6 @@ public static class RulesService
                 break;
             }
         }
-        // upper left
         for (int i = 1; i < 8; i++)
         {
             SquareBlockState state = GetSquareBlockState(gameState, x - i, y - i, piece.IsWhite);
@@ -374,7 +370,6 @@ public static class RulesService
 
     public static IEnumerable<GameSquare> GetBishopThreatSquares(GameStateModel gameState, int x, int y, ChessPiece piece)
     {
-        // upper right
         for (int i = 1; i < 8; i++)
         {
             SquareBlockState state = GetSquareBlockState(gameState, x + i, y - i, piece.IsWhite);
@@ -387,7 +382,6 @@ public static class RulesService
                 break;
             }
         }
-        // lower right
         for (int i = 1; i < 8; i++)
         {
             SquareBlockState state = GetSquareBlockState(gameState, x + i, y + i, piece.IsWhite);
@@ -400,7 +394,6 @@ public static class RulesService
                 break;
             }
         }
-        // lower left
         for (int i = 1; i < 8; i++)
         {
             SquareBlockState state = GetSquareBlockState(gameState, x - i, y + i, piece.IsWhite);
@@ -413,7 +406,6 @@ public static class RulesService
                 break;
             }
         }
-        // upper left
         for (int i = 1; i < 8; i++)
         {
             SquareBlockState state = GetSquareBlockState(gameState, x - i, y - i, piece.IsWhite);

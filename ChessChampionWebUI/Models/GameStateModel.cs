@@ -15,19 +15,19 @@ public class GameStateModel
     {
         State[0] =
         [
-            new GameSquare(){ Y=0, X=0, Piece = new BlackTower() },
-            new GameSquare(){ Y=0, X=1, Piece = new BlackKnight() },
-            new GameSquare(){ Y=0, X=2, Piece = new BlackBishop() },
-            new GameSquare(){ Y=0, X=3, Piece = new BlackQueen() },
-            new GameSquare(){ Y=0, X=4, Piece = new BlackKing() },
-            new GameSquare(){ Y=0, X=5, Piece = new BlackBishop() },
-            new GameSquare(){ Y=0, X=6, Piece = new BlackKnight() },
-            new GameSquare(){ Y=0, X=7, Piece = new BlackTower() },
+            new GameSquare(){ Y=0, X=0, Piece = new WhiteTower() },
+            new GameSquare(){ Y=0, X=1, Piece = new WhiteKnight() },
+            new GameSquare(){ Y=0, X=2, Piece = new WhiteBishop() },
+            new GameSquare(){ Y=0, X=3, Piece = new WhiteQueen() },
+            new GameSquare(){ Y=0, X=4, Piece = new WhiteKing() },
+            new GameSquare(){ Y=0, X=5, Piece = new WhiteBishop() },
+            new GameSquare(){ Y=0, X=6, Piece = new WhiteKnight() },
+            new GameSquare(){ Y=0, X=7, Piece = new WhiteTower() },
         ];
         State[1] = new GameSquare[8];
         for (int i = 0; i < State[1].Length; i++)
         {
-            State[1][i] = new GameSquare() { Y = 1, X = i, Piece = new BlackPawn() };
+            State[1][i] = new GameSquare() { Y = 1, X = i, Piece = new WhitePawn() };
         }
         for (int j = 2; j < 6; j++)
         {
@@ -40,18 +40,18 @@ public class GameStateModel
         State[6] = new GameSquare[8];
         for (int i = 0; i < State[6].Length; i++)
         {
-            State[6][i] = new GameSquare() { Y = 6, X = i, Piece = new WhitePawn() };
+            State[6][i] = new GameSquare() { Y = 6, X = i, Piece = new BlackPawn() };
         }
         State[7] =
         [
-            new GameSquare(){ Y=7, X=0, Piece = new WhiteTower() },
-            new GameSquare(){ Y=7, X=1, Piece = new WhiteKnight() },
-            new GameSquare(){ Y=7, X=2, Piece = new WhiteBishop() },
-            new GameSquare(){ Y=7, X=3, Piece = new WhiteQueen() },
-            new GameSquare(){ Y=7, X=4, Piece = new WhiteKing() },
-            new GameSquare(){ Y=7, X=5, Piece = new WhiteBishop() },
-            new GameSquare(){ Y=7, X=6, Piece = new WhiteKnight() },
-            new GameSquare(){ Y=7, X=7, Piece = new WhiteTower() },
+            new GameSquare(){ Y=7, X=0, Piece = new BlackTower() },
+            new GameSquare(){ Y=7, X=1, Piece = new BlackKnight() },
+            new GameSquare(){ Y=7, X=2, Piece = new BlackBishop() },
+            new GameSquare(){ Y=7, X=3, Piece = new BlackQueen() },
+            new GameSquare(){ Y=7, X=4, Piece = new BlackKing() },
+            new GameSquare(){ Y=7, X=5, Piece = new BlackBishop() },
+            new GameSquare(){ Y=7, X=6, Piece = new BlackKnight() },
+            new GameSquare(){ Y=7, X=7, Piece = new BlackTower() },
         ];
     }
 
@@ -73,7 +73,7 @@ public class GameStateModel
     public GameSquare GetSquareFromCoordinates(string coordinate)
     {
         int column = char.ConvertToUtf32(coordinate, 0) - 97;
-        int row = 8 - int.Parse(coordinate[1].ToString());
+        int row = int.Parse(coordinate[1].ToString()) - 1;
         return State[row][column];
     }
 

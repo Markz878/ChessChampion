@@ -9,11 +9,11 @@
             }
             else if (j == 8 && i < 8)
             {
-                <span class="text-square">@(8-i)</span>
+                <span class="text-square">@(8 - i)</span>
             }
-            else if(j<8 && i<8)
+            else if (j < 8 && i < 8)
             {
-                <ChessSquareComponent Square="Game.GameState.State[i][j]" HandleClickCallback="HandleClick" />
+                <ChessSquareComponent Square="Game.GameState.State[7-i][j]" HandleClickCallback="HandleClick" />
             }
         }
     }

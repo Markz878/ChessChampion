@@ -10,5 +10,5 @@ public class GameSquare
     public SquareState State { get; set; }
     public bool WasPreviousMove { get; set; }
     public bool IsEmpty => Piece == null;
-    public string ChessCoordinate => char.ConvertFromUtf32(97 + X) + (8 - Y).ToString();
+    public string ChessCoordinate => char.ConvertFromUtf32(97 + X) + (Y + 1).ToString();
 }

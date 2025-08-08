@@ -16,7 +16,7 @@ public class BlackPawn() : ChessPiece("♟︎", false)
 
     public override string HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
     {
-        if (endSquare.Y == 7)
+        if (endSquare.Y == 0)
         {
             foreach (GameSquare square in gameState.GetSquares())
             {

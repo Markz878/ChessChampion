@@ -16,7 +16,7 @@ public class WhitePawn() : ChessPiece("♙", true)
 
     public override string HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
     {
-        if (endSquare.Y == 0)
+        if (endSquare.Y == 7)
         {
             foreach (GameSquare square in gameState.GetSquares())
             {
