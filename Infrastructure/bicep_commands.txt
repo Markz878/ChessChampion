@@ -1,3 +1,0 @@
-az login
-az account set --subscription "Azure Subscription"
-az deployment group create -g ChessChampionGroup -f main.bicep --parameters webSiteName=ChessChampion
