@@ -2,10 +2,9 @@
 
 namespace ChessChampionWebUI.Data;
 
-public sealed partial class ChessAIEngine : IDisposable
+public sealed partial class ChessAIEngine(int difficultyLevel, string engineFileName)
 {
-    private readonly Process process;
-    public ChessAIEngine(int difficultyLevel, string engineFileName)
+    public async Task<string> GetNextMove(string moves, ushort calculationTimeMS)
     {
         ProcessStartInfo startInfo = new(engineFileName)
         {
@@ -13,7 +12,7 @@ public sealed partial class ChessAIEngine : IDisposable
             RedirectStandardOutput = true,
             UseShellExecute = false
         };
-        process = new()
+        using Process process = new()
         {
             StartInfo = startInfo
         };
@@ -22,10 +21,6 @@ public sealed partial class ChessAIEngine : IDisposable
             throw new FileNotFoundException("Stockfish could not be started");
         }
         WriteMessage(process.StandardInput, $"setoption name Skill Level value {difficultyLevel}");
-    }
-
-    public async Task<string> GetNextMove(string moves, ushort calculationTimeMS)
-    {
         int retries = 0;
         string compMove;
         string moveCommand = "position startpos moves" + moves;
@@ -37,10 +32,10 @@ public sealed partial class ChessAIEngine : IDisposable
             {
                 throw new ArgumentException("Could not find move in the given response:");
             }
-            WriteMessage(process.StandardInput, "go");
+            WriteMessage(process.StandardInput, "go movetime " + calculationTimeMS);
             await Task.Delay(calculationTimeMS);
             WriteMessage(process.StandardInput, "stop");
-            string response = await ReadResponse(process.StandardOutput);
+            string response = ReadResponse(process.StandardOutput);
             compMove = ParseBestMove(response);
         } while (string.IsNullOrEmpty(compMove));
         return compMove;
@@ -65,16 +60,16 @@ public sealed partial class ChessAIEngine : IDisposable
         return result;
     }
 
-    private static async Task<string> ReadResponse(StreamReader streamReader)
+    private static string ReadResponse(StreamReader streamReader)
     {
-        char[] buffer = new char[4096 * 2];
-        await streamReader.ReadAsync(buffer, 0, buffer.Length);
-        string result = new(buffer);
-        return result;
-    }
-
-    public void Dispose()
-    {
-        process.Dispose();
+        string? line;
+        while ((line = streamReader.ReadLine()) != null)
+        {
+            if (line.StartsWith("bestmove"))
+            {
+                return line;
+            }
+        }
+        return string.Empty;
     }
 }

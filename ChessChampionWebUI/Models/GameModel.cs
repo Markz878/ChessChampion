@@ -11,10 +11,8 @@ public class GameModel
     public GameStateModel GameState { get; set; } = new GameStateModel();
     public bool IsWhitePlayerTurn { get; set; } = true;
     public PlayerModel? Winner { get; set; }
-
-    public Action? StateChanged;
-
-    public Action? GameEnded;
+    public Action? StateChanged { get; set; }
+    public Action? GameEnded { get; set; }
 
     public GameSquare? GetSelectedSquare()
     {
@@ -139,7 +137,7 @@ public class GameModel
         if (isWhite)
         {
             GameSquare blackKingSquare = GameState.GetPieceSquare<BlackKing>();
-            if (IsInOpponentThreatSquare(GameState, blackKingSquare.X, blackKingSquare.Y, false))
+            if (IsInOpponentThreatSquare(GameState, blackKingSquare.X, blackKingSquare.Y, isWhite))
             {
                 foreach (GameSquare opponentSquare in GetAllOpponentPieces(GameState, isWhite))
                 {
@@ -154,7 +152,7 @@ public class GameModel
         else
         {
             GameSquare whiteKingSquare = GameState.GetPieceSquare<WhiteKing>();
-            if (IsInOpponentThreatSquare(GameState, whiteKingSquare.X, whiteKingSquare.Y, false))
+            if (IsInOpponentThreatSquare(GameState, whiteKingSquare.X, whiteKingSquare.Y, isWhite))
             {
                 foreach (GameSquare opponentSquare in GetAllOpponentPieces(GameState, isWhite))
                 {

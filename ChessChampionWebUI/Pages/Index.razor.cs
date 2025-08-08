@@ -66,7 +66,7 @@ public sealed partial class Index : IDisposable
             return;
         }
         Game = new();
-        Game.StateChanged += Game_OnStateChanged!;
+        Game.StateChanged += Game_OnStateChanged;
         Game.GameEnded += Game_OnGameEnded;
         if (ChooseWhitePieces)
         {
