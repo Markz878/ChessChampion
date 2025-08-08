@@ -38,7 +38,10 @@ jobs:
         run: >
           az deployment group create --resource-group ${{ secrets.AZURE_RG }} 
           --template-file Infrastructure/main.bicep 
-          --parameters webSiteName=${{ env.AZURE_WEBAPP_NAME }} appServicePlanName=${{ secrets.AZURE_SHARED_PLAN }} appServicePlanResourceGroupName=${{ secrets.AZURE_SHARED_PLAN_RG }}
+          --parameters 
+          webSiteName=${{ env.AZURE_WEBAPP_NAME }} 
+          appServicePlanName=${{ secrets.AZURE_SHARED_PLAN }} 
+          appServicePlanResourceGroupName=${{ secrets.AZURE_SHARED_PLAN_RG }}
 
       - name: Publish
         run: dotnet publish "${{ env.WORKING_DIRECTORY }}" -r win-x86 -o "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
