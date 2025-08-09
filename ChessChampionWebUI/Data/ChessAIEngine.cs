@@ -30,7 +30,7 @@ public sealed partial class ChessAIEngine(int difficultyLevel, string engineFile
             retries++;
             if (retries > 5)
             {
-                throw new ArgumentException("Could not find move in the given response:");
+                return string.Empty; // Avoid infinite loop if no move is found
             }
             WriteMessage(process.StandardInput, "go movetime " + calculationTimeMS);
             await Task.Delay(calculationTimeMS);

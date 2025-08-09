@@ -194,7 +194,8 @@ public sealed partial class Index : IDisposable
             string? aimove = await ai.Move(Game.GameState, Logger);
             if (string.IsNullOrEmpty(aimove))
             {
-                throw new InvalidOperationException("AI could not make a move");
+                StatusMessage = "AI could not find a valid move";
+                return;
             }
             Game.GameState.Moves += $" {aimove}";
             Game.IsWhitePlayerTurn = !Game.IsWhitePlayerTurn;

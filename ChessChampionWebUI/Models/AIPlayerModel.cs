@@ -53,7 +53,7 @@ public class AIPlayerModel(int skillLevel, string engineFileName) : PlayerModel(
             }
             else if (retries > 5)
             {
-                throw new ArgumentException("Could not find move in the given response:");
+                return null;
             }
             else
             {
