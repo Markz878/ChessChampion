@@ -1,12 +1,19 @@
 param location string = resourceGroup().location
 @minLength(3)
 param webSiteName string
-param appServicePlanName string
-param appServicePlanResourceGroupName string
+param planName string = 'asp-${webSiteName}'
+param sku string = 'F1'
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2024-11-01' existing = {
-  name: appServicePlanName
-  scope: resourceGroup(appServicePlanResourceGroupName)
+resource appServicePlan 'Microsoft.Web/serverfarms@2024-11-01' = {
+  name: planName
+  location: location
+  kind: 'linux'
+  sku: {
+    name: sku
+  }
+  properties: {
+    reserved: true
+  }
 }
 
 resource appService 'Microsoft.Web/sites@2024-11-01' = {
