@@ -1,0 +1,9 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1vw;
+    background-image: url("wooden-board-table.webp");
+    background-size: cover;
+}

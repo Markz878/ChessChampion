@@ -1,0 +1,5 @@
+﻿<div class="container">
+    <span class="description">@Description</span>
+    <input class="slider" type="range" min="@Min" max="@Max" value="@Value" @oninput="@((e)=>ValueChanged(e.Value?.ToString()))" />
+    <span class="value">@Value</span>
+</div>

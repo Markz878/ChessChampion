@@ -1,0 +1,29 @@
+﻿using static ChessChampion.Shared.RulesService;
+
+namespace ChessChampion.Shared.Models.Pieces;
+
+public class BlackTower() : ChessPiece("♜", false)
+{
+    public override IEnumerable<GameSquare> GetMovableSquares(GameStateModel gameState, int x, int y)
+    {
+        return GetTowerMovableSquares(gameState, x, y, this);
+    }
+
+    public override IEnumerable<GameSquare> GetThreatSquares(GameStateModel gameState, int x, int y)
+    {
+        return GetTowerThreatSquares(gameState, x, y, this);
+    }
+
+    public override string HandleMove(GameStateModel gameState, GameSquare startSquare, GameSquare endSquare)
+    {
+        if (startSquare.ChessCoordinate == "a8")
+        {
+            gameState.CanBlackKingCastleLeft = false;
+        }
+        else if (startSquare.ChessCoordinate == "h8")
+        {
+            gameState.CanBlackKingCastleRight = false;
+        }
+        return base.HandleMove(gameState, startSquare, endSquare);
+    }
+}
