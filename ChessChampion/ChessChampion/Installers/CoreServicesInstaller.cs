@@ -11,7 +11,7 @@ public sealed class CoreServicesInstaller : IInstaller
         builder.Services.AddSingleton<GamesService>();
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<APIService>();
-        builder.Services.AddHttpClient<APIService>();
+        builder.Services.AddHttpClient();
         builder.Services.AddSingleton<HubConnectionService>();
     }
 }

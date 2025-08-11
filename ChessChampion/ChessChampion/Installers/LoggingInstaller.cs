@@ -16,14 +16,14 @@ public class LoggingInstaller : IInstaller
             logging.CombineLogs = true;
             logging.LoggingFields = HttpLoggingFields.Duration | HttpLoggingFields.RequestMethod | HttpLoggingFields.RequestPath | HttpLoggingFields.RequestQuery | HttpLoggingFields.ResponseStatusCode;
         });
-        if (builder.Configuration.GetValue<bool>("AddLogging"))
+        builder.Logging.AddSimpleConsole(x =>
         {
-            builder.Logging.AddSimpleConsole(x =>
-            {
-                x.UseUtcTimestamp = true;
-                x.TimestampFormat = "dd/MM/yy HH:mm:ss ";
-                x.SingleLine = builder.Environment.IsProduction();
-            });
+            x.UseUtcTimestamp = true;
+            x.TimestampFormat = "dd/MM/yy HH:mm:ss ";
+            x.SingleLine = builder.Environment.IsProduction();
+        });
+        if (builder.Environment.IsProduction())
+        {
             builder.Logging.AddApplicationInsights();
             builder.Services.AddApplicationInsightsTelemetry(x => x.EnableDependencyTrackingTelemetryModule = false);
             builder.Services.AddApplicationInsightsTelemetryProcessor<IgnoreRequestPathsTelemetryProcessor>();

@@ -2,12 +2,22 @@
 
 public class GameStateModel
 {
-    public GameSquare[][] State { get; } = new GameSquare[8][];
+    public GameSquare[][] State { get; set; }
     public string Moves { get; set; } = "";
     public bool CanWhiteKingCastleRight { get; set; } = true;
     public bool CanWhiteKingCastleLeft { get; set; } = true;
     public bool CanBlackKingCastleRight { get; set; } = true;
     public bool CanBlackKingCastleLeft { get; set; } = true;
+
+    public GameStateModel() 
+    {
+        State = [];
+    }
+
+    public GameStateModel(GameSquare[][] initialState)
+    {
+        State = initialState;
+    }
 
     public IEnumerable<GameSquare> GetSquares()
     {

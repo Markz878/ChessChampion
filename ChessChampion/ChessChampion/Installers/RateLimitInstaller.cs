@@ -4,7 +4,7 @@ namespace ChessChampion.Installers;
 
 public sealed class RateLimitInstaller : IInstaller
 {
-    public const string PolicyName = "JwtRateLimitPolicy";
+    public const string PolicyName = "RateLimitPolicy";
     public void Install(WebApplicationBuilder builder)
     {
         RateLimitOptions rateLimitOptions = new();

@@ -8,12 +8,8 @@ public sealed class MainViewModel : BaseViewModel
     private Guid? gameId;
     public GameStateModel? GameState { get => gameState; set => SetProperty(ref gameState, value); }
     private GameStateModel? gameState;
-    public CreateGameRequest CreateGameForm { get => createGameForm; set => SetProperty(ref createGameForm, value); }
-    private CreateGameRequest createGameForm = new();
-    public JoinGameRequest JoinGameForm { get => joinGameForm; set => SetProperty(ref joinGameForm, value); }
-    private JoinGameRequest joinGameForm = new();
-    public PlayerModel? Player { get => player; set => SetProperty(ref player, value); }
-    private PlayerModel? player;
+    public PlayerModel Player { get => player; set => SetProperty(ref player, value); }
+    private PlayerModel player = new("", true);
     public PlayerModel? OtherPlayer { get => otherPlayer; set => SetProperty(ref otherPlayer, value); }
     private PlayerModel? otherPlayer;
     public PlayerModel? WhitePlayer => Player is null ? null : Player.IsWhite ? Player : OtherPlayer;
@@ -22,12 +18,10 @@ public sealed class MainViewModel : BaseViewModel
     private PlayVsMode playVsMode = PlayVsMode.PlayVsHuman;
     public JoinGameMode JoinGameMode { get => joinGameMode; set => SetProperty(ref joinGameMode, value); }
     private JoinGameMode joinGameMode;
-    public bool ChooseWhitePieces { get => chooseWhitePieces; set => SetProperty(ref chooseWhitePieces, value); }
-    private bool chooseWhitePieces = true;
     public int SkillLevel { get => skillLevel; set => SetProperty(ref skillLevel, value); }
     private int skillLevel = 10;
-    public string? StatusMessage { get => statusMessage; set => SetProperty(ref statusMessage, value); }
-    private string? statusMessage;
-    public string? GameCode { get => gameCode; set => SetProperty(ref gameCode, value); }
-    private string? gameCode;
+    public string StatusMessage { get => statusMessage; set => SetProperty(ref statusMessage, value); }
+    private string statusMessage = "";
+    public string GameCode { get => gameCode; set => SetProperty(ref gameCode, value); }
+    private string gameCode = "";
 }

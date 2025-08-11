@@ -10,28 +10,27 @@
         <ChooseOptionComponent Title="Choose How To Connect To A Game" TextWidth="280px" LeftText="Create a game" RightText="Join a game" IsLeftSelected="ViewModel.JoinGameMode == JoinGameMode.CreateGame" LeftSelected="CreateGameSelectionHandler" />
         @if (ViewModel.JoinGameMode == JoinGameMode.CreateGame)
         {
-            <ChooseOptionComponent Title="Choose White Or Black Pieces" TextWidth="280px" LeftText="White" RightText="Black" IsLeftSelected="ViewModel.ChooseWhitePieces" LeftSelected="SelectWhitePieces" />
-            <EditForm Model="ViewModel.CreateGameForm" class="form-group" OnValidSubmit="CreateGame">
+            <ChooseOptionComponent Title="Choose White Or Black Pieces" TextWidth="280px" LeftText="White" RightText="Black" IsLeftSelected="ViewModel.Player.IsWhite" LeftSelected="SelectWhitePieces" />
+            <EditForm Model="ViewModel" class="form-group" OnValidSubmit="CreateGame">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
                 <label for="user-name-1">Your Game Name:</label>
-                <InputText DisplayName="User name" id="user-name-1" class="form-control" @bind-Value="@ViewModel.CreateGameForm.UserName" />
+                <InputText DisplayName="User name" id="user-name-1" class="form-control" @bind-Value="@ViewModel.Player.Name" />
                 <button type="submit" class="btn btn-primary">Create a game</button>
             </EditForm>
 
         }
         else
         {
-            <EditForm Model="ViewModel.JoinGameForm" OnValidSubmit="JoinGame">
+            <EditForm Model="ViewModel" OnValidSubmit="JoinGame">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
                 <label for="user-name-2">Your Game Name:</label>
-                <InputText DisplayName="Game name" id="user-name-2" class="form-control" @bind-Value="@ViewModel.JoinGameForm.UserName" />
+                <InputText DisplayName="Game name" id="user-name-2" class="form-control" @bind-Value="@ViewModel.Player.Name" />
                 <label for="game-code-2">Game code from your friend:</label>
-                <InputText DisplayName="Game code" class="form-control" @bind-Value="@ViewModel.JoinGameForm.GameCode" />
+                <InputText DisplayName="Game code" class="form-control" @bind-Value="@ViewModel.GameCode" />
                 <button type="submit" class="btn btn-primary">Join game</button>
             </EditForm>
-            <div class="turn-text">@ViewModel.StatusMessage</div>
         }
     }
     else
@@ -50,7 +49,6 @@ else
             <div Stateclass="turn-text">You game code is:</div>
             <div class="turn-text game-code">@ViewModel.GameCode</div>
         }
-        <div class="turn-text">@ViewModel.StatusMessage</div>
     }
     else
     {
@@ -68,3 +66,4 @@ else
         </div>
     }
 }
+<div class="turn-text">@ViewModel.StatusMessage</div>

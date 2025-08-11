@@ -3,11 +3,13 @@ using System.Net.Http.Json;
 
 namespace ChessChampion.Client.Services;
 
-public sealed class APIService(HttpClient httpClient)
+public sealed class APIService(IHttpClientFactory httpClientFactory)
 {
+    private readonly HttpClient httpClient = httpClientFactory.CreateClient("api");
     public async Task<Result<CreateGameResponse, string>> CreateGame(CreateGameRequest createGameRequest)
     {
-        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/create", createGameRequest);
+        string x = httpClient.BaseAddress?.ToString() ?? string.Empty;
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/create", createGameRequest);
         if (response.IsSuccessStatusCode)
         {
             CreateGameResponse? gameStateResponse = await response.Content.ReadFromJsonAsync<CreateGameResponse>();
@@ -22,7 +24,7 @@ public sealed class APIService(HttpClient httpClient)
 
     public async Task<Result<JoinGameResponse, string>> JoinGame(JoinGameRequest joinGameRequest)
     {
-        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/join", joinGameRequest);
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/join", joinGameRequest);
         if (response.IsSuccessStatusCode)
         {
             JoinGameResponse? gameResponse = await response.Content.ReadFromJsonAsync<JoinGameResponse>();
@@ -37,7 +39,7 @@ public sealed class APIService(HttpClient httpClient)
 
     public async Task<string?> SubmitMove(SubmitMoveRequest moveRequest)
     {
-        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/move", moveRequest);
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/move", moveRequest);
         if (response.IsSuccessStatusCode)
         {
             return null;
@@ -48,7 +50,7 @@ public sealed class APIService(HttpClient httpClient)
 
     public async Task<string?> LeaveGame(LeaveGameRequest leaveGameRequest)
     {
-        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/leave", leaveGameRequest);
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/leave", leaveGameRequest);
         if (response.IsSuccessStatusCode)
         {
             return null;

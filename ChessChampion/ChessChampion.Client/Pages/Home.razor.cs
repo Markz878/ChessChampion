@@ -49,27 +49,33 @@ public sealed partial class Home : ComponentBase
 
     private void SelectWhitePieces(bool selectedWhites)
     {
-        ViewModel.ChooseWhitePieces = selectedWhites;
+        ViewModel.Player.IsWhite = selectedWhites;
     }
 
     private async Task CreateGame()
     {
-        if (ViewModel.CreateGameForm.UserName is null || ViewModel.CreateGameForm.UserName.Length < 3)
+        if (ViewModel.Player.Name is null || ViewModel.Player.Name.Length < 3)
         {
             ViewModel.StatusMessage = "Please enter a valid username (at least 3 characters)";
             return;
         }
-        if (ViewModel.CreateGameForm.VersusAI is true && ViewModel.CreateGameForm.AISkillLevel.HasValue is false)
+        if (ViewModel.PlayVsMode == PlayVsMode.PlayVsComputer && ViewModel.SkillLevel is < 0 or > 20)
         {
             ViewModel.StatusMessage = "Please select a valid AI skill level (1-20)";
             return;
         }
-        Result<CreateGameResponse, string> response = await API.CreateGame(ViewModel.CreateGameForm);
+        CreateGameRequest request = new()
+        {
+            UserName = ViewModel.Player.Name,
+            AISkillLevel = ViewModel.PlayVsMode == PlayVsMode.PlayVsComputer ? ViewModel.SkillLevel : null,
+            IsWhites = ViewModel.Player.IsWhite,
+            VersusAI = ViewModel.PlayVsMode == PlayVsMode.PlayVsComputer
+        };
+        Result<CreateGameResponse, string> response = await API.CreateGame(request);
         response.Handle(x =>
         {
             ViewModel.GameId = x.Id;
             ViewModel.GameState = x.GameState;
-            ViewModel.Player = new PlayerModel(ViewModel.CreateGameForm.UserName, ViewModel.CreateGameForm.IsWhites);
             ViewModel.StatusMessage = $"Your game code is {x.GameCode}";
         },
         e => ViewModel.StatusMessage = e);
@@ -143,22 +149,27 @@ public sealed partial class Home : ComponentBase
 
     private async Task JoinGame()
     {
-        if (ViewModel.JoinGameForm.GameCode is null || ViewModel.JoinGameForm.GameCode.Length != 4)
+        if (ViewModel.GameCode is null || ViewModel.GameCode.Length != 4)
         {
             ViewModel.StatusMessage = "Please enter a valid game code (4 characters)";
             return;
         }
-        if (ViewModel.JoinGameForm.UserName is null || ViewModel.JoinGameForm.UserName.Length < 3)
+        if (ViewModel.Player.Name is null || ViewModel.Player.Name.Length < 3)
         {
             ViewModel.StatusMessage = "Please enter a valid username (at least 3 characters)";
             return;
         }
-        Result<JoinGameResponse, string> response = await API.JoinGame(ViewModel.JoinGameForm);
+        JoinGameRequest joinGameRequest = new()
+        {
+            GameCode = ViewModel.GameCode.ToLower(),
+            UserName = ViewModel.Player.Name,
+        };
+        Result<JoinGameResponse, string> response = await API.JoinGame(joinGameRequest);
         response.Handle(x =>
         {
             ViewModel.GameId = x.Id;
             ViewModel.GameState = x.GameState;
-            ViewModel.Player = new PlayerModel(ViewModel.JoinGameForm.UserName, !x.Player1.IsWhite);
+            ViewModel.Player = new PlayerModel(ViewModel.Player.Name, !x.Player1.IsWhite);
             ViewModel.OtherPlayer = new PlayerModel(x.Player1.Name, x.Player1.IsWhite);
             ViewModel.StatusMessage = "Game started!";
         },
@@ -167,18 +178,29 @@ public sealed partial class Home : ComponentBase
 
     private async Task StartGameVsComputer()
     {
-        if (ViewModel.CreateGameForm.UserName is null || ViewModel.CreateGameForm.UserName.Length < 3)
+        //if (ViewModel.CreateGameForm.UserName is null || ViewModel.CreateGameForm.UserName.Length < 3)
+        //{
+        //    ViewModel.StatusMessage = "Please enter a valid username (at least 3 characters)";
+        //    return;
+        //}
+        if (ViewModel.SkillLevel is < 0 or > 20)
         {
-            ViewModel.StatusMessage = "Please enter a valid username (at least 3 characters)";
+            ViewModel.StatusMessage = "Please select a valid AI skill level (1-20)";
             return;
         }
-        Result<CreateGameResponse, string> game = await API.CreateGame(ViewModel.CreateGameForm);
+        CreateGameRequest request = new()
+        {
+            UserName = ViewModel.Player.Name,
+            AISkillLevel = ViewModel.SkillLevel,
+            IsWhites = ViewModel.Player.IsWhite,
+            VersusAI = true
+        };
+        Result<CreateGameResponse, string> game = await API.CreateGame(request);
         game.Handle(x =>
         {
             ViewModel.GameId = x.Id;
             ViewModel.GameState = x.GameState;
-            ViewModel.Player = new PlayerModel(ViewModel.CreateGameForm.UserName, ViewModel.ChooseWhitePieces);
-            ViewModel.OtherPlayer = new PlayerModel("Stockfish", !ViewModel.ChooseWhitePieces);
+            ViewModel.OtherPlayer = new PlayerModel("Stockfish", !ViewModel.Player.IsWhite);
             ViewModel.StatusMessage = "Game started!";
         }, e =>
         {

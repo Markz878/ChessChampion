@@ -15,7 +15,7 @@ public sealed class GamesService(IConfiguration configuration)
     {
         GameModel game = new();
         string code = CreateGameCode();
-        while (availableGames.TryAdd(code.ToLower(), game))
+        while (!availableGames.TryAdd(code.ToLower(), game))
         {
             code = CreateGameCode();
         }

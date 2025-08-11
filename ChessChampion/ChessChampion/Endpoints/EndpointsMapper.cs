@@ -12,7 +12,7 @@ public static class EndpointsMapper
 {
     public static void MapEndpoints(this WebApplication app)
     {
-        RouteGroupBuilder apiGroup = app.MapGroup("api").RequireAuthorization();
+        RouteGroupBuilder apiGroup = app.MapGroup("api");
         apiGroup.RequireRateLimiting(RateLimitInstaller.PolicyName);
         apiGroup.MapPost("/create", CreateGame);
         apiGroup.MapPost("/join", JoinGame);

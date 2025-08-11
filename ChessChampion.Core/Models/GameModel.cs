@@ -15,8 +15,8 @@ public class GameModel
 
     public GameModel()
     {
-        GameStateModel gameState = new();
-        gameState.State[0] =
+        GameSquare[][] initialState = new GameSquare[8][];
+        initialState[0] =
         [
             new GameSquare(){ Y=0, X=0, Piece = new WhiteTower() },
             new GameSquare(){ Y=0, X=1, Piece = new WhiteKnight() },
@@ -27,25 +27,25 @@ public class GameModel
             new GameSquare(){ Y=0, X=6, Piece = new WhiteKnight() },
             new GameSquare(){ Y=0, X=7, Piece = new WhiteTower() },
         ];
-        gameState.State[1] = new GameSquare[8];
-        for (int i = 0; i < gameState.State[1].Length; i++)
+        initialState[1] = new GameSquare[8];
+        for (int i = 0; i < initialState[1].Length; i++)
         {
-            gameState.State[1][i] = new GameSquare() { Y = 1, X = i, Piece = new WhitePawn() };
+            initialState[1][i] = new GameSquare() { Y = 1, X = i, Piece = new WhitePawn() };
         }
         for (int j = 2; j < 6; j++)
         {
-            gameState.State[j] = new GameSquare[8];
-            for (int i = 0; i < gameState.State[j].Length; i++)
+            initialState[j] = new GameSquare[8];
+            for (int i = 0; i < initialState[j].Length; i++)
             {
-                gameState.State[j][i] = new GameSquare() { Y = j, X = i };
+                initialState[j][i] = new GameSquare() { Y = j, X = i };
             }
         }
-        gameState.State[6] = new GameSquare[8];
-        for (int i = 0; i < gameState.State[6].Length; i++)
+        initialState[6] = new GameSquare[8];
+        for (int i = 0; i < initialState[6].Length; i++)
         {
-            gameState.State[6][i] = new GameSquare() { Y = 6, X = i, Piece = new BlackPawn() };
+            initialState[6][i] = new GameSquare() { Y = 6, X = i, Piece = new BlackPawn() };
         }
-        gameState.State[7] =
+        initialState[7] =
         [
             new GameSquare(){ Y=7, X=0, Piece = new BlackTower() },
             new GameSquare(){ Y=7, X=1, Piece = new BlackKnight() },
@@ -56,7 +56,7 @@ public class GameModel
             new GameSquare(){ Y=7, X=6, Piece = new BlackKnight() },
             new GameSquare(){ Y=7, X=7, Piece = new BlackTower() },
         ];
-        GameState = gameState;
+        GameState = new(initialState);
     }
 
     public bool TryMakeMove(string move, out PlayerModel? winner)
