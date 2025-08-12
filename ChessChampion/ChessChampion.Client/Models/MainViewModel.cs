@@ -24,4 +24,6 @@ public sealed class MainViewModel : BaseViewModel
     private string statusMessage = "";
     public string GameCode { get => gameCode; set => SetProperty(ref gameCode, value); }
     private string gameCode = "";
+    public PlayerModel? Winner { get => winner; set => SetProperty(ref winner, value); }
+    private PlayerModel? winner;
 }

@@ -1,5 +1,6 @@
 ﻿using ChessChampion.Shared.Models;
 using ChessChampion.Shared.Models.Pieces;
+using System.Numerics;
 using static ChessChampion.Shared.RulesService;
 
 namespace ChessChampion.Core.Models;
@@ -11,7 +12,6 @@ public class GameModel
     public GameStateModel GameState { get; set; }
     public PlayerModel? WhitePlayer { get; set; }
     public PlayerModel? BlackPlayer { get; set; }
-    public bool IsWhitePlayerTurn { get; set; } = true;
 
     public GameModel()
     {
@@ -59,9 +59,31 @@ public class GameModel
         GameState = new(initialState);
     }
 
-    public bool TryMakeMove(string move, out PlayerModel? winner)
+    public MoveError? TryMakeMove(string move)
     {
-        throw new NotImplementedException();
+        GameSquare startSquare = GameState[move[..2]];
+        GameSquare endSquare = GameState[move[2..4]];
+        if (startSquare.Piece is null)
+        {
+            return new MoveError($"Cannot move empty square {startSquare.ChessCoordinate}.");
+        }
+        if (!IsPlayerPiece(startSquare.Piece, GameState.IsWhitePlayerTurn))
+        {
+            return new MoveError($"Cannot move opponent piece {startSquare.ChessCoordinate}.");
+        }
+        if (endSquare.Piece is not null && IsPlayerPiece(endSquare.Piece, GameState.IsWhitePlayerTurn))
+        {
+            return new MoveError($"Cannot eat own piece {endSquare.ChessCoordinate}.");
+        }
+        if (startSquare.Piece.GetMovableSquares(GameState, startSquare.X, startSquare.Y).Contains(endSquare) == false)
+        {
+            return new MoveError($"Cannot move {startSquare.ChessCoordinate} to {endSquare.ChessCoordinate}.");
+        }
+        startSquare.Piece.HandleMove(GameState, startSquare, endSquare);
+        GameState.Moves += $" {move}";
+        GameState.IsWhitePlayerTurn = !GameState.IsWhitePlayerTurn;
+        ResetBoardStates();
+        return null;
     }
 
     public GameSquare? GetSelectedSquare()
@@ -79,111 +101,82 @@ public class GameModel
         return null;
     }
 
-    public async Task HandleSquareSelect(GameSquare square, PlayerModel player)
-    {
-        if (player.IsWhite != IsWhitePlayerTurn)
-        {
-            return;
-        }
-        try
-        {
-            GameSquare? selectedSquare = GetSelectedSquare();
-            /// Different paths:
-            /// 1) Nothing is selected, and user selects own piece
-            /// 2) Own piece is selected, and user selects the same piece
-            /// 3) Own piece is selected, and user selects another own piece
-            /// 4) Own piece is selected, and user selects a movable square
-            if (selectedSquare is null && square.Piece is not null && IsPlayerPiece(square.Piece, player.IsWhite))
-            {
-                HandlePieceSelect(square);
-            }
-            else if (selectedSquare == square)
-            {
-                HandleSameSquareSelect(selectedSquare);
-            }
-            else if (selectedSquare is not null && !square.IsEmpty && IsPlayerPiece(square.Piece, player.IsWhite))
-            {
-                HandleOtherPieceSelect(square, selectedSquare);
-            }
-            else if (selectedSquare is not null && square.State == SquareState.Movable)
-            {
-                bool winnerFound = await HandleMove(square, selectedSquare, player);
-                if (winnerFound)
-                {
-                    //GameEnded?.Invoke();
-                }
-                OnStateChanged();
-            }
-        }
-        catch
-        {
-            //GameEnded?.Invoke();
-            throw;
-        }
-    }
+    //public async Task HandleSquareSelect(GameSquare square, PlayerModel player)
+    //{
+    //    if (player.IsWhite != IsWhitePlayerTurn)
+    //    {
+    //        return;
+    //    }
+    //    try
+    //    {
+    //        GameSquare? selectedSquare = GetSelectedSquare();
+    //        /// Different paths:
+    //        /// 1) Nothing is selected, and user selects own piece
+    //        /// 2) Own piece is selected, and user selects the same piece
+    //        /// 3) Own piece is selected, and user selects another own piece
+    //        /// 4) Own piece is selected, and user selects a movable square
+    //        if (selectedSquare is null && square.Piece is not null && IsPlayerPiece(square.Piece, player.IsWhite))
+    //        {
+    //            HandlePieceSelect(square);
+    //        }
+    //        else if (selectedSquare == square)
+    //        {
+    //            HandleSameSquareSelect(selectedSquare);
+    //        }
+    //        else if (selectedSquare is not null && !square.IsEmpty && IsPlayerPiece(square.Piece, player.IsWhite))
+    //        {
+    //            HandleOtherPieceSelect(square, selectedSquare);
+    //        }
+    //        else if (selectedSquare is not null && square.State == SquareState.Movable)
+    //        {
+    //            bool winnerFound = await HandleMove(square, selectedSquare, player);
+    //            if (winnerFound)
+    //            {
+    //                //GameEnded?.Invoke();
+    //            }
+    //            OnStateChanged();
+    //        }
+    //    }
+    //    catch
+    //    {
+    //        //GameEnded?.Invoke();
+    //        throw;
+    //    }
+    //}
 
-    private void HandlePieceSelect(GameSquare square)
-    {
-        square.State = SquareState.Selected;
-        foreach (GameSquare availableSquare in square.Piece?.GetMovableSquares(GameState, square.X, square.Y) ?? [])
-        {
-            availableSquare.State = SquareState.Movable;
-        }
-    }
+    //private void HandlePieceSelect(GameSquare square)
+    //{
+    //    square.State = SquareState.Selected;
+    //    foreach (GameSquare availableSquare in square.Piece?.GetMovableSquares(GameState, square.X, square.Y) ?? [])
+    //    {
+    //        availableSquare.State = SquareState.Movable;
+    //    }
+    //}
 
-    private void HandleSameSquareSelect(GameSquare selectedSquare)
-    {
-        selectedSquare.State = SquareState.Normal;
-        foreach (GameSquare availableSquare in selectedSquare.Piece?.GetMovableSquares(GameState, selectedSquare.X, selectedSquare.Y) ?? [])
-        {
-            availableSquare.State = SquareState.Normal;
-        }
-    }
+    //private void HandleSameSquareSelect(GameSquare selectedSquare)
+    //{
+    //    selectedSquare.State = SquareState.Normal;
+    //    foreach (GameSquare availableSquare in selectedSquare.Piece?.GetMovableSquares(GameState, selectedSquare.X, selectedSquare.Y) ?? [])
+    //    {
+    //        availableSquare.State = SquareState.Normal;
+    //    }
+    //}
 
-    private void HandleOtherPieceSelect(GameSquare square, GameSquare selectedSquare)
-    {
-        selectedSquare.State = SquareState.Normal;
-        foreach (GameSquare availableSquare in selectedSquare.Piece?.GetMovableSquares(GameState, selectedSquare.X, selectedSquare.Y) ?? [])
-        {
-            availableSquare.State = SquareState.Normal;
-        }
-        square.State = SquareState.Selected;
-        foreach (GameSquare availableSquare in square.Piece?.GetMovableSquares(GameState, square.X, square.Y) ?? [])
-        {
-            availableSquare.State = SquareState.Movable;
-        }
-    }
+    //private void HandleOtherPieceSelect(GameSquare square, GameSquare selectedSquare)
+    //{
+    //    selectedSquare.State = SquareState.Normal;
+    //    foreach (GameSquare availableSquare in selectedSquare.Piece?.GetMovableSquares(GameState, selectedSquare.X, selectedSquare.Y) ?? [])
+    //    {
+    //        availableSquare.State = SquareState.Normal;
+    //    }
+    //    square.State = SquareState.Selected;
+    //    foreach (GameSquare availableSquare in square.Piece?.GetMovableSquares(GameState, square.X, square.Y) ?? [])
+    //    {
+    //        availableSquare.State = SquareState.Movable;
+    //    }
+    //}
 
-    private async Task<bool> HandleMove(GameSquare endSquare, GameSquare startSquare, PlayerModel player)
-    {
-        string? move = startSquare.Piece?.HandleMove(GameState, startSquare, endSquare);
-        GameState.Moves += $" {move}";
-        ResetBoardStates();
-        CheckForWin(player.IsWhite);
-        //if (Winner != null)
-        //{
-        //    return true;
-        //}
-        IsWhitePlayerTurn = !IsWhitePlayerTurn;
-        OnStateChanged();
-        PlayerModel? opponent = player.IsWhite ? BlackPlayer : WhitePlayer;
-        if (opponent is AIPlayerModel ai)
-        {
-
-            Result<string, AIMoveError> aimove = await ai.Move(GameState);
-            GameState.Moves += $" {aimove}";
-            CheckForWin(!player.IsWhite);
-            //if (Winner != null)
-            //{
-            //    return true;
-            //}
-            IsWhitePlayerTurn = !IsWhitePlayerTurn;
-            OnStateChanged();
-        }
-        return false;
-    }
-
-    private void CheckForWin(bool isWhite)
+    public PlayerModel? CheckForWinner(bool isWhite)
     {
         if (isWhite)
         {
@@ -194,10 +187,10 @@ public class GameModel
                 {
                     if ((opponentSquare.Piece?.GetMovableSquares(GameState, opponentSquare.X, opponentSquare.Y) ?? []).Any())
                     {
-                        return;
+                        return null;
                     }
                 }
-                //Winner = WhitePlayer;
+                return WhitePlayer;
             }
         }
         else
@@ -209,12 +202,13 @@ public class GameModel
                 {
                     if ((opponentSquare.Piece?.GetMovableSquares(GameState, opponentSquare.X, opponentSquare.Y) ?? []).Any())
                     {
-                        return;
+                        return null;
                     }
                 }
-                //Winner = BlackPlayer;
+                return BlackPlayer;
             }
         }
+        return null;
     }
 
     public void ResetBoardStates()
@@ -224,16 +218,4 @@ public class GameModel
             square.State = SquareState.Normal;
         }
     }
-
-    public void OnGameEnded()
-    {
-        //GameEnded?.Invoke();
-    }
-
-    public void OnStateChanged()
-    {
-        //StateChanged?.Invoke();
-    }
-
-
 }

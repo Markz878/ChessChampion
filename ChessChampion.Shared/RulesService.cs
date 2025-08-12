@@ -18,7 +18,7 @@ public static class RulesService
         return BlackPieces.Contains(piece);
     }
 
-    public static bool IsPlayerPiece(ChessPiece? chessPiece, bool isPlayerWhite)
+    public static bool IsPlayerPiece(ChessPiece chessPiece, bool isPlayerWhite)
     {
         return chessPiece is not null && (IsWhitePiece(chessPiece.Marker) && isPlayerWhite || IsBlackPiece(chessPiece.Marker) && !isPlayerWhite);
     }

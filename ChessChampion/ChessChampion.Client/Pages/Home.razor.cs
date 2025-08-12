@@ -2,6 +2,7 @@
 using ChessChampion.Client.Services;
 using ChessChampion.Shared.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 
 namespace ChessChampion.Client.Pages;
@@ -14,6 +15,9 @@ public sealed partial class Home : ComponentBase
     [Inject] public required MainViewModel ViewModel { get; init; }
     [Inject] public required APIService API { get; init; }
     [Inject] public required HubConnectionService Hub { get; init; }
+    [Inject] public required NavigationManager Navigation { get; init; }
+
+    private HubConnection? _hubConnection;
 
     protected override void OnInitialized()
     {
@@ -79,33 +83,12 @@ public sealed partial class Home : ComponentBase
             ViewModel.StatusMessage = $"Your game code is {x.GameCode}";
         },
         e => ViewModel.StatusMessage = e);
-
-        //gameCode = CreateGameCode();
-        //string? userName = CreateGameForm.UserName;
-        //if (string.IsNullOrEmpty(userName))
-        //{
-        //    StatusMessage = "Please enter your name";
-        //    return;
-        //}
-        //Game = new();
-        //Game.StateChanged += Game_OnStateChanged;
-        //Game.GameEnded += Game_OnGameEnded;
-        //if (ChooseWhitePieces)
-        //{
-        //    Player = new PlayerModel(userName, true);
-        //    Game.WhitePlayer = Player;
-        //}
-        //else
-        //{
-        //    Player = new PlayerModel(userName, false);
-        //    Game.BlackPlayer = Player;
-        //}
-        //while (!GamesService.CreateGame(gameCode.ToLower(), Game))
-        //{
-        //    gameCode = CreateGameCode();
-        //}
-        //CreateGameForm.GameCode = gameCode;
-        //StatusMessage = "Waiting for the other player..";
+        if (response.IsSuccess && ViewModel.GameId.HasValue)
+        {
+            _hubConnection = Hub.BuildHubConnection(Navigation.ToAbsoluteUri("/chesshub"));
+            await _hubConnection.StartAsync();
+            await _hubConnection.InvokeAsync(nameof(IChessHubClientActions.JoinGame), ViewModel.GameId.Value);
+        }
     }
 
 
@@ -178,16 +161,12 @@ public sealed partial class Home : ComponentBase
 
     private async Task StartGameVsComputer()
     {
-        //if (ViewModel.CreateGameForm.UserName is null || ViewModel.CreateGameForm.UserName.Length < 3)
-        //{
-        //    ViewModel.StatusMessage = "Please enter a valid username (at least 3 characters)";
-        //    return;
-        //}
         if (ViewModel.SkillLevel is < 0 or > 20)
         {
             ViewModel.StatusMessage = "Please select a valid AI skill level (1-20)";
             return;
         }
+        ViewModel.Player.Name = "Player";
         CreateGameRequest request = new()
         {
             UserName = ViewModel.Player.Name,
@@ -195,8 +174,8 @@ public sealed partial class Home : ComponentBase
             IsWhites = ViewModel.Player.IsWhite,
             VersusAI = true
         };
-        Result<CreateGameResponse, string> game = await API.CreateGame(request);
-        game.Handle(x =>
+        Result<CreateGameResponse, string> gameResponse = await API.CreateGame(request);
+        gameResponse.Handle(x =>
         {
             ViewModel.GameId = x.Id;
             ViewModel.GameState = x.GameState;
@@ -206,6 +185,12 @@ public sealed partial class Home : ComponentBase
         {
             ViewModel.StatusMessage = e;
         });
+        if (gameResponse.IsSuccess && ViewModel.GameId.HasValue)
+        {
+            _hubConnection = Hub.BuildHubConnection(Navigation.ToAbsoluteUri("/chesshub"));
+            await _hubConnection.StartAsync();
+            await _hubConnection.InvokeAsync(nameof(IChessHubClientActions.JoinGame), ViewModel.GameId.Value);
+        }
         //gameCode = null;
         //Player = new PlayerModel("Player", ChooseWhitePieces);
         //AIPlayerModel ai = new(SkillLevel, Configuration["EngineFileName"] ?? throw new ArgumentNullException("EngineFileName"));

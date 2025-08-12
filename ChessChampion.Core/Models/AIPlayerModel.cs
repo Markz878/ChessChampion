@@ -1,5 +1,4 @@
 ﻿using ChessChampion.Core.Data;
-using ChessChampion.Shared;
 using ChessChampion.Shared.Models;
 
 namespace ChessChampion.Core.Models;
@@ -14,54 +13,12 @@ public class AIPlayerModel(int skillLevel, string engineFileName) : PlayerModel(
         this.calculationTime = calculationTime;
     }
 
-    public async Task<Result<string, AIMoveError>> Move(GameStateModel gameState)
+    public async Task<Result<string, MoveError>> Move(GameModel game)
     {
-        string? aiMove = null;
-        int retries = 0;
-        string? errorMessage = null;
-        while (string.IsNullOrEmpty(aiMove))
-        {
-            aiMove = await chessAI.GetNextMove(gameState.Moves, calculationTime);
+        string aiMove = await chessAI.GetNextMove(game.GameState.Moves, calculationTime);
 
-            if (string.IsNullOrEmpty(aiMove))
-            {
-                retries++;
-                continue;
-            }
-            GameSquare startSquare = gameState[aiMove[..2]];
-            GameSquare endSquare = gameState[aiMove[2..4]];
-            if (startSquare.Piece is null)
-            {
-                errorMessage = $"AI tried to move empty square {startSquare.ChessCoordinate}";
-                aiMove = null;
-                retries++;
-                continue;
-            }
-            else if (!RulesService.IsPlayerPiece(startSquare.Piece, IsWhite))
-            {
-                errorMessage = $"AI tried to move opponent square {startSquare.ChessCoordinate}";
-                aiMove = null;
-                retries++;
-                continue;
-            }
-            else if (endSquare.Piece != null && RulesService.IsPlayerPiece(endSquare.Piece, IsWhite))
-            {
-                errorMessage = $"AI tried to eat it's own piece at {endSquare.ChessCoordinate}";
-                aiMove = null;
-                retries++;
-                continue;
-            }
-            else if (retries > 5)
-            {
-                return new AIMoveError(errorMessage); ;
-            }
-            else
-            {
-                return startSquare.Piece.HandleMove(gameState, startSquare, endSquare);
-            }
-        }
-        return new AIMoveError(errorMessage);
+        MoveError? error = game.TryMakeMove(aiMove);
+
+        return error is null ? aiMove : error.Value;
     }
 }
-
-public readonly record struct AIMoveError(string? Error);

@@ -1,4 +1,6 @@
-﻿namespace ChessChampion.Shared.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ChessChampion.Shared.Models;
 
 public class GameStateModel
 {
@@ -8,8 +10,10 @@ public class GameStateModel
     public bool CanWhiteKingCastleLeft { get; set; } = true;
     public bool CanBlackKingCastleRight { get; set; } = true;
     public bool CanBlackKingCastleLeft { get; set; } = true;
+    public bool IsWhitePlayerTurn { get; set; } = true;
 
-    public GameStateModel() 
+    [JsonConstructor]
+    private GameStateModel() 
     {
         State = [];
     }

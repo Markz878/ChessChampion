@@ -14,13 +14,30 @@ public sealed class HubConnectionService(MainViewModel viewModel)
             .WithAutomaticReconnect()
             .Build();
 
+        hub.On<string>(nameof(IChessHubNotifications.PlayerJoined), (playerName) =>
+        {
+            bool isWhite = !viewModel.Player.IsWhite; // Default to White if game state is not set
+            viewModel.StatusMessage = $"{playerName} has joined the game as {(isWhite ? "White" : "Black")}.";
+            viewModel.OtherPlayer = new PlayerModel(playerName, isWhite);
+        });
+
         hub.On<string>(nameof(IChessHubNotifications.MoveReceived), (move) =>
         {
             if (viewModel.GameState is null)
             {
                 return;
             }
+            GameSquare startSquare = viewModel.GameState[move[..2]];
+            GameSquare endSquare = viewModel.GameState[move[2..4]];
+            if (startSquare.Piece is null)
+            {
+                viewModel.StatusMessage = "Invalid move received.";
+                return;
+            }
+            startSquare.Piece.HandleMove(viewModel.GameState, startSquare, endSquare);
             viewModel.GameState.Moves += " " + move;
+            viewModel.GameState.IsWhitePlayerTurn = !viewModel.GameState.IsWhitePlayerTurn;
+            viewModel.StateHasChanged?.Invoke();
         });
 
         hub.On(nameof(IChessHubNotifications.GameOver), (string winner) =>
@@ -30,17 +47,8 @@ public sealed class HubConnectionService(MainViewModel viewModel)
 
         hub.On(nameof(IChessHubNotifications.PlayerLeft), (string leaverName) =>
         {
-            if (viewModel.Player?.Name == leaverName)
-            {
-                viewModel.StatusMessage = "You have left the game.";
-                viewModel.GameState = null;
-                viewModel.Player = null;
-                viewModel.OtherPlayer = null;
-            }
-            else
-            {
-                viewModel.StatusMessage = $"{leaverName} has left the game.";
-            }
+            viewModel.StatusMessage = $"{leaverName} has left the game.";
+            viewModel.Winner = viewModel.Player;
         });
 
         return hub;

@@ -56,7 +56,7 @@ else
             <div class="board-wrapper">
                 <div class="turn-text @GetStatusTextColor()">@GetStatusText()</div>
                 <div class="player-name">@(ViewModel.BlackPlayer.Name)</div>
-                <ChessBoardComponent Game="ViewModel.GameState" Player="ViewModel.Player" />
+                <ChessBoardComponent />
                 <div class="player-name">@(ViewModel.WhitePlayer.Name)</div>
             </div>
             <div class="moves-wrapper">
