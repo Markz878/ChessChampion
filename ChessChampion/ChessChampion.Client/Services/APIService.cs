@@ -3,12 +3,11 @@ using System.Net.Http.Json;
 
 namespace ChessChampion.Client.Services;
 
-public sealed class APIService(IHttpClientFactory httpClientFactory)
+public sealed class APIService(IHttpClientFactory httpClientFactory, HubConnectionService hubConnection)
 {
     private readonly HttpClient httpClient = httpClientFactory.CreateClient("api");
     public async Task<Result<CreateGameResponse, string>> CreateGame(CreateGameRequest createGameRequest)
     {
-        string x = httpClient.BaseAddress?.ToString() ?? string.Empty;
         HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/create", createGameRequest);
         if (response.IsSuccessStatusCode)
         {

@@ -16,7 +16,7 @@ public sealed class HubConnectionService(MainViewModel viewModel)
 
         hub.On<string>(nameof(IChessHubNotifications.PlayerJoined), (playerName) =>
         {
-            bool isWhite = !viewModel.Player.IsWhite; // Default to White if game state is not set
+            bool isWhite = !viewModel.Player.IsWhite;
             viewModel.StatusMessage = $"{playerName} has joined the game as {(isWhite ? "White" : "Black")}.";
             viewModel.OtherPlayer = new PlayerModel(playerName, isWhite);
         });

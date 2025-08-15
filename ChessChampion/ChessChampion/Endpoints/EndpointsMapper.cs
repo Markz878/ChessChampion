@@ -20,7 +20,7 @@ public static class EndpointsMapper
         apiGroup.MapPost("/move", SubmitMove);
     }
 
-    public static Results<Ok<CreateGameResponse>, BadRequest<string>> CreateGame(CreateGameRequest createGameRequest, GamesService gamesService, IConfiguration configuration)
+    public static Results<Ok<CreateGameResponse>, BadRequest<string>> CreateGame(CreateGameRequest createGameRequest, GamesService gamesService)
     {
         if (string.IsNullOrEmpty(createGameRequest.UserName))
         {
@@ -90,22 +90,23 @@ public static class EndpointsMapper
             Result<string, MoveError> aiMoveResult = await ai.Move(game);
 
             return await aiMoveResult.MatchAsync<Results<NoContent, BadRequest<string>, NotFound<string>>>(
-                async x =>
+                async move =>
                 {
-                    logger.LogInformation("AI returned move {AiMove}", x);
-                    await hub.Clients.Group(game.Id.ToString()).SendAsync(nameof(IChessHubNotifications.MoveReceived), x);
+                    logger.LogInformation("AI returned move {AiMove}", move);
+                    IClientProxy p = hub.Clients.Group(game.Id.ToString());
+                    await p.SendAsync(nameof(IChessHubNotifications.MoveReceived), move);
                     PlayerModel? winner = game.CheckForWinner(otherPlayer.IsWhite);
                     if (winner is not null)
                     {
                         gamesService.DeleteGame(game.Id);
-                        await hub.Clients.Group(game.Id.ToString()).SendAsync(nameof(IChessHubNotifications.GameOver), winner.Name);
+                        await p.SendAsync(nameof(IChessHubNotifications.GameOver), winner.Name);
                     }
                     return TypedResults.NoContent();
                 },
-                async e =>
+                async error =>
                 {
-                    logger.LogError("AI move error: {Error}", e);
-                    return await Task.FromResult(TypedResults.BadRequest(e.ToString()));
+                    logger.LogError("AI move error: {Error}", error);
+                    return await Task.FromResult(TypedResults.BadRequest(error.ToString()));
                 }
             );
         }

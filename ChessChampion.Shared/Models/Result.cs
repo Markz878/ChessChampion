@@ -56,6 +56,20 @@ public readonly struct Result<T, E>
         }
     }
 
+    public Task HandleAsync(Func<T, Task> handleValue, Func<E, Task> handleError)
+    {
+        if (IsSuccess)
+        {
+            ArgumentNullException.ThrowIfNull(_value);
+            return handleValue.Invoke(_value);
+        }
+        else
+        {
+            ArgumentNullException.ThrowIfNull(_error);
+            return handleError.Invoke(_error);
+        }
+    }
+
     public Task<U> MatchAsync<U>(Func<T, Task<U>> handleValue, Func<E, Task<U>> handleError)
     {
         if (IsSuccess)

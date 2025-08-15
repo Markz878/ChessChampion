@@ -176,14 +176,14 @@ public class GameModel
     //    }
     //}
 
-    public PlayerModel? CheckForWinner(bool isWhite)
+    public PlayerModel? CheckForWinner(bool whiteMoved)
     {
-        if (isWhite)
+        if (whiteMoved)
         {
             GameSquare blackKingSquare = GameState.GetPieceSquare<BlackKing>();
-            if (IsInOpponentThreatSquare(GameState, blackKingSquare.X, blackKingSquare.Y, isWhite))
+            if (IsInOpponentThreatSquare(GameState, blackKingSquare.X, blackKingSquare.Y, false))
             {
-                foreach (GameSquare opponentSquare in GetAllOpponentPieces(GameState, isWhite))
+                foreach (GameSquare opponentSquare in GetAllOpponentPieces(GameState, whiteMoved))
                 {
                     if ((opponentSquare.Piece?.GetMovableSquares(GameState, opponentSquare.X, opponentSquare.Y) ?? []).Any())
                     {
@@ -196,9 +196,9 @@ public class GameModel
         else
         {
             GameSquare whiteKingSquare = GameState.GetPieceSquare<WhiteKing>();
-            if (IsInOpponentThreatSquare(GameState, whiteKingSquare.X, whiteKingSquare.Y, isWhite))
+            if (IsInOpponentThreatSquare(GameState, whiteKingSquare.X, whiteKingSquare.Y, true))
             {
-                foreach (GameSquare opponentSquare in GetAllOpponentPieces(GameState, isWhite))
+                foreach (GameSquare opponentSquare in GetAllOpponentPieces(GameState, whiteMoved))
                 {
                     if ((opponentSquare.Piece?.GetMovableSquares(GameState, opponentSquare.X, opponentSquare.Y) ?? []).Any())
                     {
