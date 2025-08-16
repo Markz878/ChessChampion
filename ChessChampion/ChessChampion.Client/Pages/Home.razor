@@ -2,6 +2,8 @@
 
 <h1 id="main-logo" @onclick="LeaveGame">Chess Champion</h1>
 
+<div class="turn-text @GetStatusTextColor()">@ViewModel.StatusMessage</div>
+
 @if (ViewModel.GameState == null)
 {
     <ChooseOptionComponent Title="Play Vs Human Or Computer" TextWidth="280px" LeftText="Human" RightText="Computer" IsLeftSelected="ViewModel.PlayVsMode == PlayVsMode.PlayVsHuman" LeftSelected="ChoosePlayVsHuman" />
@@ -37,7 +39,7 @@
     {
         <ChooseOptionComponent IsDisabled="false" Title="Choose white or black pieces" TextWidth="280px" LeftText="White" RightText="Black" LeftSelected="SelectWhitePieces" />
         <SliderComponent Description="Select skill level:" Min="0" Max="20" Value="@ViewModel.SkillLevel" ValueChangedHandler="(x) => ViewModel.SkillLevel = x" />
-        <button class="btn btn-primary" @onclick="StartGameVsComputer">Start game</button>
+        <button class="btn btn-primary" @onclick="CreateGame">Start game</button>
     }
 }
 else
@@ -54,7 +56,6 @@ else
     {
         <div class="game-content-wrapper">
             <div class="board-wrapper">
-                <div class="turn-text @GetStatusTextColor()">@GetStatusText()</div>
                 <div class="player-name">@(ViewModel.BlackPlayer.Name)</div>
                 <ChessBoardComponent />
                 <div class="player-name">@(ViewModel.WhitePlayer.Name)</div>
@@ -66,4 +67,3 @@ else
         </div>
     }
 }
-<div class="turn-text">@ViewModel.StatusMessage</div>

@@ -13,11 +13,11 @@ public class AIPlayerModel(int skillLevel, string engineFileName) : PlayerModel(
         this.calculationTime = calculationTime;
     }
 
-    public async Task<Result<string, MoveError>> Move(GameModel game)
+    public async Task<Result<string, BaseError>> Move(GameModel game)
     {
         string aiMove = await chessAI.GetNextMove(game.GameState.Moves, calculationTime);
 
-        MoveError? error = game.TryMakeMove(aiMove);
+        BaseError? error = game.TryMakeMove(aiMove);
 
         return error is null ? aiMove : error.Value;
     }

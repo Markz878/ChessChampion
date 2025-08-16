@@ -1,6 +1,7 @@
 ﻿using ChessChampion.Client.Models;
-using ChessChampion.Client.Services;
 using ChessChampion.Core.Data;
+using ChessChampion.Services;
+using ChessChampion.Shared.Services;
 
 namespace ChessChampion.Installers;
 
@@ -8,10 +9,9 @@ public sealed class CoreServicesInstaller : IInstaller
 {
     public void Install(WebApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<GamesService>();
+        builder.Services.AddSingleton<GamesRepository>();
         builder.Services.AddSingleton<MainViewModel>();
-        builder.Services.AddSingleton<APIService>();
-        builder.Services.AddHttpClient();
-        builder.Services.AddSingleton<HubConnectionService>();
+        builder.Services.AddSingleton<IChessService, MockChessService>();
+        builder.Services.AddSingleton<IHubConnectionService, MockHubConnectionService>();
     }
 }

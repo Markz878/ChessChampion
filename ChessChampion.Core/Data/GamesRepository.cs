@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ChessChampion.Core.Data;
 
-public sealed class GamesService(IConfiguration configuration)
+public sealed class GamesRepository(IConfiguration configuration)
 {
     private readonly Dictionary<string, GameModel> availableGames = [];
     private readonly Dictionary<Guid, GameModel> games = [];

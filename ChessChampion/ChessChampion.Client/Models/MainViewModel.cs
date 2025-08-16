@@ -4,6 +4,9 @@ namespace ChessChampion.Client.Models;
 
 public sealed class MainViewModel : BaseViewModel
 {
+    public const string PlayerTurnText = "It is your turn!";
+    public const string OtherPlayerTurnText = "It is opponent's turn...";
+
     public Guid? GameId { get => gameId; set => SetProperty(ref gameId, value); }
     private Guid? gameId;
     public GameStateModel? GameState { get => gameState; set => SetProperty(ref gameState, value); }

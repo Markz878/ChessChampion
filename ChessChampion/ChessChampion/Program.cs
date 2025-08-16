@@ -25,7 +25,10 @@ else
 
 app.MapStaticAssets();
 app.UseHttpLogging();
-
+if (app.Environment.IsProduction())
+{
+    app.UseMiddleware<SecurityHeadersMiddleware>();
+}
 app.UseAntiforgery();
 app.UseRateLimiter();
 app.MapStaticAssets();

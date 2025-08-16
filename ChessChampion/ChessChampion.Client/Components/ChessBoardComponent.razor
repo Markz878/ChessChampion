@@ -13,7 +13,7 @@
             }
             else if (j < 8 && i < 8)
             {
-                <ChessSquareComponent Square="GameState[7-i][j]" HandleClickCallback="HandleClick" />
+                <ChessSquareComponent Square="GameState[7 - i][j]" IsSelected="GameState[7 - i][j] == selectedSquare" IsMovable="movableSquares.Contains(GameState[7 - i][j])" HandleClickCallback="HandleClick" />
             }
         }
     }
