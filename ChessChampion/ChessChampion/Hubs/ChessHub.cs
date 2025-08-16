@@ -1,9 +1,9 @@
-﻿using ChessChampion.Shared.Models;
+﻿using ChessChampion.Shared.Services;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChessChampion.Hubs;
 
-public class ChessHub : Hub<IChessHubNotifications>, IChessHubClientActions
+public sealed class ChessHub : Hub<IChessHubNotifications>, IChessHubClientActions
 {
     public async Task JoinGame(Guid gameId)
     {

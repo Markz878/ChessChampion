@@ -3,7 +3,9 @@ using ChessChampion.Core.Models;
 using ChessChampion.Hubs;
 using ChessChampion.Installers;
 using ChessChampion.Shared.Models;
+using ChessChampion.Shared.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChessChampion.Endpoints;
@@ -20,7 +22,7 @@ public static class EndpointsMapper
         apiGroup.MapPost("/move", SubmitMove);
     }
 
-    public static Results<Ok<CreateGameResponse>, BadRequest<string>> CreateGame(CreateGameRequest createGameRequest, GamesService gamesService)
+    public static Results<Ok<CreateGameResponse>, BadRequest<string>> CreateGame(CreateGameRequest createGameRequest, GamesRepository gamesService)
     {
         if (string.IsNullOrEmpty(createGameRequest.UserName))
         {
@@ -33,7 +35,7 @@ public static class EndpointsMapper
         return TypedResults.Ok(new CreateGameResponse(game.Id, game.Code ?? "", game.GameState));
     }
 
-    public static async Task<Results<Ok<JoinGameResponse>, BadRequest<string>, NotFound<string>>> JoinGame(JoinGameRequest joinGameRequest, GamesService gamesService, IHubContext<ChessHub> hub)
+    public static async Task<Results<Ok<JoinGameResponse>, BadRequest<string>, NotFound<string>>> JoinGame(JoinGameRequest joinGameRequest, GamesRepository gamesRepository, IHubContext<ChessHub> hub)
     {
         if (string.IsNullOrEmpty(joinGameRequest.UserName))
         {
@@ -43,16 +45,18 @@ public static class EndpointsMapper
         {
             return TypedResults.BadRequest("Game code is required.");
         }
-        if (gamesService.TryToJoinGame(joinGameRequest.GameCode, joinGameRequest.UserName, out bool? playerIsWhites, out GameModel? game) && playerIsWhites.HasValue && game is not null)
+        if (gamesRepository.TryToJoinGame(joinGameRequest.GameCode, joinGameRequest.UserName, out bool? playerIsWhites, out GameModel? game) && playerIsWhites.HasValue && game is not null)
         {
             await hub.Clients.Group(game.Id.ToString()).SendAsync(nameof(IChessHubNotifications.PlayerJoined), joinGameRequest.UserName);
             return TypedResults.Ok(new JoinGameResponse(game.Id, game.GameState, playerIsWhites.Value ? game.BlackPlayer! : game.WhitePlayer!));
         }
-
-        return TypedResults.NotFound("Game not found.");
+        else
+        {
+            return TypedResults.NotFound("Game not found.");
+        }
     }
 
-    public static async Task<Results<NoContent, BadRequest<string>, NotFound<string>>> SubmitMove(SubmitMoveRequest moveRequest, GamesService gamesService, IHubContext<ChessHub> hub, ILogger<AIPlayerModel> logger)
+    public static async Task<Results<NoContent, BadRequest<string>, NotFound<string>>> SubmitMove(SubmitMoveRequest moveRequest, GamesRepository gamesService, IHubContext<ChessHub> hub, [FromHeader] string? connectionId, ILogger<AIPlayerModel> logger)
     {
         if (!gamesService.TryGetGame(moveRequest.GameId, out GameModel? game) || game is null)
         {
@@ -72,34 +76,33 @@ public static class EndpointsMapper
         {
             return TypedResults.BadRequest("There is no other player yet.");
         }
-
-        MoveError? moveError = game.TryMakeMove(moveRequest.Move);
+        BaseError? moveError = game.TryMakeMove(moveRequest.Move);
         if (moveError.HasValue)
         {
             return TypedResults.BadRequest(moveError.Value.ToString());
         }
+        await hub.Clients.GroupExcept(game.Id.ToString(), connectionId ?? "").SendAsync(nameof(IChessHubNotifications.MoveReceived), moveRequest.Move);
         PlayerModel? winner = game.CheckForWinner(currentPlayer.IsWhite);
         if (winner is not null)
         {
             gamesService.DeleteGame(game.Id);
-            await hub.Clients.Group(game.Id.ToString()).SendAsync(nameof(IChessHubNotifications.GameOver), winner.Name);
+            await hub.Clients.Group(game.Id.ToString()).SendAsync(nameof(IChessHubNotifications.GameOver), winner.IsWhite);
         }
         if (otherPlayer is AIPlayerModel ai)
         {
             logger.LogInformation("Given moves to AI are {Moves}", game.GameState.Moves);
-            Result<string, MoveError> aiMoveResult = await ai.Move(game);
+            Result<string, BaseError> aiMoveResult = await ai.Move(game);
 
             return await aiMoveResult.MatchAsync<Results<NoContent, BadRequest<string>, NotFound<string>>>(
                 async move =>
                 {
                     logger.LogInformation("AI returned move {AiMove}", move);
-                    IClientProxy p = hub.Clients.Group(game.Id.ToString());
-                    await p.SendAsync(nameof(IChessHubNotifications.MoveReceived), move);
+                    await hub.Clients.Group(game.Id.ToString()).SendAsync(nameof(IChessHubNotifications.MoveReceived), move);
                     PlayerModel? winner = game.CheckForWinner(otherPlayer.IsWhite);
                     if (winner is not null)
                     {
                         gamesService.DeleteGame(game.Id);
-                        await p.SendAsync(nameof(IChessHubNotifications.GameOver), winner.Name);
+                        await hub.Clients.Group(game.Id.ToString()).SendAsync(nameof(IChessHubNotifications.GameOver), winner.IsWhite);
                     }
                     return TypedResults.NoContent();
                 },
@@ -110,18 +113,10 @@ public static class EndpointsMapper
                 }
             );
         }
-        else
-        {
-            await hub.Clients.Group(game.Id.ToString()).SendAsync(nameof(IChessHubNotifications.MoveReceived), moveRequest.Move);
-            if (winner is not null)
-            {
-                await hub.Clients.Group(game.Id.ToString()).SendAsync(nameof(IChessHubNotifications.GameOver), winner.Name);
-            }
-            return TypedResults.NoContent();
-        }
+        return TypedResults.NoContent();
     }
 
-    public static async Task<Results<NoContent, BadRequest<string>, NotFound>> LeaveGame(LeaveGameRequest leaveRequest, GamesService gamesService, IHubContext<ChessHub> hub)
+    public static async Task<Results<NoContent, BadRequest<string>, NotFound>> LeaveGame(LeaveGameRequest leaveRequest, GamesRepository gamesService, IHubContext<ChessHub> hub)
     {
         if (gamesService.TryGetGame(leaveRequest.GameId, out GameModel? game) && game is not null)
         {

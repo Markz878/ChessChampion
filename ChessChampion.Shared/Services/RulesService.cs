@@ -1,7 +1,7 @@
 ﻿using ChessChampion.Shared.Models;
 using ChessChampion.Shared.Models.Pieces;
 
-namespace ChessChampion.Shared;
+namespace ChessChampion.Shared.Services;
 
 public static class RulesService
 {

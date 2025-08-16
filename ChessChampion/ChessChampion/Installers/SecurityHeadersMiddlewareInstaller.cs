@@ -15,20 +15,16 @@ public sealed class SecurityHeadersMiddleware : IMiddleware
 {
     public Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        context.Response.Headers.Append("X-Content-Type-Options", new StringValues("nosniff"));
         context.Response.Headers.Append("X-Frame-Options", new StringValues("DENY"));
-        context.Response.Headers.Append("Referrer-Policy", new StringValues("no-referrer"));
-        context.Response.Headers.Append("X-XSS-Protection", new StringValues("1; mode=block"));
         context.Response.Headers.Append("Cross-Origin-Opener-Policy", new StringValues("same-origin"));
-        context.Response.Headers.Append("Content-Security-Policy-Report-Only", new StringValues(
+        context.Response.Headers.Append("Content-Security-Policy", new StringValues(
             "default-src 'self'; " +
             "base-uri 'self'; " +
-            "connect-src *; " +
+            "connect-src 'self'; " +
             "object-src 'none'; " +
             "script-src 'self' 'wasm-unsafe-eval'; " +
-            "style-src 'self' 'unsafe-inline'; " +
-            "img-src *; " +
-            "font-src https://*; " +
+            "style-src 'self'; " +
+            "img-src 'self'; " +
             "upgrade-insecure-requests;"
         ));
         return next(context);

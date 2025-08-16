@@ -19,10 +19,3 @@ public enum SquareBlockState
     OwnPiece,
     OpponentPiece
 }
-
-public enum SquareState
-{
-    Normal,
-    Selected,
-    Movable
-}

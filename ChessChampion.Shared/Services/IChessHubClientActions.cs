@@ -1,4 +1,4 @@
-﻿namespace ChessChampion.Shared.Models;
+﻿namespace ChessChampion.Shared.Services;
 
 public interface IChessHubClientActions
 {

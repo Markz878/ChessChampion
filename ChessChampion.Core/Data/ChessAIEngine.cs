@@ -2,7 +2,7 @@
 
 namespace ChessChampion.Core.Data;
 
-public sealed partial class ChessAIEngine(int difficultyLevel, string engineFileName)
+public sealed class ChessAIEngine(int difficultyLevel, string engineFileName)
 {
     public async Task<string> GetNextMove(string moves, ushort calculationTimeMS)
     {

@@ -1,6 +1,6 @@
 ﻿namespace ChessChampion.Shared.Models;
 
-public sealed record class LeaveGameRequest(
+public sealed record LeaveGameRequest(
     Guid GameId,
     string UserName
 );

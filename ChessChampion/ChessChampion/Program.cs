@@ -3,7 +3,8 @@ using ChessChampion.Endpoints;
 using ChessChampion.Hubs;
 using ChessChampion.Installers;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder();
+//builder.Host.UseDefaultServiceProvider(x => x.ValidateOnBuild = false);
 
 builder.InstallAssemblyServices();
 
@@ -25,7 +26,10 @@ else
 
 app.MapStaticAssets();
 app.UseHttpLogging();
-
+if (app.Environment.IsProduction())
+{
+    app.UseMiddleware<SecurityHeadersMiddleware>();
+}
 app.UseAntiforgery();
 app.UseRateLimiter();
 app.MapStaticAssets();
