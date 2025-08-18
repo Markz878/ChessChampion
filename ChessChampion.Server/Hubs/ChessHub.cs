@@ -1,7 +1,7 @@
 ﻿using ChessChampion.Shared.Services;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ChessChampion.Hubs;
+namespace ChessChampion.Server.Hubs;
 
 public sealed class ChessHub : Hub<IChessHubNotifications>, IChessHubClientActions
 {

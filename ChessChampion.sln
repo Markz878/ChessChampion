@@ -12,9 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessChampionWebUI", "ChessChampionWebUI\ChessChampionWebUI.csproj", "{3C44E5D8-7158-42A5-854C-3EA529AC2D36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessChampion", "ChessChampion\ChessChampion\ChessChampion.csproj", "{B4AFAEE4-73E9-45F7-9346-C398D889092D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessChampion.Server", "ChessChampion.Server\ChessChampion.Server.csproj", "{B4AFAEE4-73E9-45F7-9346-C398D889092D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessChampion.Client", "ChessChampion\ChessChampion.Client\ChessChampion.Client.csproj", "{301697D8-490F-45BF-8BB0-6F46B49A29AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessChampion.Client", "ChessChampion.Client\ChessChampion.Client.csproj", "{301697D8-490F-45BF-8BB0-6F46B49A29AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessChampion.Core", "ChessChampion.Core\ChessChampion.Core.csproj", "{B33012FD-F502-4262-ABD9-7A8B3D9264C2}"
 EndProject

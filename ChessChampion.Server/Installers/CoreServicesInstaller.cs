@@ -1,9 +1,9 @@
 ﻿using ChessChampion.Client.Models;
 using ChessChampion.Core.Data;
-using ChessChampion.Services;
+using ChessChampion.Server.Services;
 using ChessChampion.Shared.Services;
 
-namespace ChessChampion.Installers;
+namespace ChessChampion.Server.Installers;
 
 public sealed class CoreServicesInstaller : IInstaller
 {

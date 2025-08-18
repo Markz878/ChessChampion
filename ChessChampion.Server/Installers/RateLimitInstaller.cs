@@ -1,6 +1,6 @@
 ﻿using System.Threading.RateLimiting;
 
-namespace ChessChampion.Installers;
+namespace ChessChampion.Server.Installers;
 
 public sealed class RateLimitInstaller : IInstaller
 {
@@ -14,7 +14,9 @@ public sealed class RateLimitInstaller : IInstaller
             opt.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             opt.AddPolicy(PolicyName, httpContext =>
             {
+                ILogger<RateLimitInstaller> logger = httpContext.RequestServices.GetRequiredService<ILogger<RateLimitInstaller>>();
                 string? ip = httpContext.Connection.RemoteIpAddress?.ToString();
+                logger.LogDebug("Remote IP: {Ip}", ip);
                 if (ip is null)
                 {
                     return RateLimitPartition.GetTokenBucketLimiter(string.Empty, _ =>

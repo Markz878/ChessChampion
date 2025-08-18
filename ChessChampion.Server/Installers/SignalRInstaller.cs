@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.ResponseCompression;
 
-namespace ChessChampion.Installers;
+namespace ChessChampion.Server.Installers;
 
 public class SignalRInstaller : IInstaller
 {

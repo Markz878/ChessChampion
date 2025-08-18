@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Primitives;
 
-namespace ChessChampion.Installers;
+namespace ChessChampion.Server.Installers;
 
 public sealed class SecurityHeadersMiddlewareInstaller : IInstaller
 {

@@ -15,7 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\ChessChampion.Shared\ChessChampion.Shared.csproj" />
+	  <ProjectReference Include="..\ChessChampion.Shared\ChessChampion.Shared.csproj" />
 	</ItemGroup>
 
 </Project>

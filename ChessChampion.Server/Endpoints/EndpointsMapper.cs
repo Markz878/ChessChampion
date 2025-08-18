@@ -1,14 +1,14 @@
 ﻿using ChessChampion.Core.Data;
 using ChessChampion.Core.Models;
-using ChessChampion.Hubs;
-using ChessChampion.Installers;
+using ChessChampion.Server.Hubs;
+using ChessChampion.Server.Installers;
 using ChessChampion.Shared.Models;
 using ChessChampion.Shared.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ChessChampion.Endpoints;
+namespace ChessChampion.Server.Endpoints;
 
 public static class EndpointsMapper
 {
@@ -90,7 +90,7 @@ public static class EndpointsMapper
         }
         if (otherPlayer is AIPlayerModel ai)
         {
-            logger.LogInformation("Given moves to AI are {Moves}", game.GameState.Moves);
+            logger.LogInformation("Given moves to AI are{Moves}", game.GameState.Moves);
             Result<string, BaseError> aiMoveResult = await ai.Move(game);
 
             return await aiMoveResult.MatchAsync<Results<NoContent, BadRequest<string>, NotFound<string>>>(

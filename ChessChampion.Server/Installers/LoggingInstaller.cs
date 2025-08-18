@@ -4,7 +4,7 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.HttpLogging;
 
-namespace ChessChampion.Installers;
+namespace ChessChampion.Server.Installers;
 
 public class LoggingInstaller : IInstaller
 {
@@ -49,7 +49,7 @@ public class IgnoreRequestPathsTelemetryProcessor(ITelemetryProcessor next) : IT
     }
 
     private static readonly string[] _ignorePaths = ["/health", "/favicon.ico", "_framework/opaque-redirect"];
-    private static readonly string[] _fileEndings = [".br", ".js", ".svg", ".png", ".css", ".json"];
+    private static readonly string[] _fileEndings = [".br", ".js", ".js.map", ".svg", ".png", ".css", ".json"];
     private static bool SkipTelemetry(string path)
     {
         if (_ignorePaths.Contains(path))

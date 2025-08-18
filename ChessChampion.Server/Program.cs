@@ -1,7 +1,7 @@
-using ChessChampion.Components;
-using ChessChampion.Endpoints;
-using ChessChampion.Hubs;
-using ChessChampion.Installers;
+using ChessChampion.Server.Components;
+using ChessChampion.Server.Endpoints;
+using ChessChampion.Server.Hubs;
+using ChessChampion.Server.Installers;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder();
 //builder.Host.UseDefaultServiceProvider(x => x.ValidateOnBuild = false);

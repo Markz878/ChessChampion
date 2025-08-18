@@ -12,8 +12,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\ChessChampion.Core\ChessChampion.Core.csproj" />
 		<ProjectReference Include="..\ChessChampion.Client\ChessChampion.Client.csproj" />
+		<ProjectReference Include="..\ChessChampion.Core\ChessChampion.Core.csproj" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.8" />
 	</ItemGroup>
 

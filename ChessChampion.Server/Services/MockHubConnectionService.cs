@@ -1,6 +1,6 @@
 ﻿using ChessChampion.Shared.Services;
 
-namespace ChessChampion.Services;
+namespace ChessChampion.Server.Services;
 
 public sealed class MockHubConnectionService : IHubConnectionService
 {

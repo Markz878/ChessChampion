@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZURE_WEBAPP_NAME: ChessChampion
-      AZURE_WEBAPP_PACKAGE_PATH: ChessChampionWebUI/publish
+      AZURE_WEBAPP_PACKAGE_PATH: ChessChampion/publish
       DOTNET_CORE_VERSION: 9.0.x
-      WORKING_DIRECTORY: ChessChampionWebUI
+      WORKING_DIRECTORY: ChessChampion
     steps:
       - name: Azure Login
         uses: azure/login@v2

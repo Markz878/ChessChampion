@@ -64,7 +64,7 @@ public sealed partial class Home
 
     private string GetStatusTextColor()
     {
-        if (ViewModel.Player is { } player && ViewModel.GameState is { } game && ViewModel.Winner is null)
+        if (ViewModel.Player is { } player && ViewModel.OtherPlayer is { } && ViewModel.GameState is { } game && ViewModel.Winner is null)
         {
             return player.IsWhite == game.IsWhitePlayerTurn ? "player-turn-color" : "opponent-turn-color";
         }

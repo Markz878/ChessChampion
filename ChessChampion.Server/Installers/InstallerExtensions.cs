@@ -1,4 +1,4 @@
-﻿namespace ChessChampion.Installers;
+﻿namespace ChessChampion.Server.Installers;
 
 public static class InstallerExtensions
 {
