@@ -1,0 +1,69 @@
+﻿@page "/"
+
+<h1 id="main-logo" @onclick="LeaveGame">Chess Champion</h1>
+
+<div class="turn-text @GetStatusTextColor()">@ViewModel.StatusMessage.Trim('"')</div>
+
+@if (ViewModel.GameState == null)
+{
+    <ChooseOptionComponent Title="Play Vs Human Or Computer" TextWidth="280px" LeftText="Human" RightText="Computer" IsLeftSelected="ViewModel.PlayVsMode == PlayVsMode.PlayVsHuman" LeftSelected="ChoosePlayVsHuman" />
+    @if (ViewModel.PlayVsMode == PlayVsMode.PlayVsHuman)
+    {
+        <ChooseOptionComponent Title="Choose How To Connect To A Game" TextWidth="280px" LeftText="Create a game" RightText="Join a game" IsLeftSelected="ViewModel.JoinGameMode == JoinGameMode.CreateGame" LeftSelected="CreateGameSelectionHandler" />
+        @if (ViewModel.JoinGameMode == JoinGameMode.CreateGame)
+        {
+            <ChooseOptionComponent Title="Choose White Or Black Pieces" TextWidth="280px" LeftText="White" RightText="Black" IsLeftSelected="ViewModel.Player.IsWhite" LeftSelected="SelectWhitePieces" />
+            <EditForm Model="ViewModel" class="form-group" OnValidSubmit="CreateGame">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <label for="user-name-1">Your Game Name:</label>
+                <InputText DisplayName="User name" id="user-name-1" class="form-control" @bind-Value="@ViewModel.Player.Name" />
+                <button type="submit" class="btn btn-primary">Create a game</button>
+            </EditForm>
+
+        }
+        else
+        {
+            <EditForm Model="ViewModel" OnValidSubmit="JoinGame">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <label for="user-name-2">Your Game Name:</label>
+                <InputText DisplayName="Game name" id="user-name-2" class="form-control" @bind-Value="@ViewModel.Player.Name" />
+                <label for="game-code-2">Game code from your friend:</label>
+                <InputText DisplayName="Game code" class="form-control" @bind-Value="@ViewModel.GameCode" />
+                <button type="submit" class="btn btn-primary">Join game</button>
+            </EditForm>
+        }
+    }
+    else
+    {
+        <ChooseOptionComponent IsDisabled="false" Title="Choose white or black pieces" TextWidth="280px" LeftText="White" RightText="Black" LeftSelected="SelectWhitePieces" />
+        <SliderComponent Description="Select skill level:" Min="0" Max="20" Value="@ViewModel.SkillLevel" ValueChangedHandler="(x) => ViewModel.SkillLevel = x" />
+        <button class="btn btn-primary" @onclick="CreateGame">Start game</button>
+    }
+}
+else
+{
+    if (ViewModel.BlackPlayer == null || ViewModel.WhitePlayer == null)
+    {
+        @if (!string.IsNullOrEmpty(ViewModel.GameCode))
+        {
+            <div class="turn-text">Your game code is:</div>
+            <div class="turn-text game-code">@ViewModel.GameCode</div>
+        }
+    }
+    else
+    {
+        <div class="game-content-wrapper">
+            <div class="board-wrapper">
+                <div class="player-name">@(ViewModel.BlackPlayer.Name)</div>
+                <ChessBoardComponent />
+                <div class="player-name">@(ViewModel.WhitePlayer.Name)</div>
+            </div>
+            <div class="moves-wrapper">
+                <div class="player-name">Move list:</div>
+                <div class="moves">@ViewModel.GameState.Moves</div>
+            </div>
+        </div>
+    }
+}
