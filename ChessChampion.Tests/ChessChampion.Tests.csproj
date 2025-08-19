@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ChessChampion\ChessChampion\ChessChampion.csproj" />
+    <ProjectReference Include="..\ChessChampion.Server\ChessChampion.Server.csproj" />
   </ItemGroup>
 
   <ItemGroup>

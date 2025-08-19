@@ -4,8 +4,8 @@ namespace ChessChampion.Shared.Services;
 
 public interface IChessService
 {
-    Task CreateGame(CreateGameRequest request);
-    Task JoinGame(JoinGameRequest request);
-    Task LeaveGame(LeaveGameRequest request);
+    Task<Result<CreateGameResponse, BaseError>> CreateGame(CreateGameRequest request);
+    Task<Result<JoinGameResponse, BaseError>> JoinGame(JoinGameRequest request);
+    Task<BaseError?> LeaveGame(LeaveGameRequest request);
     Task<BaseError?> SubmitMove(SubmitMoveRequest request);
 }

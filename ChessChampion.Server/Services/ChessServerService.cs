@@ -3,19 +3,19 @@ using ChessChampion.Shared.Services;
 
 namespace ChessChampion.Server.Services;
 
-public sealed class MockChessService : IChessService
+public sealed class ChessServerService : IChessService
 {
-    public Task CreateGame(CreateGameRequest request)
+    public Task<Result<CreateGameResponse, BaseError>> CreateGame(CreateGameRequest request)
     {
         throw new NotImplementedException();
     }
 
-    public Task JoinGame(JoinGameRequest request)
+    public Task<Result<JoinGameResponse, BaseError>> JoinGame(JoinGameRequest request)
     {
         throw new NotImplementedException();
     }
 
-    public Task LeaveGame(LeaveGameRequest request)
+    public Task<BaseError?> LeaveGame(LeaveGameRequest request)
     {
         throw new NotImplementedException();
     }

@@ -40,9 +40,16 @@ public class GameStateModel
 
     public GameSquare GetSquareFromCoordinates(string coordinate)
     {
-        int column = char.ConvertToUtf32(coordinate, 0) - 97;
-        int row = int.Parse(coordinate[1].ToString()) - 1;
-        return State[row][column];
+        try
+        {
+            int column = char.ConvertToUtf32(coordinate, 0) - 97;
+            int row = int.Parse(coordinate[1].ToString()) - 1;
+            return State[row][column];
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public GameSquare GetPieceSquare<T>()

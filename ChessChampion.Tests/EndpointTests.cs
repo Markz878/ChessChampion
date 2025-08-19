@@ -1,7 +1,7 @@
 ﻿using ChessChampion.Core.Data;
 using ChessChampion.Core.Models;
-using ChessChampion.Endpoints;
-using ChessChampion.Hubs;
+using ChessChampion.Server.Endpoints;
+using ChessChampion.Server.Hubs;
 using ChessChampion.Shared.Models;
 using ChessChampion.Shared.Services;
 using Microsoft.AspNetCore.Http.HttpResults;

@@ -11,6 +11,7 @@ public sealed class CoreServicesInstaller : IInstaller
     {
         builder.Services.AddSingleton<GamesRepository>();
         builder.Services.AddSingleton<MainViewModel>();
-        builder.Services.AddSingleton<IChessService, MockChessService>();
+        builder.Services.AddSingleton<IChessService, ChessServerService>();
+        builder.Services.AddSingleton<IHubConnectionService, MockHubConnectionService>();
     }
 }
