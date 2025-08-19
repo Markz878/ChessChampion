@@ -4,7 +4,6 @@ using ChessChampion.Server.Hubs;
 using ChessChampion.Server.Installers;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder();
-//builder.Host.UseDefaultServiceProvider(x => x.ValidateOnBuild = false);
 
 builder.InstallAssemblyServices();
 

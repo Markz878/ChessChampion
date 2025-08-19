@@ -21,9 +21,6 @@
 		<None Update="stockfish-ubuntu-x86-64-avx2">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="stockfish-windows-17-x86-64-avx2.exe">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
 		<None Update="stockfish-windows-18-x86-64-avx2.exe">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
