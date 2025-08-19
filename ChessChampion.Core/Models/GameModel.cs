@@ -1,6 +1,5 @@
 ﻿using ChessChampion.Shared.Models;
 using ChessChampion.Shared.Models.Pieces;
-using System.Numerics;
 using static ChessChampion.Shared.Services.RulesService;
 
 namespace ChessChampion.Core.Models;

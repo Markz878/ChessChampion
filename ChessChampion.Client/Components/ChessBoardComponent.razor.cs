@@ -36,9 +36,15 @@ public partial class ChessBoardComponent
 
     public async Task HandleSquareSelect(GameSquare square, PlayerModel player)
     {
-        if (ViewModel.Winner is not null) return;
+        if (ViewModel.Winner is not null)
+        {
+            return;
+        }
 
-        if (player.IsWhite != GameState.IsWhitePlayerTurn) return;
+        if (player.IsWhite != GameState.IsWhitePlayerTurn)
+        {
+            return;
+        }
 
         if (square == selectedSquare)
         {

@@ -13,7 +13,7 @@ public class GameStateModel
     public bool IsWhitePlayerTurn { get; set; } = true;
 
     [JsonConstructor]
-    private GameStateModel() 
+    private GameStateModel()
     {
         State = [];
     }

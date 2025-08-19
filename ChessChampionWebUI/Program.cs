@@ -11,17 +11,17 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton<GamesService>();
 if (builder.Environment.IsProduction())
 {
-  builder.Logging.AddApplicationInsights();
-  builder.Services.AddApplicationInsightsTelemetry(x => x.EnableDependencyTrackingTelemetryModule = false);
-  builder.Services.Configure<TelemetryConfiguration>(c => c.SetAzureTokenCredential(new ManagedIdentityCredential()));
+    builder.Logging.AddApplicationInsights();
+    builder.Services.AddApplicationInsightsTelemetry(x => x.EnableDependencyTrackingTelemetryModule = false);
+    builder.Services.Configure<TelemetryConfiguration>(c => c.SetAzureTokenCredential(new ManagedIdentityCredential()));
 }
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-  app.UseExceptionHandler("/Error", createScopeForErrors: true);
-  app.UseHsts();
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();

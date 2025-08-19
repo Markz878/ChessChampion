@@ -1,5 +1,4 @@
-﻿using ChessChampion.Shared.Models;
-using static ChessChampion.Shared.Services.RulesService;
+﻿using static ChessChampion.Shared.Services.RulesService;
 
 namespace ChessChampion.Shared.Models.Pieces;
 

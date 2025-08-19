@@ -29,7 +29,10 @@ public sealed class HubConnectionService(MainViewModel viewModel, NavigationMana
         }
     }
 
-    public string? ConnectionId() => _hubConnection?.ConnectionId;
+    public string? ConnectionId()
+    {
+        return _hubConnection?.ConnectionId;
+    }
 
     private HubConnection BuildHubConnection()
     {
