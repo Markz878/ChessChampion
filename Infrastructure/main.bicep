@@ -2,7 +2,7 @@ param location string = resourceGroup().location
 @minLength(3)
 param webSiteName string
 param planName string = 'asp-${webSiteName}'
-param sku string = 'F1'
+param sku string = 'B1'
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: 'log-${webSiteName}'
