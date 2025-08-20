@@ -44,7 +44,8 @@ a, .btn-link {
     }
 
 .btn-primary {
-    background-color: rgb(70, 148, 225);
+    background-color: rgb(30, 121, 255);
+    color: white;
 }
 
     .btn-primary:hover {

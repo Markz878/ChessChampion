@@ -30,30 +30,28 @@ a, .btn-link {
 
 
 .btn {
-    border-radius: 5px;
-    border: 2px solid gray;
-    margin: 5px;
+    border-radius: 0.5rem;
+    border: none;
     font-size: 16px;
     padding: 6px 10px;
     white-space: nowrap;
+    width: 130px;
+    min-height: 50px;
 }
 
-    .btn :focus {
-        border-color: black;
-        outline: none;
-    }
+
 
 .btn-primary {
-    background-color: rgb(70, 148, 225);
+    background-color: rgb(30, 121, 255);
+    color: white;
 }
 
     .btn-primary:hover {
         background-color: #1F7EC7;
-        color: white;
     }
 
     .btn-primary:active {
-        background-color: blue;
+        background-color: rgb(30, 94, 255);
     }
 
 .valid.modified:not([type=checkbox]) {

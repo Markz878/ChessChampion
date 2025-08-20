@@ -22,7 +22,7 @@ public static class EndpointsMapper
         Result<CreateGameResponse, BaseError> response = await chessService.CreateGame(createGameRequest);
         return response.Match<Results<Ok<CreateGameResponse>, BadRequest<string>>>(
             ok => TypedResults.Ok(ok),
-            error => TypedResults.BadRequest(error.ToString())
+            error => TypedResults.BadRequest(error.Error)
         );
     }
 
@@ -31,7 +31,7 @@ public static class EndpointsMapper
         Result<JoinGameResponse, BaseError> response = await chessService.JoinGame(joinGameRequest);
         return response.Match<Results<Ok<JoinGameResponse>, BadRequest<string>>>(
             ok => TypedResults.Ok(ok),
-            error => TypedResults.BadRequest(error.ToString())
+            error => TypedResults.BadRequest(error.Error)
         );
     }
 

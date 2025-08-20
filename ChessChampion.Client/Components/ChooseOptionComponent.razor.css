@@ -1,15 +1,22 @@
 ﻿.option-button {
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .option-text {
-    text-align: right;
+    margin-left: 2rem;
 }
 
 .select {
     margin-left: 1rem;
     width: 10rem;
+}
+
+.buttons-container {
+    display: flex;
+    align-items: center;
 }
 
 .left-toggleButton {

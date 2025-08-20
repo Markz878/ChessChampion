@@ -138,14 +138,21 @@ public sealed partial class Home
         if (ViewModel.GameId.HasValue && ViewModel.Player is not null && await JS.InvokeAsync<bool>("confirm", "Leave game?"))
         {
             Guid gameIdToLeave = ViewModel.GameId.Value;
-            BaseError? error = await ChessService.LeaveGame(new LeaveGameRequest(gameIdToLeave, ViewModel.Player.Name));
+            try
+            {
+                BaseError? error = await ChessService.LeaveGame(new LeaveGameRequest(gameIdToLeave, ViewModel.Player.Name));
+                await Hub.LeaveGame(gameIdToLeave);
+                ViewModel.StatusMessage = error.HasValue ? error.Value.Error : "You have left the game";
+            }
+            catch (Exception)
+            {
+                ViewModel.StatusMessage = "You have left the game";
+            }
             ViewModel.GameState = null;
             ViewModel.GameId = null;
             ViewModel.Winner = null;
             ViewModel.OtherPlayer = null;
             ViewModel.GameCode = "";
-            ViewModel.StatusMessage = error.HasValue ? error.Value.Error : "You have left the game";
-            await Hub.LeaveGame(gameIdToLeave);
         }
     }
 }

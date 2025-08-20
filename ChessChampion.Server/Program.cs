@@ -25,13 +25,8 @@ else
 
 app.MapStaticAssets();
 app.UseHttpLogging();
-if (app.Environment.IsProduction())
-{
-    app.UseMiddleware<SecurityHeadersMiddleware>();
-}
 app.UseAntiforgery();
 app.UseRateLimiter();
-app.MapStaticAssets();
 app.MapEndpoints();
 app.MapHub<ChessHub>("/chesshub", options => options.AllowStatefulReconnects = true);
 app.MapRazorComponents<App>()
