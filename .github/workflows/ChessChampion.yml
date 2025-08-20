@@ -16,7 +16,7 @@ jobs:
     env:
       AZURE_WEBAPP_NAME: ChessChampion
       AZURE_WEBAPP_PACKAGE_PATH: ChessChampion.Server/publish
-      DOTNET_CORE_VERSION: 9.0.x
+      DOTNET_CORE_VERSION: 10.0.x
       WORKING_DIRECTORY: ChessChampion.Server
     steps:
       - name: Azure Login
