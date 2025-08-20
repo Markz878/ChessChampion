@@ -15,12 +15,7 @@
 
 <body>
     <Routes @rendermode="InteractiveWebAssembly" />
-    <script src="@Assets["_framework/blazor.web.js"]" autostart="false"></script>
-    <script>
-        Blazor.start({
-          ssr: { disableDomPreservation: true }
-        });
-    </script>
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
 </body>
 
 </html>
