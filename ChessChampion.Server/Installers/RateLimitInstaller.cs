@@ -16,7 +16,7 @@ public sealed class RateLimitInstaller : IInstaller
             {
                 ILogger<RateLimitInstaller> logger = httpContext.RequestServices.GetRequiredService<ILogger<RateLimitInstaller>>();
                 string? ip = httpContext.Connection.RemoteIpAddress?.ToString();
-                logger.LogDebug("Remote IP: {Ip}", ip);
+                logger.LogInformation("Remote IP in rate limiting: {Ip}", ip);
                 if (ip is null)
                 {
                     return RateLimitPartition.GetTokenBucketLimiter(string.Empty, _ =>
